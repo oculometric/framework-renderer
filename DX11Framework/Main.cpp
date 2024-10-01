@@ -10,7 +10,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	DX11Framework application = DX11Framework();
 
-	if (FAILED(application.Initialise(hInstance, nCmdShow)))
+	if (FAILED(application.initialise(hInstance, nCmdShow)))
 	{
 		return -1;
 	}
@@ -28,8 +28,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 		else
 		{
-			application.Update();
-			application.Draw();
+			application.update();
+			application.draw();
 		}
 	}
 

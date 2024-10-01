@@ -11,57 +11,59 @@ using namespace DirectX;
 
 struct SimpleVertex
 {
-	XMFLOAT3 Position;
-	XMFLOAT4 Color;
+	XMFLOAT3 position;
+	XMFLOAT4 colour;
 };
 
 struct ConstantBuffer
 {
-	XMMATRIX Projection;
-	XMMATRIX View;
-	XMMATRIX World;
+	XMMATRIX projection;
+	XMMATRIX view;
+	XMMATRIX world;
 };
 
 class DX11Framework
 {
-	int _WindowWidth = 1280;
-	int _WindowHeight = 768;
+	int window_width = 1280;
+	int window_height = 768;
 
-	ID3D11DeviceContext* _immediateContext = nullptr;
-	ID3D11Device* _device;
-	IDXGIDevice* _dxgiDevice = nullptr;
-	IDXGIFactory2* _dxgiFactory = nullptr;
-	ID3D11RenderTargetView* _frameBufferView = nullptr;
-	IDXGISwapChain1* _swapChain;
-	D3D11_VIEWPORT _viewport;
+	ID3D11DeviceContext* immediate_context = nullptr;
+	ID3D11Device* device;
+	IDXGIDevice* dxgi_device = nullptr;
+	IDXGIFactory2* dxgi_factory = nullptr;
+	ID3D11RenderTargetView* render_target_view = nullptr;
+	IDXGISwapChain1* swap_chain;
+	D3D11_VIEWPORT viewport;
 
-	ID3D11RasterizerState* _rasterizerState;
-	ID3D11RasterizerState* _debugRasterizerState;
-	ID3D11VertexShader* _vertexShader;
-	ID3D11InputLayout* _inputLayout;
-	ID3D11PixelShader* _pixelShader;
-	ID3D11Buffer* _constantBuffer;
-	ID3D11Buffer* _vertexBuffer;
-	ID3D11Buffer* _indexBuffer;
+	ID3D11RasterizerState* rasterizer_state;
+	ID3D11RasterizerState* debug_rasterizer_state;
+	ID3D11VertexShader* vertex_shader;
+	ID3D11PixelShader* pixel_shader;
+	ID3D11InputLayout* input_layout;
+	ID3D11Buffer* constant_buffer;
+	ID3D11Buffer* vertex_buffer;
+	ID3D11Buffer* index_buffer;
 
-	HWND _windowHandle;
+	HWND window_handle;
 
-	XMFLOAT4X4 _World;
-	XMFLOAT4X4 _View;
-	XMFLOAT4X4 _Projection;
+	XMFLOAT4X4 matrix_world;
+	XMFLOAT4X4 matrix_view;
+	XMFLOAT4X4 matrix_projection;
 
-	ConstantBuffer _cbData;
+	XMFLOAT3 eulers = XMFLOAT3(0, 0, 0);
+
+	ConstantBuffer constant_buffer_data;
 
 public:
-	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
-	HRESULT CreateWindowHandle(HINSTANCE hInstance, int nCmdShow);
-	HRESULT CreateD3DDevice();
-	HRESULT CreateSwapChainAndFrameBuffer();
-	HRESULT InitShadersAndInputLayout();
-	HRESULT InitVertexIndexBuffers();
-	HRESULT InitPipelineVariables();
-	HRESULT InitRunTimeData();
+	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);
+	HRESULT createWindowHandle(HINSTANCE hInstance, int nCmdShow);
+	HRESULT createD3DDevice();
+	HRESULT createSwapChainAndFrameBuffer();
+	HRESULT initShadersAndInputLayout();
+	HRESULT initVertexIndexBuffers();
+	HRESULT initPipelineVariables();
+	HRESULT initRunTimeData();
 	~DX11Framework();
-	void Update();
-	void Draw();
+	void update();
+	void draw();
 };

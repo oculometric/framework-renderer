@@ -26,200 +26,198 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-HRESULT DX11Framework::Initialise(HINSTANCE hInstance, int nShowCmd)
+HRESULT DX11Framework::initialise(HINSTANCE hInstance, int nShowCmd)
 {
     HRESULT hr = S_OK;
 
-    hr = CreateWindowHandle(hInstance, nShowCmd);
+    hr = createWindowHandle(hInstance, nShowCmd);
     if (FAILED(hr)) return E_FAIL;
 
-    hr = CreateD3DDevice();
+    hr = createD3DDevice();
     if (FAILED(hr)) return E_FAIL;
 
-    hr = CreateSwapChainAndFrameBuffer();
+    hr = createSwapChainAndFrameBuffer();
     if (FAILED(hr)) return E_FAIL;
 
-    hr = InitShadersAndInputLayout();
+    hr = initShadersAndInputLayout();
     if (FAILED(hr)) return E_FAIL;
 
-    hr = InitVertexIndexBuffers();
+    hr = initVertexIndexBuffers();
     if (FAILED(hr)) return E_FAIL;
 
-    hr = InitPipelineVariables();
+    hr = initPipelineVariables();
     if (FAILED(hr)) return E_FAIL;
 
-    hr = InitRunTimeData();
+    hr = initRunTimeData();
     if (FAILED(hr)) return E_FAIL;
 
     return hr;
 }
 
-HRESULT DX11Framework::CreateWindowHandle(HINSTANCE hInstance, int nCmdShow)
+HRESULT DX11Framework::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 {
-    const wchar_t* windowName  = L"DX11Framework";
+    const wchar_t* window_name  = L"DX11Framework";
 
-    WNDCLASSW wndClass;
-    wndClass.style = 0;
-    wndClass.lpfnWndProc = WndProc;
-    wndClass.cbClsExtra = 0;
-    wndClass.cbWndExtra = 0;
-    wndClass.hInstance = 0;
-    wndClass.hIcon = 0;
-    wndClass.hCursor = 0;
-    wndClass.hbrBackground = 0;
-    wndClass.lpszMenuName = 0;
-    wndClass.lpszClassName = windowName;
+    WNDCLASSW wnd_class;
+    wnd_class.style = 0;
+    wnd_class.lpfnWndProc = WndProc;
+    wnd_class.cbClsExtra = 0;
+    wnd_class.cbWndExtra = 0;
+    wnd_class.hInstance = 0;
+    wnd_class.hIcon = 0;
+    wnd_class.hCursor = 0;
+    wnd_class.hbrBackground = 0;
+    wnd_class.lpszMenuName = 0;
+    wnd_class.lpszClassName = window_name;
 
-    RegisterClassW(&wndClass);
+    RegisterClassW(&wnd_class);
 
-    _windowHandle = CreateWindowExW(0, windowName, windowName, WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
-        _WindowWidth, _WindowHeight, nullptr, nullptr, hInstance, nullptr);
+    window_handle = CreateWindowExW(0, window_name, window_name, WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT,window_width, window_height, nullptr, nullptr, hInstance, nullptr);
 
     return S_OK;
 }
 
-HRESULT DX11Framework::CreateD3DDevice()
+HRESULT DX11Framework::createD3DDevice()
 {
     HRESULT hr = S_OK;
 
-    D3D_FEATURE_LEVEL featureLevels[] = {
+    D3D_FEATURE_LEVEL feature_levels[] = {
         D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0,
         D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0,
     };
 
-    ID3D11Device* baseDevice;
-    ID3D11DeviceContext* baseDeviceContext;
+    ID3D11Device* base_device;
+    ID3D11DeviceContext* base_device_context;
 
-    DWORD createDeviceFlags = 0;
+    DWORD create_device_flags = 0;
 #ifdef _DEBUG
-    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    create_device_flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-    hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT | createDeviceFlags, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &baseDevice, nullptr, &baseDeviceContext);
+    hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT | create_device_flags, feature_levels, ARRAYSIZE(feature_levels), D3D11_SDK_VERSION, &base_device, nullptr, &base_device_context);
     if (FAILED(hr)) return hr;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    hr = baseDevice->QueryInterface(__uuidof(ID3D11Device), reinterpret_cast<void**>(&_device));
-    hr = baseDeviceContext->QueryInterface(__uuidof(ID3D11DeviceContext), reinterpret_cast<void**>(&_immediateContext));
+    hr = base_device->QueryInterface(__uuidof(ID3D11Device), reinterpret_cast<void**>(&device));
+    hr = base_device_context->QueryInterface(__uuidof(ID3D11DeviceContext), reinterpret_cast<void**>(&immediate_context));
 
-    baseDevice->Release();
-    baseDeviceContext->Release();
+    base_device->Release();
+    base_device_context->Release();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    hr = _device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&_dxgiDevice));
+    hr = device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgi_device));
     if (FAILED(hr)) return hr;
 
-    IDXGIAdapter* dxgiAdapter;
-    hr = _dxgiDevice->GetAdapter(&dxgiAdapter);
-    hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&_dxgiFactory));
-    dxgiAdapter->Release();
+    IDXGIAdapter* dxgi_adapter;
+    hr = dxgi_device->GetAdapter(&dxgi_adapter);
+    hr = dxgi_adapter->GetParent(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgi_factory));
+    dxgi_adapter->Release();
 
     return S_OK;
 }
 
-HRESULT DX11Framework::CreateSwapChainAndFrameBuffer()
+HRESULT DX11Framework::createSwapChainAndFrameBuffer()
 {
     HRESULT hr = S_OK;
 
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
-    swapChainDesc.Width = 0; // Defer to WindowWidth
-    swapChainDesc.Height = 0; // Defer to WindowHeight
-    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //FLIP* modes don't support sRGB backbuffer
-    swapChainDesc.Stereo = FALSE;
-    swapChainDesc.SampleDesc.Count = 1;
-    swapChainDesc.SampleDesc.Quality = 0;
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapChainDesc.BufferCount = 2;
-    swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-    swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-    swapChainDesc.Flags = 0;
+    DXGI_SWAP_CHAIN_DESC1 swap_chain_descriptor;
+    swap_chain_descriptor.Width = 0; // Defer to WindowWidth
+    swap_chain_descriptor.Height = 0; // Defer to WindowHeight
+    swap_chain_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //FLIP* modes don't support sRGB backbuffer
+    swap_chain_descriptor.Stereo = FALSE;
+    swap_chain_descriptor.SampleDesc.Count = 1;
+    swap_chain_descriptor.SampleDesc.Quality = 0;
+    swap_chain_descriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swap_chain_descriptor.BufferCount = 2;
+    swap_chain_descriptor.Scaling = DXGI_SCALING_STRETCH;
+    swap_chain_descriptor.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+    swap_chain_descriptor.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+    swap_chain_descriptor.Flags = 0;
 
-    hr = _dxgiFactory->CreateSwapChainForHwnd(_device, _windowHandle, &swapChainDesc, nullptr, nullptr, &_swapChain);
+    hr = dxgi_factory->CreateSwapChainForHwnd(device, window_handle, &swap_chain_descriptor, nullptr, nullptr, &swap_chain);
     if (FAILED(hr)) return hr;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    ID3D11Texture2D* frameBuffer = nullptr;
+    ID3D11Texture2D* frame_buffer = nullptr;
 
-    hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&frameBuffer));
+    hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&frame_buffer));
     if (FAILED(hr)) return hr;
 
-    D3D11_RENDER_TARGET_VIEW_DESC framebufferDesc = {};
-    framebufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; //sRGB render target enables hardware gamma correction
-    framebufferDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+    D3D11_RENDER_TARGET_VIEW_DESC frame_buffer_descriptor = {};
+    frame_buffer_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; //sRGB render target enables hardware gamma correction
+    frame_buffer_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
-    hr = _device->CreateRenderTargetView(frameBuffer, &framebufferDesc, &_frameBufferView);
+    hr = device->CreateRenderTargetView(frame_buffer, &frame_buffer_descriptor, &render_target_view);
 
-    frameBuffer->Release();
-
+    frame_buffer->Release();
 
     return hr;
 }
 
-HRESULT DX11Framework::InitShadersAndInputLayout()
+HRESULT DX11Framework::initShadersAndInputLayout()
 {
     HRESULT hr = S_OK;
-    ID3DBlob* errorBlob;
+    ID3DBlob* error_blob;
 
-    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+    DWORD shader_flags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
     // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
     // Setting this flag improves the shader debugging experience, but still allows 
     // the shaders to be optimized and to run exactly the way they will run in 
     // the release configuration of this program.
-    dwShaderFlags |= D3DCOMPILE_DEBUG;
+    shader_flags |= D3DCOMPILE_DEBUG;
 #endif
     
-    ID3DBlob* vsBlob;
+    ID3DBlob* vertex_shader_blob;
 
-    hr =  D3DCompileFromFile(L"SimpleShaders.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS_main", "vs_5_0", dwShaderFlags, 0, &vsBlob, &errorBlob);
+    hr =  D3DCompileFromFile(L"SimpleShaders.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS_main", "vs_5_0", shader_flags, 0, &vertex_shader_blob, &error_blob);
     if (FAILED(hr))
     {
-        MessageBoxA(_windowHandle, (char*)errorBlob->GetBufferPointer(), nullptr, ERROR);
-        errorBlob->Release();
+        MessageBoxA(window_handle, (char*)error_blob->GetBufferPointer(), nullptr, ERROR);
+        error_blob->Release();
         return hr;
     }
 
-    hr = _device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &_vertexShader);
+    hr = device->CreateVertexShader(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), nullptr, &vertex_shader);
 
     if (FAILED(hr)) return hr;
 
-    D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
+    D3D11_INPUT_ELEMENT_DESC input_element_descriptor[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA,   0 },
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 },
     };
 
-    hr = _device->CreateInputLayout(inputElementDesc, ARRAYSIZE(inputElementDesc), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &_inputLayout);
+    hr = device->CreateInputLayout(input_element_descriptor, ARRAYSIZE(input_element_descriptor), vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), &input_layout);
     if (FAILED(hr)) return hr;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    ID3DBlob* psBlob;
+    ID3DBlob* pixel_shader_blob;
 
-    hr = D3DCompileFromFile(L"SimpleShaders.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS_main", "ps_5_0", dwShaderFlags, 0, &psBlob, &errorBlob);
+    hr = D3DCompileFromFile(L"SimpleShaders.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS_main", "ps_5_0", shader_flags, 0, &pixel_shader_blob, &error_blob);
     if (FAILED(hr))
     {
-        MessageBoxA(_windowHandle, (char*)errorBlob->GetBufferPointer(), nullptr, ERROR);
-        errorBlob->Release();
+        MessageBoxA(window_handle, (char*)error_blob->GetBufferPointer(), nullptr, ERROR);
+        error_blob->Release();
         return hr;
     }
 
-    hr = _device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &_pixelShader);
+    hr = device->CreatePixelShader(pixel_shader_blob->GetBufferPointer(), pixel_shader_blob->GetBufferSize(), nullptr, &pixel_shader);
 
-    vsBlob->Release();
-    psBlob->Release();
+    vertex_shader_blob->Release();
+    pixel_shader_blob->Release();
 
     return hr;
 }
 
-HRESULT DX11Framework::InitVertexIndexBuffers()
+HRESULT DX11Framework::initVertexIndexBuffers()
 {
     HRESULT hr = S_OK;
 
-    SimpleVertex VertexData[] = 
+    SimpleVertex vertex_data[] = 
     {
         //Position                     //Color             
         { XMFLOAT3(1.0f,  1.0f, 1.0f), XMFLOAT4(1.0f,  1.0f, 1.0f,  0.0f)},
@@ -233,19 +231,19 @@ HRESULT DX11Framework::InitVertexIndexBuffers()
         { XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT4(0.0f,  0.0f, 0.0f,  0.0f)},
     };
 
-    D3D11_BUFFER_DESC vertexBufferDesc = {};
-    vertexBufferDesc.ByteWidth = sizeof(VertexData);
-    vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-    vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    D3D11_BUFFER_DESC vertex_buffer_descriptor = {};
+    vertex_buffer_descriptor.ByteWidth = sizeof(vertex_data);
+    vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA vertexData = { VertexData };
+    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { vertex_data };
 
-    hr = _device->CreateBuffer(&vertexBufferDesc, &vertexData, &_vertexBuffer);
+    hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &vertex_buffer);
     if (FAILED(hr)) return hr;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    WORD IndexData[] =
+    WORD index_data[] =
     {
         //Indices
         0, 1, 2,
@@ -267,154 +265,171 @@ HRESULT DX11Framework::InitVertexIndexBuffers()
         4, 6, 5
     };
 
-    D3D11_BUFFER_DESC indexBufferDesc = {};
-    indexBufferDesc.ByteWidth = sizeof(IndexData);
-    indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    D3D11_BUFFER_DESC index_buffer_descriptor = {};
+    index_buffer_descriptor.ByteWidth = sizeof(index_data);
+    index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA indexData = { IndexData };
+    D3D11_SUBRESOURCE_DATA index_subresource_data = { index_data };
 
-    hr = _device->CreateBuffer(&indexBufferDesc, &indexData, &_indexBuffer);
+    hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &index_buffer);
     if (FAILED(hr)) return hr;
 
     return S_OK;
 }
 
-HRESULT DX11Framework::InitPipelineVariables()
+HRESULT DX11Framework::initPipelineVariables()
 {
     HRESULT hr = S_OK;
 
     //Input Assembler
-    _immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    _immediateContext->IASetInputLayout(_inputLayout);
+    immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    immediate_context->IASetInputLayout(input_layout);
 
     //Rasterizer
-    D3D11_RASTERIZER_DESC rasterizerDesc = {};
-    rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-    rasterizerDesc.CullMode = D3D11_CULL_BACK;
+    D3D11_RASTERIZER_DESC rasterizer_descriptor = {};
+    rasterizer_descriptor.FillMode = D3D11_FILL_SOLID;
+    rasterizer_descriptor.CullMode = D3D11_CULL_BACK;
 
-    hr = _device->CreateRasterizerState(&rasterizerDesc, &_rasterizerState);
+    hr = device->CreateRasterizerState(&rasterizer_descriptor, &rasterizer_state);
     if (FAILED(hr)) return hr;
 
     // Debug Rasterizer
-    D3D11_RASTERIZER_DESC debugRasterizerDesc = {};
-    debugRasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-    debugRasterizerDesc.CullMode = D3D11_CULL_NONE;
+    D3D11_RASTERIZER_DESC debug_rasterizer_descriptor = {};
+    debug_rasterizer_descriptor.FillMode = D3D11_FILL_WIREFRAME;
+    debug_rasterizer_descriptor.CullMode = D3D11_CULL_NONE;
 
-    hr = _device->CreateRasterizerState(&debugRasterizerDesc, &_debugRasterizerState);
+    hr = device->CreateRasterizerState(&debug_rasterizer_descriptor, &debug_rasterizer_state);
     if (FAILED(hr)) return hr;
 
-    _immediateContext->RSSetState(_rasterizerState);
+    immediate_context->RSSetState(rasterizer_state);
 
     //Viewport Values
-    _viewport = { 0.0f, 0.0f, (float)_WindowWidth, (float)_WindowHeight, 0.0f, 1.0f };
-    _immediateContext->RSSetViewports(1, &_viewport);
+    viewport = { 0.0f, 0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f };
+    immediate_context->RSSetViewports(1, &viewport);
 
     //Constant Buffer
-    D3D11_BUFFER_DESC constantBufferDesc = {};
-    constantBufferDesc.ByteWidth = sizeof(ConstantBuffer);
-    constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    D3D11_BUFFER_DESC constant_buffer_descriptor = {};
+    constant_buffer_descriptor.ByteWidth = sizeof(ConstantBuffer);
+    constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
+    constant_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    constant_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-    hr = _device->CreateBuffer(&constantBufferDesc, nullptr, &_constantBuffer);
+    hr = device->CreateBuffer(&constant_buffer_descriptor, nullptr, &constant_buffer);
     if (FAILED(hr)) { return hr; }
 
-    _immediateContext->VSSetConstantBuffers(0, 1, &_constantBuffer);
-    _immediateContext->PSSetConstantBuffers(0, 1, &_constantBuffer);
+    immediate_context->VSSetConstantBuffers(0, 1, &constant_buffer);
+    immediate_context->PSSetConstantBuffers(0, 1, &constant_buffer);
 
     return S_OK;
 }
 
-HRESULT DX11Framework::InitRunTimeData()
+HRESULT DX11Framework::initRunTimeData()
 {
     //Camera
-    float aspect = _viewport.Width / _viewport.Height;
+    float aspect = viewport.Width / viewport.Height;
 
-    XMFLOAT3 Eye = XMFLOAT3(-3.0f, -3.0f, 3.0f);
+    XMFLOAT3 Eye = XMFLOAT3(0, -3.0f, 3.0f);
     XMFLOAT3 At = XMFLOAT3(0, 0, 0);
     XMFLOAT3 Up = XMFLOAT3(0, 0.0f, 1.0f);
 
-    XMStoreFloat4x4(&_View, XMMatrixLookAtLH(XMLoadFloat3(&Eye), XMLoadFloat3(&At), XMLoadFloat3(&Up)));
+    XMStoreFloat4x4(&matrix_view, XMMatrixLookAtLH(XMLoadFloat3(&Eye), XMLoadFloat3(&At), XMLoadFloat3(&Up)));
 
     //Projection
     XMMATRIX perspective = XMMatrixPerspectiveFovLH(XMConvertToRadians(90), aspect, 0.01f, 100.0f);
-    XMStoreFloat4x4(&_Projection, perspective);
+    XMStoreFloat4x4(&matrix_projection, perspective);
 
     return S_OK;
 }
 
 DX11Framework::~DX11Framework()
 {
-    if (_immediateContext)_immediateContext->Release();
-    if (_device)_device->Release();
-    if (_dxgiDevice)_dxgiDevice->Release();
-    if (_dxgiFactory)_dxgiFactory->Release();
-    if (_frameBufferView)_frameBufferView->Release();
-    if (_swapChain)_swapChain->Release();
+    if (immediate_context) immediate_context->Release();
+    if (device) device->Release();
+    if (dxgi_device) dxgi_device->Release();
+    if (dxgi_factory) dxgi_factory->Release();
+    if (render_target_view) render_target_view->Release();
+    if (swap_chain) swap_chain->Release();
 
-    if (_rasterizerState)_rasterizerState->Release();
-    if (_debugRasterizerState)_debugRasterizerState->Release();
-    if (_vertexShader)_vertexShader->Release();
-    if (_inputLayout)_inputLayout->Release();
-    if (_pixelShader)_pixelShader->Release();
-    if (_constantBuffer)_constantBuffer->Release();
-    if (_vertexBuffer)_vertexBuffer->Release();
-    if (_indexBuffer)_indexBuffer->Release();
+    if (rasterizer_state) rasterizer_state->Release();
+    if (debug_rasterizer_state) debug_rasterizer_state->Release();
+    if (vertex_shader) vertex_shader->Release();
+    if (input_layout) input_layout->Release();
+    if (pixel_shader) pixel_shader->Release();
+    if (constant_buffer) constant_buffer->Release();
+    if (vertex_buffer) vertex_buffer->Release();
+    if (index_buffer) index_buffer->Release();
 }
 
 
-void DX11Framework::Update()
+void DX11Framework::update()
 {
     //Static initializes this value only once    
-    static ULONGLONG frameStart = GetTickCount64();
+    static ULONGLONG frame_start = GetTickCount64();
 
-    ULONGLONG frameNow = GetTickCount64();
-    float deltaTime = (frameNow - frameStart) / 1000.0f;
-    frameStart = frameNow;
+    ULONGLONG frame_now = GetTickCount64();
+    float delta_time = (frame_now - frame_start) / 1000.0f;
+    frame_start = frame_now;
 
-    static float simpleCount = 0.0f;
-    simpleCount += deltaTime;
+    static float total_time = 0.0f;
+    total_time += delta_time;
 
     static bool is_debug_mode = false;
     if (GetAsyncKeyState(VK_TAB) & 0x0001)
     {
         is_debug_mode = !is_debug_mode;
-        _immediateContext->RSSetState(is_debug_mode ? _debugRasterizerState : _rasterizerState);
+        immediate_context->RSSetState(is_debug_mode ? debug_rasterizer_state : rasterizer_state);
     }
-
-    XMStoreFloat4x4(&_World, XMMatrixIdentity() * XMMatrixRotationZ(simpleCount));
+    if (GetAsyncKeyState(VK_UP) & 0xF000)
+    {
+        eulers.x -= delta_time * 3.0f;
+    }
+    if (GetAsyncKeyState(VK_DOWN) & 0xF000)
+    {
+        eulers.x += delta_time * 3.0f;
+    }
+    if (GetAsyncKeyState(VK_LEFT) & 0xF000)
+    {
+        eulers.z += delta_time * 3.0f;
+    }
+    if (GetAsyncKeyState(VK_RIGHT) & 0xF000)
+    {
+        eulers.z -= delta_time * 3.0f;
+    }
+    
+    // Z X Y rotation order probably
+    XMStoreFloat4x4(&matrix_world, XMMatrixIdentity() * XMMatrixRotationZ(eulers.z) * XMMatrixRotationX(eulers.x) * XMMatrixRotationY(eulers.y));
 }
 
-void DX11Framework::Draw()
+void DX11Framework::draw()
 {    
     //Present unbinds render target, so rebind and clear at start of each frame
-    float backgroundColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
-    _immediateContext->OMSetRenderTargets(1, &_frameBufferView, 0);
-    _immediateContext->ClearRenderTargetView(_frameBufferView, backgroundColor);
+    float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
+    immediate_context->OMSetRenderTargets(1, &render_target_view, 0);
+    immediate_context->ClearRenderTargetView(render_target_view, background_colour);
    
     //Store this frames data in constant buffer struct
-    _cbData.World = XMMatrixTranspose(XMLoadFloat4x4(&_World));
-    _cbData.View = XMMatrixTranspose(XMLoadFloat4x4(&_View));
-    _cbData.Projection = XMMatrixTranspose(XMLoadFloat4x4(&_Projection));
+    constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&matrix_world));
+    constant_buffer_data.view = XMMatrixTranspose(XMLoadFloat4x4(&matrix_view));
+    constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&matrix_projection));
 
     //Write constant buffer data onto GPU
-    D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-    _immediateContext->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
-    memcpy(mappedSubresource.pData, &_cbData, sizeof(_cbData));
-    _immediateContext->Unmap(_constantBuffer, 0);
+    D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
+    immediate_context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
+    memcpy(constant_buffer_resource.pData, &constant_buffer_data, sizeof(constant_buffer_data));
+    immediate_context->Unmap(constant_buffer, 0);
 
     //Set object variables and draw
-    UINT stride = {sizeof(SimpleVertex)};
+    UINT stride = { sizeof(SimpleVertex) };
     UINT offset =  0 ;
-    _immediateContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-    _immediateContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    immediate_context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
+    immediate_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R16_UINT, 0);
 
-    _immediateContext->VSSetShader(_vertexShader, nullptr, 0);
-    _immediateContext->PSSetShader(_pixelShader, nullptr, 0);
+    immediate_context->VSSetShader(vertex_shader, nullptr, 0);
+    immediate_context->PSSetShader(pixel_shader, nullptr, 0);
 
-    _immediateContext->DrawIndexed(36, 0, 0);
+    immediate_context->DrawIndexed(36, 0, 0);
 
     //Present Backbuffer to screen
-    _swapChain->Present(0, 0);
+    swap_chain->Present(0, 0);
 }
