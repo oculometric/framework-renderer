@@ -36,6 +36,7 @@ class DX11Framework
 	D3D11_VIEWPORT _viewport;
 
 	ID3D11RasterizerState* _rasterizerState;
+	ID3D11RasterizerState* _debugRasterizerState;
 	ID3D11VertexShader* _vertexShader;
 	ID3D11InputLayout* _inputLayout;
 	ID3D11PixelShader* _pixelShader;

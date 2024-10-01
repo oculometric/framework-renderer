@@ -222,10 +222,15 @@ HRESULT DX11Framework::InitVertexIndexBuffers()
     SimpleVertex VertexData[] = 
     {
         //Position                     //Color             
-        { XMFLOAT3(-1.00f,  1.00f, 0), XMFLOAT4(1.0f,  0.0f, 0.0f,  0.0f)},
-        { XMFLOAT3(1.00f,  1.00f, 0),  XMFLOAT4(0.0f,  1.0f, 0.0f,  0.0f)},
-        { XMFLOAT3(-1.00f, -1.00f, 0), XMFLOAT4(0.0f,  0.0f, 1.0f,  0.0f)},
-        { XMFLOAT3(1.00f, -1.00f, 0),  XMFLOAT4(1.0f,  1.0f, 1.0f,  0.0f)},
+        { XMFLOAT3(1.0f,  1.0f, 1.0f), XMFLOAT4(1.0f,  1.0f, 1.0f,  0.0f)},
+        { XMFLOAT3(-1.0f,  1.0f, 1.0f),  XMFLOAT4(0.0f,  1.0f, 1.0f,  0.0f)},
+        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f,  0.0f, 1.0f,  0.0f)},
+        { XMFLOAT3(-1.0f, -1.0f, 1.0f),  XMFLOAT4(0.0f,  0.0f, 1.0f,  0.0f)},
+
+        { XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT4(1.0f,  1.0f, 0.0f,  0.0f)},
+        { XMFLOAT3(-1.0f,  1.0f, -1.0f),  XMFLOAT4(0.0f,  1.0f, 0.0f,  0.0f)},
+        { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f,  0.0f, 0.0f,  0.0f)},
+        { XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT4(0.0f,  0.0f, 0.0f,  0.0f)},
     };
 
     D3D11_BUFFER_DESC vertexBufferDesc = {};
@@ -244,7 +249,22 @@ HRESULT DX11Framework::InitVertexIndexBuffers()
     {
         //Indices
         0, 1, 2,
-        2, 1, 3,
+        1, 3, 2,
+
+        2, 3, 7,
+        2, 7, 6,
+
+        1, 7, 3,
+        1, 5, 7,
+
+        0, 2, 6,
+        0, 6, 4,
+
+        1, 0, 5,
+        0, 4, 5,
+
+        5, 6, 7,
+        4, 6, 5
     };
 
     D3D11_BUFFER_DESC indexBufferDesc = {};
@@ -276,6 +296,14 @@ HRESULT DX11Framework::InitPipelineVariables()
     hr = _device->CreateRasterizerState(&rasterizerDesc, &_rasterizerState);
     if (FAILED(hr)) return hr;
 
+    // Debug Rasterizer
+    D3D11_RASTERIZER_DESC debugRasterizerDesc = {};
+    debugRasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+    debugRasterizerDesc.CullMode = D3D11_CULL_NONE;
+
+    hr = _device->CreateRasterizerState(&debugRasterizerDesc, &_debugRasterizerState);
+    if (FAILED(hr)) return hr;
+
     _immediateContext->RSSetState(_rasterizerState);
 
     //Viewport Values
@@ -303,9 +331,9 @@ HRESULT DX11Framework::InitRunTimeData()
     //Camera
     float aspect = _viewport.Width / _viewport.Height;
 
-    XMFLOAT3 Eye = XMFLOAT3(0, 0, -3.0f);
+    XMFLOAT3 Eye = XMFLOAT3(-3.0f, -3.0f, 3.0f);
     XMFLOAT3 At = XMFLOAT3(0, 0, 0);
-    XMFLOAT3 Up = XMFLOAT3(0, 1, 0);
+    XMFLOAT3 Up = XMFLOAT3(0, 0.0f, 1.0f);
 
     XMStoreFloat4x4(&_View, XMMatrixLookAtLH(XMLoadFloat3(&Eye), XMLoadFloat3(&At), XMLoadFloat3(&Up)));
 
@@ -318,20 +346,21 @@ HRESULT DX11Framework::InitRunTimeData()
 
 DX11Framework::~DX11Framework()
 {
-    if(_immediateContext)_immediateContext->Release();
-    if(_device)_device->Release();
-    if(_dxgiDevice)_dxgiDevice->Release();
-    if(_dxgiFactory)_dxgiFactory->Release();
-    if(_frameBufferView)_frameBufferView->Release();
-    if(_swapChain)_swapChain->Release();
+    if (_immediateContext)_immediateContext->Release();
+    if (_device)_device->Release();
+    if (_dxgiDevice)_dxgiDevice->Release();
+    if (_dxgiFactory)_dxgiFactory->Release();
+    if (_frameBufferView)_frameBufferView->Release();
+    if (_swapChain)_swapChain->Release();
 
-    if(_rasterizerState)_rasterizerState->Release();
-    if(_vertexShader)_vertexShader->Release();
-    if(_inputLayout)_inputLayout->Release();
-    if(_pixelShader)_pixelShader->Release();
-    if(_constantBuffer)_constantBuffer->Release();
-    if(_vertexBuffer)_vertexBuffer->Release();
-    if(_indexBuffer)_indexBuffer->Release();
+    if (_rasterizerState)_rasterizerState->Release();
+    if (_debugRasterizerState)_debugRasterizerState->Release();
+    if (_vertexShader)_vertexShader->Release();
+    if (_inputLayout)_inputLayout->Release();
+    if (_pixelShader)_pixelShader->Release();
+    if (_constantBuffer)_constantBuffer->Release();
+    if (_vertexBuffer)_vertexBuffer->Release();
+    if (_indexBuffer)_indexBuffer->Release();
 }
 
 
@@ -346,6 +375,13 @@ void DX11Framework::Update()
 
     static float simpleCount = 0.0f;
     simpleCount += deltaTime;
+
+    static bool is_debug_mode = false;
+    if (GetAsyncKeyState(VK_TAB) & 0x0001)
+    {
+        is_debug_mode = !is_debug_mode;
+        _immediateContext->RSSetState(is_debug_mode ? _debugRasterizerState : _rasterizerState);
+    }
 
     XMStoreFloat4x4(&_World, XMMatrixIdentity() * XMMatrixRotationZ(simpleCount));
 }
@@ -377,7 +413,7 @@ void DX11Framework::Draw()
     _immediateContext->VSSetShader(_vertexShader, nullptr, 0);
     _immediateContext->PSSetShader(_pixelShader, nullptr, 0);
 
-    _immediateContext->DrawIndexed(6, 0, 0);
+    _immediateContext->DrawIndexed(36, 0, 0);
 
     //Present Backbuffer to screen
     _swapChain->Present(0, 0);
