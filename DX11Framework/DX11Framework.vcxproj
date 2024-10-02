@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FApplication.cpp" />
+    <ClCompile Include="FCamera.cpp" />
     <ClCompile Include="FCamera.h" />
     <ClCompile Include="FObject.cpp" />
     <ClCompile Include="FObject.h" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FApplication.h" />
+    <ClInclude Include="FMesh.h" />
     <ClInclude Include="MyScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

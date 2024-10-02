@@ -1,12 +1,13 @@
 #pragma once
 
 #include "FScene.h"
+#include "FMesh.h"
 
 class MyScene : public FScene
 {
 private:
-	FObject a;
-	FObject b;
+	FMesh a;
+	FMesh b;
 
 public:
 	using FScene::FScene;

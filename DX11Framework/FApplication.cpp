@@ -338,18 +338,7 @@ HRESULT FApplication::initPipelineVariables()
 
 HRESULT FApplication::initRunTimeData()
 {
-    //Camera
-    float aspect = viewport.Width / viewport.Height;
-
-    XMFLOAT3 Eye = XMFLOAT3(0, -3.0f, 3.0f);
-    XMFLOAT3 At = XMFLOAT3(0, 0, 0);
-    XMFLOAT3 Up = XMFLOAT3(0, 0.0f, 1.0f);
-
-    XMStoreFloat4x4(&matrix_view, XMMatrixLookAtLH(XMLoadFloat3(&Eye), XMLoadFloat3(&At), XMLoadFloat3(&Up)));
-
-    //Projection
-    XMMATRIX perspective = XMMatrixPerspectiveFovLH(XMConvertToRadians(90), aspect, 0.01f, 100.0f);
-    XMStoreFloat4x4(&matrix_projection, perspective);
+    // we don't need all this anymore
 
     return S_OK;
 }
@@ -378,7 +367,6 @@ FApplication::~FApplication()
 
 void FApplication::update()
 {
-    //Static initializes this value only once    
     static ULONGLONG frame_start = GetTickCount64();
 
     ULONGLONG frame_now = GetTickCount64();
@@ -394,77 +382,40 @@ void FApplication::update()
         is_debug_mode = !is_debug_mode;
         immediate_context->RSSetState(is_debug_mode ? debug_rasterizer_state : rasterizer_state);
     }
-    if (GetAsyncKeyState(VK_UP) & 0xF000)
-    {
-        eulers.x -= delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState(VK_DOWN) & 0xF000)
-    {
-        eulers.x += delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState(VK_LEFT) & 0xF000)
-    {
-        eulers.z += delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState(VK_RIGHT) & 0xF000)
-    {
-        eulers.z -= delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState('W') & 0xF000)
-    {
-        position.z += delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState('S') & 0xF000)
-    {
-        position.z -= delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState('A') & 0xF000)
-    {
-        position.x += delta_time * 3.0f;
-    }
-    if (GetAsyncKeyState('D') & 0xF000)
-    {
-        position.x -= delta_time * 3.0f;
-    }
-
-    // TODO: reimplement movement (on camera this time)
-
-    XMVECTOR v = XMLoadFloat3(&position);
-
-    // Z X Y rotation order probably
-    XMStoreFloat4x4(&matrix_world, XMMatrixIdentity() * XMMatrixRotationZ(eulers.z) * XMMatrixRotationX(eulers.x) * XMMatrixRotationY(eulers.y) * XMMatrixTranslationFromVector(v));
-
+    
     if (scene)
-    {
         scene->update(delta_time);
-    }
 }
 
 void FApplication::draw()
 {    
-    //Present unbinds render target, so rebind and clear at start of each frame
+    // present unbinds render target, so rebind and clear at start of each frame
     float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
     immediate_context->OMSetRenderTargets(1, &render_target_view, depth_stencil_view);
     immediate_context->ClearRenderTargetView(render_target_view, background_colour);
     immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
    
-    if (scene)
+    if (scene && scene->active_camera)
     {
         for (FObject* object : scene->all_objects)
             drawObject(object);
     }
 
-    //Present Backbuffer to screen
+    // present backbuffer to screen
     swap_chain->Present(0, 0);
 }
 
 void FApplication::drawObject(FObject* object)
 {
+    if (object->getType() != FObjectType::MESH) return;
+
     // store relevant data into the constant buffer for the shader to access
     XMFLOAT4X4 object_matrix = object->getTransform();
+    XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
+    XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
     constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
-    constant_buffer_data.view = XMMatrixTranspose(XMLoadFloat4x4(&matrix_view));
-    constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&matrix_projection));
+    constant_buffer_data.view = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+    constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
 
     // write constant buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;

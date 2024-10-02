@@ -42,12 +42,18 @@
     <ClCompile Include="FCamera.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="FCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MyScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

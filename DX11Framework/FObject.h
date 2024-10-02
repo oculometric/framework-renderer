@@ -7,6 +7,13 @@
 using namespace DirectX;
 using namespace std;
 
+enum FObjectType
+{
+	EMPTY,
+	CAMERA,
+	MESH
+};
+
 class FObject
 {
 private:
@@ -25,6 +32,8 @@ private:
 
 public:
 	FObject();
+
+	inline virtual FObjectType getType() { return FObjectType::EMPTY; }
 
 	void updateTransform();
 	DirectX::XMFLOAT4X4 getTransform();

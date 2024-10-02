@@ -55,13 +55,6 @@ private:
 
 	HWND window_handle;
 
-	XMFLOAT4X4 matrix_world;
-	XMFLOAT4X4 matrix_view;
-	XMFLOAT4X4 matrix_projection;
-
-	XMFLOAT3 eulers = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
-
 	ConstantBuffer constant_buffer_data;
 
 public:
