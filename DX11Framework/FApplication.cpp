@@ -26,6 +26,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
+
+    // TODO: implement window resizeability
 }
 
 HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
@@ -152,6 +154,14 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     frame_buffer_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
     hr = device->CreateRenderTargetView(frame_buffer, &frame_buffer_descriptor, &render_target_view);
+
+    D3D11_TEXTURE2D_DESC depth_buffer_descriptor = { };
+    frame_buffer->GetDesc(&depth_buffer_descriptor);
+    depth_buffer_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depth_buffer_descriptor.BindFlags = D3D10_BIND_DEPTH_STENCIL;
+
+    device->CreateTexture2D(&depth_buffer_descriptor, nullptr, &depth_stencil_buffer);
+    device->CreateDepthStencilView(depth_stencil_buffer, nullptr, &depth_stencil_view);
 
     frame_buffer->Release();
 
@@ -351,6 +361,7 @@ FApplication::~FApplication()
     if (dxgi_device) dxgi_device->Release();
     if (dxgi_factory) dxgi_factory->Release();
     if (render_target_view) render_target_view->Release();
+    if (depth_stencil_view) depth_stencil_view->Release();
     if (swap_chain) swap_chain->Release();
 
     if (rasterizer_state) rasterizer_state->Release();
@@ -361,6 +372,7 @@ FApplication::~FApplication()
     if (constant_buffer) constant_buffer->Release();
     if (vertex_buffer) vertex_buffer->Release();
     if (index_buffer) index_buffer->Release();
+    if (depth_stencil_buffer) depth_stencil_buffer->Release();
     if (scene) delete scene;
 }
 
@@ -434,6 +446,7 @@ void FApplication::draw()
     float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
     immediate_context->OMSetRenderTargets(1, &render_target_view, 0);
     immediate_context->ClearRenderTargetView(render_target_view, background_colour);
+    immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
    
     if (scene)
     {

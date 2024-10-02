@@ -16,7 +16,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	b.position.x = 1.5f;
 	b.eulers.z = 45.0f;
 	application.scene->addObject(&a, nullptr);
-	application.scene->addObject(&b, nullptr);
+	application.scene->addObject(&b, &a);
 
 	if (FAILED(application.initialise(hInstance, nCmdShow)))
 	{
@@ -36,6 +36,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 		else
 		{
+			a.eulers.z += 0.1f;
+			a.updateTransform();
 			application.update();
 			application.draw();
 		}

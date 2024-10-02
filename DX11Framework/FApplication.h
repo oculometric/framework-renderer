@@ -39,17 +39,19 @@ private:
 	IDXGIDevice* dxgi_device = nullptr;
 	IDXGIFactory2* dxgi_factory = nullptr;
 	ID3D11RenderTargetView* render_target_view = nullptr;
-	IDXGISwapChain1* swap_chain;
+	ID3D11DepthStencilView* depth_stencil_view = nullptr;
+	IDXGISwapChain1* swap_chain = nullptr;
 	D3D11_VIEWPORT viewport;
 
-	ID3D11RasterizerState* rasterizer_state;
-	ID3D11RasterizerState* debug_rasterizer_state;
-	ID3D11VertexShader* vertex_shader;
-	ID3D11PixelShader* pixel_shader;
-	ID3D11InputLayout* input_layout;
-	ID3D11Buffer* constant_buffer;
-	ID3D11Buffer* vertex_buffer;
-	ID3D11Buffer* index_buffer;
+	ID3D11RasterizerState* rasterizer_state = nullptr;
+	ID3D11RasterizerState* debug_rasterizer_state = nullptr;
+	ID3D11VertexShader* vertex_shader = nullptr;
+	ID3D11PixelShader* pixel_shader = nullptr;
+	ID3D11InputLayout* input_layout = nullptr;
+	ID3D11Buffer* constant_buffer = nullptr;
+	ID3D11Buffer* vertex_buffer = nullptr;
+	ID3D11Buffer* index_buffer = nullptr;
+	ID3D11Texture2D* depth_stencil_buffer = nullptr;
 
 	HWND window_handle;
 

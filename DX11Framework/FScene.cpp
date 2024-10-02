@@ -11,13 +11,13 @@ void FScene::addObject(FObject* o, FObject* parent)
 	if (parent == nullptr)
 	{
 		all_objects.push_back(o);
-		o->getParent() = &root;
+		root.addChild(o);
 		o->updateTransform();
 	}
 	else
 	{
 		all_objects.push_back(o);
-		o->getParent() = parent;
+		parent->addChild(o);
 		o->updateTransform();
 		// TODO: check that parent is in the scene (if not, abort)
 	}
