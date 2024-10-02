@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "FApplication.h"
-#include "FScene.h"
+#include "MyScene.h"
 
 //Dependencies:user32.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;
 
@@ -10,13 +10,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	FApplication application = FApplication();
-	application.scene = new FScene(&application);
-	FObject a = FObject();
-	FObject b = FObject();
-	b.position.x = 1.5f;
-	b.eulers.z = 45.0f;
-	application.scene->addObject(&a, nullptr);
-	application.scene->addObject(&b, &a);
+	application.scene = new MyScene(&application);
+	application.scene->start();
 
 	if (FAILED(application.initialise(hInstance, nCmdShow)))
 	{
@@ -36,8 +31,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 		else
 		{
-			a.eulers.z += 0.1f;
-			a.updateTransform();
 			application.update();
 			application.draw();
 		}

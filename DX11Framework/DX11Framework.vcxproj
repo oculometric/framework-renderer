@@ -137,6 +137,7 @@
     <ClCompile Include="FScene.cpp" />
     <ClCompile Include="FScene.h" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleShaders.hlsl">
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FApplication.h" />
+    <ClInclude Include="MyScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

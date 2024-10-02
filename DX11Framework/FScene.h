@@ -17,18 +17,21 @@ class FScene
 
 private:
 	FObject root;
-	FApplication* owner;
+	FApplication* owner = nullptr;
 
 protected:
 	vector<FObject*> all_objects;
 
 public:
-	FScene(FApplication* application);
+	FScene() = delete;
+	explicit inline FScene(FApplication* application) { owner = application; }
+	FScene(FScene& other) = delete;
+	FScene(FScene&& other) = delete;
+
 	void addObject(FObject* o, FObject* parent);
 
-protected:
-	void onBecameActive();
-	void update(float delta_time);
+	inline virtual void start() { }
+	inline virtual void update(float delta_time) { }
 };
 
 #endif
