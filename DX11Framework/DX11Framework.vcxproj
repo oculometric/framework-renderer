@@ -131,8 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DX11Framework.cpp" />
+    <ClCompile Include="FApplication.cpp" />
+    <ClCompile Include="FObject.cpp" />
     <ClCompile Include="FObject.h" />
+    <ClCompile Include="FScene.cpp" />
+    <ClCompile Include="FScene.h" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,7 +152,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DX11Framework.h" />
+    <ClInclude Include="FApplication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,7 +18,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DX11Framework.cpp">
+    <ClCompile Include="FApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -27,9 +27,18 @@
     <ClCompile Include="FObject.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="FScene.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DX11Framework.h">
+    <ClInclude Include="FApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

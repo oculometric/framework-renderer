@@ -1,5 +1,7 @@
-#include "DX11Framework.h"
+#include "FApplication.h"
 #include <string>
+#include <queue>
+#include "FScene.h"
 
 //#define RETURNFAIL(x) if(FAILED(x)) return x;
 
@@ -26,7 +28,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-HRESULT DX11Framework::initialise(HINSTANCE hInstance, int nShowCmd)
+HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
 {
     HRESULT hr = S_OK;
 
@@ -54,7 +56,7 @@ HRESULT DX11Framework::initialise(HINSTANCE hInstance, int nShowCmd)
     return hr;
 }
 
-HRESULT DX11Framework::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
+HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 {
     const wchar_t* window_name  = L"DX11Framework";
 
@@ -77,7 +79,7 @@ HRESULT DX11Framework::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
     return S_OK;
 }
 
-HRESULT DX11Framework::createD3DDevice()
+HRESULT FApplication::createD3DDevice()
 {
     HRESULT hr = S_OK;
 
@@ -117,7 +119,7 @@ HRESULT DX11Framework::createD3DDevice()
     return S_OK;
 }
 
-HRESULT DX11Framework::createSwapChainAndFrameBuffer()
+HRESULT FApplication::createSwapChainAndFrameBuffer()
 {
     HRESULT hr = S_OK;
 
@@ -156,7 +158,7 @@ HRESULT DX11Framework::createSwapChainAndFrameBuffer()
     return hr;
 }
 
-HRESULT DX11Framework::initShadersAndInputLayout()
+HRESULT FApplication::initShadersAndInputLayout()
 {
     HRESULT hr = S_OK;
     ID3DBlob* error_blob;
@@ -213,7 +215,7 @@ HRESULT DX11Framework::initShadersAndInputLayout()
     return hr;
 }
 
-HRESULT DX11Framework::initVertexIndexBuffers()
+HRESULT FApplication::initVertexIndexBuffers()
 {
     HRESULT hr = S_OK;
 
@@ -278,7 +280,7 @@ HRESULT DX11Framework::initVertexIndexBuffers()
     return S_OK;
 }
 
-HRESULT DX11Framework::initPipelineVariables()
+HRESULT FApplication::initPipelineVariables()
 {
     HRESULT hr = S_OK;
 
@@ -324,7 +326,7 @@ HRESULT DX11Framework::initPipelineVariables()
     return S_OK;
 }
 
-HRESULT DX11Framework::initRunTimeData()
+HRESULT FApplication::initRunTimeData()
 {
     //Camera
     float aspect = viewport.Width / viewport.Height;
@@ -342,7 +344,7 @@ HRESULT DX11Framework::initRunTimeData()
     return S_OK;
 }
 
-DX11Framework::~DX11Framework()
+FApplication::~FApplication()
 {
     if (immediate_context) immediate_context->Release();
     if (device) device->Release();
@@ -359,10 +361,10 @@ DX11Framework::~DX11Framework()
     if (constant_buffer) constant_buffer->Release();
     if (vertex_buffer) vertex_buffer->Release();
     if (index_buffer) index_buffer->Release();
+    if (scene) delete scene;
 }
 
-
-void DX11Framework::update()
+void FApplication::update()
 {
     //Static initializes this value only once    
     static ULONGLONG frame_start = GetTickCount64();
@@ -413,33 +415,54 @@ void DX11Framework::update()
         position.x -= delta_time * 3.0f;
     }
 
+    // TODO: reimplement movement (on camera this time)
+
     XMVECTOR v = XMLoadFloat3(&position);
 
     // Z X Y rotation order probably
     XMStoreFloat4x4(&matrix_world, XMMatrixIdentity() * XMMatrixRotationZ(eulers.z) * XMMatrixRotationX(eulers.x) * XMMatrixRotationY(eulers.y) * XMMatrixTranslationFromVector(v));
+
+    if (scene)
+    {
+        scene->update(delta_time);
+    }
 }
 
-void DX11Framework::draw()
+void FApplication::draw()
 {    
     //Present unbinds render target, so rebind and clear at start of each frame
     float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
     immediate_context->OMSetRenderTargets(1, &render_target_view, 0);
     immediate_context->ClearRenderTargetView(render_target_view, background_colour);
    
-    //Store this frames data in constant buffer struct
-    constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&matrix_world));
+    if (scene)
+    {
+        for (FObject* object : scene->all_objects)
+            drawObject(object);
+    }
+
+    //Present Backbuffer to screen
+    swap_chain->Present(0, 0);
+}
+
+void FApplication::drawObject(FObject* object)
+{
+    // store relevant data into the constant buffer for the shader to access
+    XMFLOAT4X4 object_matrix = object->getTransform();
+    constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
     constant_buffer_data.view = XMMatrixTranspose(XMLoadFloat4x4(&matrix_view));
     constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&matrix_projection));
 
-    //Write constant buffer data onto GPU
+    // write constant buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     immediate_context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
     memcpy(constant_buffer_resource.pData, &constant_buffer_data, sizeof(constant_buffer_data));
     immediate_context->Unmap(constant_buffer, 0);
 
-    //Set object variables and draw
+    // set object variables and draw
+    // TODO: implement mesh objects
     UINT stride = { sizeof(SimpleVertex) };
-    UINT offset =  0 ;
+    UINT offset = 0;
     immediate_context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
     immediate_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R16_UINT, 0);
 
@@ -447,7 +470,4 @@ void DX11Framework::draw()
     immediate_context->PSSetShader(pixel_shader, nullptr, 0);
 
     immediate_context->DrawIndexed(36, 0, 0);
-
-    //Present Backbuffer to screen
-    swap_chain->Present(0, 0);
 }

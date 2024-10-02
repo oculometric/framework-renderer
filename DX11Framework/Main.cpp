@@ -1,5 +1,6 @@
 #include <windows.h>
-#include "DX11Framework.h"
+#include "FApplication.h"
+#include "FScene.h"
 
 //Dependencies:user32.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;
 
@@ -8,7 +9,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	DX11Framework application = DX11Framework();
+	FApplication application = FApplication();
+	application.scene = new FScene(&application);
+	FObject a = FObject();
+	FObject b = FObject();
+	b.position.x = 1.5f;
+	b.eulers.z = 45.0f;
+	application.scene->addObject(&a, nullptr);
+	application.scene->addObject(&b, nullptr);
 
 	if (FAILED(application.initialise(hInstance, nCmdShow)))
 	{

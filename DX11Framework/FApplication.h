@@ -1,9 +1,15 @@
-#pragma once
+class FApplication;
+
+#ifndef FAPPLICATION_H
+#define FAPPLICATION_H
 
 #include <windows.h>
 #include <d3d11_4.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+
+#include "FScene.h"
+
 //#include <wrl.h>
 
 using namespace DirectX;
@@ -22,8 +28,9 @@ struct ConstantBuffer
 	XMMATRIX world;
 };
 
-class DX11Framework
+class FApplication
 {
+private:
 	int window_width = 1280;
 	int window_height = 768;
 
@@ -56,6 +63,12 @@ class DX11Framework
 	ConstantBuffer constant_buffer_data;
 
 public:
+	FScene* scene;
+
+private:
+	void drawObject(FObject* object);
+
+public:
 	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createWindowHandle(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createD3DDevice();
@@ -64,7 +77,9 @@ public:
 	HRESULT initVertexIndexBuffers();
 	HRESULT initPipelineVariables();
 	HRESULT initRunTimeData();
-	~DX11Framework();
+	~FApplication();
 	void update();
 	void draw();
 };
+
+#endif
