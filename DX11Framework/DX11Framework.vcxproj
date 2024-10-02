@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FApplication.cpp" />
+    <ClCompile Include="FCamera.h" />
     <ClCompile Include="FObject.cpp" />
     <ClCompile Include="FObject.h" />
     <ClCompile Include="FScene.cpp" />

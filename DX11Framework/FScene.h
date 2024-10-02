@@ -6,6 +6,7 @@ class FScene;
 #include <DirectXMath.h>
 
 #include "FObject.h"
+#include "FCamera.h"
 
 class FApplication;
 
@@ -14,6 +15,9 @@ using namespace DirectX;
 class FScene
 {
 	friend class FApplication;
+
+public:
+	FCamera* active_camera = nullptr;
 
 private:
 	FObject root;
@@ -24,7 +28,7 @@ protected:
 
 public:
 	FScene() = delete;
-	explicit inline FScene(FApplication* application) { owner = application; }
+	inline FScene(FApplication* application) { owner = application; }
 	FScene(FScene& other) = delete;
 	FScene(FScene&& other) = delete;
 

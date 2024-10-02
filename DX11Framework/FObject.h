@@ -4,21 +4,22 @@
 #include <DirectXMath.h>
 #include <vector>
 
+using namespace DirectX;
 using namespace std;
 
 class FObject
 {
 private:
-	DirectX::XMFLOAT4X4 local_transform;
-	DirectX::XMFLOAT4X4 world_transform;
+	XMFLOAT4X4 local_transform;
+	XMFLOAT4X4 world_transform;
 
 	FObject* parent;
 	vector<FObject*> children; // TODO: make this be a reference to a resource manager which stores the children to solve all the memory deallocation problems from before
 
 public:
-	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	DirectX::XMFLOAT3 eulers = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 eulers = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 private:
 
