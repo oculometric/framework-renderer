@@ -444,7 +444,7 @@ void FApplication::draw()
 {    
     //Present unbinds render target, so rebind and clear at start of each frame
     float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
-    immediate_context->OMSetRenderTargets(1, &render_target_view, 0);
+    immediate_context->OMSetRenderTargets(1, &render_target_view, depth_stencil_view);
     immediate_context->ClearRenderTargetView(render_target_view, background_colour);
     immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
    
