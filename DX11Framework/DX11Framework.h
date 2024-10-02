@@ -51,6 +51,7 @@ class DX11Framework
 	XMFLOAT4X4 matrix_projection;
 
 	XMFLOAT3 eulers = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 
 	ConstantBuffer constant_buffer_data;
 

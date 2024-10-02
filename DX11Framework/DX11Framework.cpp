@@ -396,9 +396,27 @@ void DX11Framework::update()
     {
         eulers.z -= delta_time * 3.0f;
     }
-    
+    if (GetAsyncKeyState('W') & 0xF000)
+    {
+        position.z += delta_time * 3.0f;
+    }
+    if (GetAsyncKeyState('S') & 0xF000)
+    {
+        position.z -= delta_time * 3.0f;
+    }
+    if (GetAsyncKeyState('A') & 0xF000)
+    {
+        position.x += delta_time * 3.0f;
+    }
+    if (GetAsyncKeyState('D') & 0xF000)
+    {
+        position.x -= delta_time * 3.0f;
+    }
+
+    XMVECTOR v = XMLoadFloat3(&position);
+
     // Z X Y rotation order probably
-    XMStoreFloat4x4(&matrix_world, XMMatrixIdentity() * XMMatrixRotationZ(eulers.z) * XMMatrixRotationX(eulers.x) * XMMatrixRotationY(eulers.y));
+    XMStoreFloat4x4(&matrix_world, XMMatrixIdentity() * XMMatrixRotationZ(eulers.z) * XMMatrixRotationX(eulers.x) * XMMatrixRotationY(eulers.y) * XMMatrixTranslationFromVector(v));
 }
 
 void DX11Framework::draw()
