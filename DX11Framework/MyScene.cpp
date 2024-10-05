@@ -12,14 +12,15 @@ void MyScene::start()
 
 	active_camera = new FCamera();
 	active_camera->position.z = 5.0f;
+	active_camera->eulers.y = 180.0f;
 	active_camera->updateProjectionMatrix();
 	addObject(active_camera, nullptr);
 }
 
 void MyScene::update(float delta_time)
 {
-	a.eulers.z += 0.8f * delta_time;
-	b.eulers.z -= 2.4f * delta_time;
+	a.eulers.z += 24.0f * delta_time;
+	b.eulers.z -= 180.0f * delta_time;
 	a.updateTransform();
 
 	// TODO: improve this

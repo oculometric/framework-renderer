@@ -413,8 +413,9 @@ void FApplication::drawObject(FObject* object)
     XMFLOAT4X4 object_matrix = object->getTransform();
     XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
     XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
+    XMVECTOR throwaway;
     constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
-    constant_buffer_data.view = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+    constant_buffer_data.view = XMMatrixTranspose(XMMatrixInverse(&throwaway, XMLoadFloat4x4(&view_matrix)));
     constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
 
     // write constant buffer data onto GPU
