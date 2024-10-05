@@ -12,9 +12,9 @@ void FObject::updateTransform()
 	XMStoreFloat4x4(&local_transform, 
 		XMMatrixIdentity() 
 		* XMMatrixScaling(scale.x, scale.y, scale.z) 
-		* XMMatrixRotationZ(XMConvertToRadians(eulers.z))
-		* XMMatrixRotationX(XMConvertToRadians(eulers.x))
 		* XMMatrixRotationY(XMConvertToRadians(eulers.y))
+		* XMMatrixRotationX(XMConvertToRadians(eulers.x))
+		* XMMatrixRotationZ(XMConvertToRadians(eulers.z))
 		* XMMatrixTranslation(position.x, position.y, position.z));
 
 	if (parent)
