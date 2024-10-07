@@ -7,8 +7,11 @@ FObject::FObject()
 	updateTransform();
 }
 
+// TODO: local and global transform functions
+
 void FObject::updateTransform()
 {
+	// calculate the transform matrix relative to the parent (i.e. local transform from local offsets)
 	XMStoreFloat4x4(&local_transform, 
 		XMMatrixIdentity() 
 		* XMMatrixScaling(scale.x, scale.y, scale.z) 
@@ -17,6 +20,7 @@ void FObject::updateTransform()
 		* XMMatrixRotationZ(XMConvertToRadians(eulers.z))
 		* XMMatrixTranslation(position.x, position.y, position.z));
 
+	// update global transform using parent's global transform and our local one
 	if (parent)
 	{
 		XMFLOAT4X4 parent_transform = parent->getTransform();
@@ -25,6 +29,7 @@ void FObject::updateTransform()
 	else
 		world_transform = local_transform;
 
+	// update all of our children
 	for (FObject* obj : children) obj->updateTransform();
 }
 
