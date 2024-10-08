@@ -19,12 +19,10 @@ class FScene
 public:
 	FCamera* active_camera = nullptr;
 
-private:
-	FObject root;
-	FApplication* owner = nullptr;
-
 protected:
 	vector<FObject*> all_objects;
+	FObject root;
+	FApplication* owner = nullptr;
 
 public:
 	FScene() = delete;

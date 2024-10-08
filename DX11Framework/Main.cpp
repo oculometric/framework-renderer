@@ -11,12 +11,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	FApplication application = FApplication();
 	application.scene = new MyScene(&application);
-	application.scene->start();
 
 	if (FAILED(application.initialise(hInstance, nCmdShow)))
 	{
 		return -1;
 	}
+
+	application.scene->start();
 
 	// Main message loop
 	MSG msg = { 0 };

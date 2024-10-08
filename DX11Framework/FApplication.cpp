@@ -200,6 +200,7 @@ HRESULT FApplication::initShadersAndInputLayout()
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA,   0 },
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
 
     hr = device->CreateInputLayout(input_element_descriptor, ARRAYSIZE(input_element_descriptor), vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), &input_layout);
@@ -227,65 +228,7 @@ HRESULT FApplication::initShadersAndInputLayout()
 
 HRESULT FApplication::initVertexIndexBuffers()
 {
-    HRESULT hr = S_OK;
-
-    SimpleVertex vertex_data[] = 
-    {
-        //Position                     //Color             
-        { XMFLOAT3(1.0f,  1.0f, 1.0f), XMFLOAT4(1.0f,  1.0f, 1.0f,  0.0f)},
-        { XMFLOAT3(-1.0f,  1.0f, 1.0f),  XMFLOAT4(0.0f,  1.0f, 1.0f,  0.0f)},
-        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f,  0.0f, 1.0f,  0.0f)},
-        { XMFLOAT3(-1.0f, -1.0f, 1.0f),  XMFLOAT4(0.0f,  0.0f, 1.0f,  0.0f)},
-
-        { XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT4(1.0f,  1.0f, 0.0f,  0.0f)},
-        { XMFLOAT3(-1.0f,  1.0f, -1.0f),  XMFLOAT4(0.0f,  1.0f, 0.0f,  0.0f)},
-        { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f,  0.0f, 0.0f,  0.0f)},
-        { XMFLOAT3(-1.0f, -1.0f, -1.0f),  XMFLOAT4(0.0f,  0.0f, 0.0f,  0.0f)},
-    };
-
-    D3D11_BUFFER_DESC vertex_buffer_descriptor = {};
-    vertex_buffer_descriptor.ByteWidth = sizeof(vertex_data);
-    vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
-    vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { vertex_data };
-
-    hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &vertex_buffer);
-    if (FAILED(hr)) return hr;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    WORD index_data[] =
-    {
-        //Indices
-        0, 1, 2,
-        1, 3, 2,
-
-        2, 3, 7,
-        2, 7, 6,
-
-        1, 7, 3,
-        1, 5, 7,
-
-        0, 2, 6,
-        0, 6, 4,
-
-        1, 0, 5,
-        0, 4, 5,
-
-        5, 6, 7,
-        4, 6, 5
-    };
-
-    D3D11_BUFFER_DESC index_buffer_descriptor = {};
-    index_buffer_descriptor.ByteWidth = sizeof(index_data);
-    index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
-    index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-    D3D11_SUBRESOURCE_DATA index_subresource_data = { index_data };
-
-    hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &index_buffer);
-    if (FAILED(hr)) return hr;
+    // we don't need this anymore
 
     return S_OK;
 }
@@ -339,8 +282,44 @@ HRESULT FApplication::initPipelineVariables()
 HRESULT FApplication::initRunTimeData()
 {
     // we don't need all this anymore
-
     return S_OK;
+}
+
+void FApplication::registerMesh(FMeshData* mesh_data)
+{
+    HRESULT hr = S_OK;
+
+    FVertex* vertex_data = new FVertex[mesh_data->vertex_count];
+    for (int i = 0; i < mesh_data->vertex_count; i++)
+        vertex_data[i] = FVertex{ mesh_data->position[i], mesh_data->colour[i] };
+
+    D3D11_BUFFER_DESC vertex_buffer_descriptor = {};
+    vertex_buffer_descriptor.ByteWidth = sizeof(vertex_data);
+    vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { vertex_data };
+
+    hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &mesh_data->vertex_buffer_ptr);
+    if (FAILED(hr)) return;
+
+    uint16_t* index_data = mesh_data->indices;
+
+    D3D11_BUFFER_DESC index_buffer_descriptor = { };
+    index_buffer_descriptor.ByteWidth = sizeof(index_data);
+    index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA index_subresource_data = { index_data };
+
+    hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &mesh_data->index_buffer_ptr);
+    if (FAILED(hr)) return;
+}
+
+void FApplication::unregisterMesh(FMeshData* mesh_data)
+{
+    if (mesh_data->vertex_buffer_ptr) { mesh_data->vertex_buffer_ptr->Release(); mesh_data->vertex_buffer_ptr = nullptr; }
+    if (mesh_data->index_buffer_ptr) { mesh_data->index_buffer_ptr->Release(); mesh_data->index_buffer_ptr = nullptr; }
 }
 
 FApplication::~FApplication()
@@ -359,8 +338,6 @@ FApplication::~FApplication()
     if (input_layout) input_layout->Release();
     if (pixel_shader) pixel_shader->Release();
     if (constant_buffer) constant_buffer->Release();
-    if (vertex_buffer) vertex_buffer->Release();
-    if (index_buffer) index_buffer->Release();
     if (depth_stencil_buffer) depth_stencil_buffer->Release();
     if (scene) delete scene;
 }
@@ -407,7 +384,12 @@ void FApplication::draw()
 
 void FApplication::drawObject(FObject* object)
 {
+    if (!object) return;
     if (object->getType() != FObjectType::MESH) return;
+    FMesh* mesh_object = (FMesh*)object;
+    FMeshData* mesh_data = mesh_object->getData();
+    if (!mesh_data) return;
+    if (!mesh_data->index_buffer_ptr || !mesh_data->vertex_buffer_ptr) return;
 
     // store relevant data into the constant buffer for the shader to access
     XMFLOAT4X4 object_matrix = object->getTransform();
@@ -425,14 +407,13 @@ void FApplication::drawObject(FObject* object)
     immediate_context->Unmap(constant_buffer, 0);
 
     // set object variables and draw
-    // TODO: implement mesh objects
-    UINT stride = { sizeof(SimpleVertex) };
+    UINT stride = { sizeof(FVertex) };
     UINT offset = 0;
-    immediate_context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
-    immediate_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R16_UINT, 0);
+    immediate_context->IASetVertexBuffers(0, 1, &mesh_data->vertex_buffer_ptr, &stride, &offset);
+    immediate_context->IASetIndexBuffer(mesh_data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
 
     immediate_context->VSSetShader(vertex_shader, nullptr, 0);
     immediate_context->PSSetShader(pixel_shader, nullptr, 0);
 
-    immediate_context->DrawIndexed(36, 0, 0);
+    immediate_context->DrawIndexed(mesh_data->index_count, 0, 0);
 }

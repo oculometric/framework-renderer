@@ -9,16 +9,17 @@ class FApplication;
 #include <DirectXMath.h>
 
 #include "FScene.h"
-
+#include "FMesh.h"
 //#include <wrl.h>
 
 using namespace DirectX;
 //using Microsoft::WRL::ComPtr;
 
-struct SimpleVertex
+struct FVertex
 {
 	XMFLOAT3 position;
 	XMFLOAT4 colour;
+	XMFLOAT3 normal;
 };
 
 struct ConstantBuffer
@@ -49,8 +50,6 @@ private:
 	ID3D11PixelShader* pixel_shader = nullptr;
 	ID3D11InputLayout* input_layout = nullptr;
 	ID3D11Buffer* constant_buffer = nullptr;
-	ID3D11Buffer* vertex_buffer = nullptr;
-	ID3D11Buffer* index_buffer = nullptr;
 	ID3D11Texture2D* depth_stencil_buffer = nullptr;
 
 	HWND window_handle;
@@ -72,6 +71,10 @@ public:
 	HRESULT initVertexIndexBuffers();
 	HRESULT initPipelineVariables();
 	HRESULT initRunTimeData();
+
+	void registerMesh(FMeshData* mesh_data);
+	void unregisterMesh(FMeshData* mesh_data);
+
 	~FApplication();
 	void update();
 	void draw();

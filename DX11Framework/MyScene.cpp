@@ -2,9 +2,66 @@
 
 #include <windows.h>
 #include <iostream>
+#include "FApplication.h"
+
+XMFLOAT3 vertex_positions[] =
+{
+	XMFLOAT3(1.0f,  1.0f, 1.0f),
+	XMFLOAT3(-1.0f,  1.0f, 1.0f),
+	XMFLOAT3(1.0f, -1.0f, 1.0f),
+	XMFLOAT3(-1.0f, -1.0f, 1.0f),
+	XMFLOAT3(1.0f,  1.0f, -1.0f),
+	XMFLOAT3(-1.0f,  1.0f, -1.0f),
+	XMFLOAT3(1.0f, -1.0f, -1.0f),
+	XMFLOAT3(-1.0f, -1.0f, -1.0f)
+};
+
+XMFLOAT4 vertex_colours[] =
+{
+	XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f),
+	XMFLOAT4(0.0f,  1.0f, 1.0f,  0.0f),
+	XMFLOAT4(1.0f,  0.0f, 1.0f,  0.0f),
+	XMFLOAT4(0.0f,  0.0f, 1.0f,  0.0f),
+	XMFLOAT4(1.0f,  1.0f, 0.0f,  0.0f),
+	XMFLOAT4(0.0f,  1.0f, 0.0f,  0.0f),
+	XMFLOAT4(1.0f,  0.0f, 0.0f,  0.0f),
+	XMFLOAT4(0.0f,  0.0f, 0.0f,  0.0f)
+};
+
+uint16_t indices[] =
+{
+	0, 1, 2,
+	1, 3, 2,
+
+	2, 3, 7,
+	2, 7, 6,
+
+	1, 7, 3,
+	1, 5, 7,
+
+	0, 2, 6,
+	0, 6, 4,
+
+	1, 0, 5,
+	0, 4, 5,
+
+	5, 6, 7,
+	4, 6, 5
+};
 
 void MyScene::start()
 {
+	FMeshData* data = new FMeshData();
+	data->position = vertex_positions;
+	data->colour = vertex_colours;
+	data->indices = indices;
+	data->vertex_count = 8;
+	data->index_count = 36;
+	owner->registerMesh(data);
+
+	a.setData(data);
+	b.setData(data);
+
 	b.position.x = 1.5f;
 	b.scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	b.eulers.z = 45.0f;
