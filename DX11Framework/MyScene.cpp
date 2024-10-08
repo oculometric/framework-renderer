@@ -18,14 +18,14 @@ XMFLOAT3 vertex_positions[] =
 
 XMFLOAT4 vertex_colours[] =
 {
-	XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f),
-	XMFLOAT4(0.0f,  1.0f, 1.0f,  0.0f),
-	XMFLOAT4(1.0f,  0.0f, 1.0f,  0.0f),
-	XMFLOAT4(0.0f,  0.0f, 1.0f,  0.0f),
-	XMFLOAT4(1.0f,  1.0f, 0.0f,  0.0f),
-	XMFLOAT4(0.0f,  1.0f, 0.0f,  0.0f),
-	XMFLOAT4(1.0f,  0.0f, 0.0f,  0.0f),
-	XMFLOAT4(0.0f,  0.0f, 0.0f,  0.0f)
+	XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+	XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f),
+	XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f),
+	XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
+	XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f),
+	XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),
+	XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),
+	XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)
 };
 
 uint16_t indices[] =

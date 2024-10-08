@@ -252,7 +252,7 @@ HRESULT FApplication::initPipelineVariables()
     // Debug Rasterizer
     D3D11_RASTERIZER_DESC debug_rasterizer_descriptor = {};
     debug_rasterizer_descriptor.FillMode = D3D11_FILL_WIREFRAME;
-    debug_rasterizer_descriptor.CullMode = D3D11_CULL_NONE;
+    debug_rasterizer_descriptor.CullMode = D3D11_CULL_BACK;
 
     hr = device->CreateRasterizerState(&debug_rasterizer_descriptor, &debug_rasterizer_state);
     if (FAILED(hr)) return hr;
@@ -293,8 +293,8 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     for (int i = 0; i < mesh_data->vertex_count; i++)
         vertex_data[i] = FVertex{ mesh_data->position[i], mesh_data->colour[i] };
 
-    D3D11_BUFFER_DESC vertex_buffer_descriptor = {};
-    vertex_buffer_descriptor.ByteWidth = sizeof(vertex_data);
+    D3D11_BUFFER_DESC vertex_buffer_descriptor = { };
+    vertex_buffer_descriptor.ByteWidth = sizeof(FVertex) * mesh_data->vertex_count;
     vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -306,7 +306,7 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     uint16_t* index_data = mesh_data->indices;
 
     D3D11_BUFFER_DESC index_buffer_descriptor = { };
-    index_buffer_descriptor.ByteWidth = sizeof(index_data);
+    index_buffer_descriptor.ByteWidth = sizeof(uint16_t) * mesh_data->index_count;
     index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
