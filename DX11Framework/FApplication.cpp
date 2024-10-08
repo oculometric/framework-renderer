@@ -374,6 +374,8 @@ void FApplication::draw()
    
     if (scene && scene->active_camera)
     {
+        scene->active_camera->configuration.aspect_ratio = (float)window_width / (float)window_height;
+        scene->active_camera->updateProjectionMatrix();
         for (FObject* object : scene->all_objects)
             drawObject(object);
     }
