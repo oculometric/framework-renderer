@@ -46,13 +46,7 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     hr = initShadersAndInputLayout();
     if (FAILED(hr)) return E_FAIL;
 
-    hr = initVertexIndexBuffers();
-    if (FAILED(hr)) return E_FAIL;
-
     hr = initPipelineVariables();
-    if (FAILED(hr)) return E_FAIL;
-
-    hr = initRunTimeData();
     if (FAILED(hr)) return E_FAIL;
 
     return hr;
@@ -175,10 +169,6 @@ HRESULT FApplication::initShadersAndInputLayout()
 
     DWORD shader_flags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
-    // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-    // Setting this flag improves the shader debugging experience, but still allows 
-    // the shaders to be optimized and to run exactly the way they will run in 
-    // the release configuration of this program.
     shader_flags |= D3DCOMPILE_DEBUG;
 #endif
     
@@ -226,13 +216,6 @@ HRESULT FApplication::initShadersAndInputLayout()
     return hr;
 }
 
-HRESULT FApplication::initVertexIndexBuffers()
-{
-    // we don't need this anymore
-
-    return S_OK;
-}
-
 HRESULT FApplication::initPipelineVariables()
 {
     HRESULT hr = S_OK;
@@ -241,7 +224,7 @@ HRESULT FApplication::initPipelineVariables()
     immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     immediate_context->IASetInputLayout(input_layout);
 
-    //Rasterizer
+    // Rasterizer
     D3D11_RASTERIZER_DESC rasterizer_descriptor = {};
     rasterizer_descriptor.FillMode = D3D11_FILL_SOLID;
     rasterizer_descriptor.CullMode = D3D11_CULL_BACK;
@@ -259,11 +242,11 @@ HRESULT FApplication::initPipelineVariables()
 
     immediate_context->RSSetState(rasterizer_state);
 
-    //Viewport Values
+    // Viewport Values
     viewport = { 0.0f, 0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f };
     immediate_context->RSSetViewports(1, &viewport);
 
-    //Constant Buffer
+    // Constant Buffer
     D3D11_BUFFER_DESC constant_buffer_descriptor = {};
     constant_buffer_descriptor.ByteWidth = sizeof(ConstantBuffer);
     constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
@@ -279,17 +262,11 @@ HRESULT FApplication::initPipelineVariables()
     return S_OK;
 }
 
-HRESULT FApplication::initRunTimeData()
-{
-    // we don't need all this anymore
-    return S_OK;
-}
-
 void FApplication::registerMesh(FMeshData* mesh_data)
 {
     HRESULT hr = S_OK;
 
-    FVertex* vertex_data = new FVertex[mesh_data->vertex_count];
+    vector<FVertex> vertex_data(mesh_data->vertex_count);
     for (int i = 0; i < mesh_data->vertex_count; i++)
         vertex_data[i] = FVertex{ mesh_data->position[i], mesh_data->colour[i] };
 
@@ -298,7 +275,7 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { vertex_data };
+    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { vertex_data.data() };
 
     hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &mesh_data->vertex_buffer_ptr);
     if (FAILED(hr)) return;
@@ -371,7 +348,7 @@ void FApplication::draw()
     immediate_context->OMSetRenderTargets(1, &render_target_view, depth_stencil_view);
     immediate_context->ClearRenderTargetView(render_target_view, background_colour);
     immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
-   
+
     if (scene && scene->active_camera)
     {
         scene->active_camera->configuration.aspect_ratio = (float)window_width / (float)window_height;

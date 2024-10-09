@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{5394c41e-db37-4ff9-a493-8ca4e597f8ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="oculib">
+      <UniqueIdentifier>{591a7c72-b825-4f38-9f39-25863df56e42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FApplication.cpp">
@@ -55,6 +58,36 @@
     </ClInclude>
     <ClInclude Include="FMesh.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ico.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\camera.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\image.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\matrix4.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\mesh.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\object.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\vector2.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\vector3.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\vector4.h">
+      <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oculib\vertex.h">
+      <Filter>oculib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

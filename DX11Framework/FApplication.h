@@ -68,9 +68,7 @@ public:
 	HRESULT createD3DDevice();
 	HRESULT createSwapChainAndFrameBuffer();
 	HRESULT initShadersAndInputLayout();
-	HRESULT initVertexIndexBuffers();
 	HRESULT initPipelineVariables();
-	HRESULT initRunTimeData();
 
 	void registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);

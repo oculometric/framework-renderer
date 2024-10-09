@@ -104,7 +104,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -155,8 +155,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\oculib\camera.h" />
+    <ClInclude Include="..\oculib\image.h" />
+    <ClInclude Include="..\oculib\matrix4.h" />
+    <ClInclude Include="..\oculib\mesh.h" />
+    <ClInclude Include="..\oculib\object.h" />
+    <ClInclude Include="..\oculib\vector2.h" />
+    <ClInclude Include="..\oculib\vector3.h" />
+    <ClInclude Include="..\oculib\vector4.h" />
+    <ClInclude Include="..\oculib\vertex.h" />
     <ClInclude Include="FApplication.h" />
     <ClInclude Include="FMesh.h" />
+    <ClInclude Include="ico.h" />
     <ClInclude Include="MyScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

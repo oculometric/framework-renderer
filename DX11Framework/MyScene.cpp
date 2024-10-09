@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <iostream>
 #include "FApplication.h"
+#include "ico.h"
+#include "../oculib/mesh.h"
 
 XMFLOAT3 vertex_positions[] =
 {
@@ -59,11 +61,22 @@ void MyScene::start()
 	data->index_count = 36;
 	owner->registerMesh(data);
 
-	a.setData(data);
+	FMeshData* ico = new FMeshData();
+	ico->position = ico_vertex_positions;
+	ico->colour = ico_vertex_colours;
+	ico->indices = ico_indices;
+	ico->vertex_count = 12;
+	ico->index_count = 60;
+	owner->registerMesh(ico);
+
+	OLMesh suzanne = OLMesh("suzanne.obj");
+
+	a.eulers.x = 90.0f;
+	a.setData(ico);
 	b.setData(data);
 
-	b.position.x = 1.5f;
-	b.scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	b.position.x = 4.5f;
+	b.scale = XMFLOAT3(0.3f, 0.3f, 0.3f);
 	b.eulers.z = 45.0f;
 	addObject(&a, nullptr);
 	addObject(&b, &a);
