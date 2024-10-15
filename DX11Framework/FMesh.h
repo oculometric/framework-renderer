@@ -25,8 +25,24 @@ struct FMeshData
 	ID3D11Buffer* index_buffer_ptr;
 };
 
+struct FShader
+{
+	// string text of shader
+	string text;
+	
+	// TODO: complete this, come up with a nice way of configuring uniforms (ie constant buffer)
+	// TODO: add control of pipeline state (wireframe, etc)
+
+	// for rendering
+	ID3D11VertexShader* vertex_shader_pointer;
+	ID3D11PixelShader* pixel_shader_pointer;
+};
+
 struct FMaterial
 {
+	// shader to be used
+	FShader* shader;
+
 	// TODO:
 };
 
