@@ -1,6 +1,7 @@
 #include "FApplication.h"
 #include <string>
 #include <queue>
+#include <thread>
 #include "FScene.h"
 
 //#define RETURNFAIL(x) if(FAILED(x)) return x;
@@ -141,6 +142,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     ID3D11Texture2D* frame_buffer = nullptr;
 
     hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&frame_buffer));
+
     if (FAILED(hr)) return hr;
 
     D3D11_RENDER_TARGET_VIEW_DESC frame_buffer_descriptor = {};
@@ -352,6 +354,13 @@ void FApplication::draw()
             drawObject(object);
     }
 
+    //chrono::steady_clock::time_point now = chrono::steady_clock::now();
+    //chrono::duration<float> delta = chrono::duration_cast<chrono::seconds>(now - last_frame_time);
+    //float duration = delta.count();
+    //float target_duration = 1.0f / 60.0f;
+    //OutputDebugStringA(("frame time: " + to_string(delta.count()) + " target duration is " + to_string(target_duration)).c_str());
+    ////Sleep(max(target_duration - duration, 0.0f) * 1000.0f);
+    //last_frame_time = now;
     // present backbuffer to screen
     swap_chain->Present(0, 0);
 }

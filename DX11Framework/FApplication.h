@@ -7,6 +7,7 @@ class FApplication;
 #include <d3d11_4.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <chrono>
 
 #include "FScene.h"
 #include "FMesh.h"
@@ -57,6 +58,8 @@ private:
 	HWND window_handle;
 
 	ConstantBuffer constant_buffer_data;
+
+	//chrono::steady_clock::time_point last_frame_time;
 
 public:
 	FScene* scene;
