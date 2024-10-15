@@ -134,6 +134,7 @@
     <ClCompile Include="FApplication.cpp" />
     <ClCompile Include="FCamera.cpp" />
     <ClCompile Include="FCamera.h" />
+    <ClCompile Include="FMesh.cpp" />
     <ClCompile Include="FObject.cpp" />
     <ClCompile Include="FObject.h" />
     <ClCompile Include="FScene.cpp" />

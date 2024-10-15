@@ -52,25 +52,10 @@ void MyScene::start()
 	ico->indices = ico_indices;
 	owner->registerMesh(ico);
 
-	/*OLMesh suzanne = OLMesh("suzanne.obj");
-	FMeshData* monkey = new FMeshData();
-	monkey->position = new XMFLOAT3[suzanne.vertices.size()];
-	for (int i = 0; i < suzanne.vertices.size(); i++) 
-		monkey->position[i] = XMFLOAT3
-		(
-			suzanne.vertices[i].position.x,
-			suzanne.vertices[i].position.y,
-			suzanne.vertices[i].position.z
-		);
-	monkey->colour = new XMFLOAT4[suzanne.vertices.size()];
-	monkey->normal = new XMFLOAT3[suzanne.vertices.size()];
-	monkey->indices = new uint16_t[suzanne.indices.size()];
-	memcpy(monkey->indices, suzanne.indices.data(), suzanne.indices.size() * sizeof(monkey->indices[0]));
-	monkey->vertex_count = suzanne.vertices.size();
-	monkey->index_count = suzanne.indices.size();
-	owner->registerMesh(monkey);*/
+	FMeshData* suzanne = FMesh::loadMesh("suzanne.obj");
+	owner->registerMesh(suzanne);
 
-	a.setData(cube_mesh);
+	a.setData(suzanne);
 	b.setData(cube_mesh);
 
 	b.position.x = 4.5f;
