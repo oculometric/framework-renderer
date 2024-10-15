@@ -8,6 +8,7 @@ class MyScene : public FScene
 private:
 	FMesh a;
 	FMesh b;
+	FMesh c;
 
 public:
 	using FScene::FScene;

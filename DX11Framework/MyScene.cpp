@@ -55,14 +55,21 @@ void MyScene::start()
 	FMeshData* suzanne = FMesh::loadMesh("suzanne.obj");
 	owner->registerMesh(suzanne);
 
+	FMeshData* teapot = FMesh::loadMesh("teapot.obj");
+	owner->registerMesh(teapot);
+
 	a.setData(suzanne);
 	b.setData(cube_mesh);
+	c.setData(teapot);
 
 	b.position.x = 4.5f;
 	b.scale = XMFLOAT3(0.3f, 0.3f, 0.3f);
 	b.eulers.z = 45.0f;
 	addObject(&a, nullptr);
 	addObject(&b, &a);
+
+	c.position = XMFLOAT3(0.0f, 0.0f, 2.0f);
+	addObject(&c, nullptr);
 
 	active_camera = new FCamera();
 	active_camera->position.z = 5.0f;
@@ -76,7 +83,12 @@ void MyScene::update(float delta_time)
 	a.eulers.z += 24.0f * delta_time;
 	b.eulers.z -= 180.0f * delta_time;
 	b.eulers.y += 36.0f * delta_time;
-	a.updateTransform();
+
+	c.eulers.x += 24.0f * delta_time;
+	c.eulers.y += 36.0f * delta_time;
+	c.eulers.z += 12.0f * delta_time;
+
+	root.updateTransform();
 	
 	XMFLOAT4X4 camera_transform = active_camera->getTransform();
 	XMFLOAT4 camera_motion = XMFLOAT4
