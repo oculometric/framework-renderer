@@ -26,7 +26,16 @@ struct ConstantBuffer
 {
 	XMMATRIX projection;
 	XMMATRIX view;
+	XMMATRIX view_inv;
 	XMMATRIX world;
+
+	XMFLOAT4 material_diffuse;
+	XMFLOAT4 material_specular;
+
+	XMFLOAT4 light_direction[8];
+	XMFLOAT4 light_diffuse[8];
+	XMFLOAT4 light_specular[8];
+	XMFLOAT4 light_ambient[8];
 };
 
 class FApplication

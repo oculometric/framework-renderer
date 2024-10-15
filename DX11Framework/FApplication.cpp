@@ -247,7 +247,7 @@ HRESULT FApplication::initPipelineVariables()
     immediate_context->RSSetViewports(1, &viewport);
 
     // Constant Buffer
-    D3D11_BUFFER_DESC constant_buffer_descriptor = {};
+    D3D11_BUFFER_DESC constant_buffer_descriptor = { };
     constant_buffer_descriptor.ByteWidth = sizeof(ConstantBuffer);
     constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
     constant_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -268,7 +268,7 @@ void FApplication::registerMesh(FMeshData* mesh_data)
 
     vector<FVertex> vertex_data(mesh_data->vertex_count);
     for (int i = 0; i < mesh_data->vertex_count; i++)
-        vertex_data[i] = FVertex{ mesh_data->position[i], mesh_data->colour[i] };
+        vertex_data[i] = FVertex{ mesh_data->position[i], mesh_data->colour[i], mesh_data->normal[i] };
 
     D3D11_BUFFER_DESC vertex_buffer_descriptor = { };
     vertex_buffer_descriptor.ByteWidth = sizeof(FVertex) * mesh_data->vertex_count;
@@ -377,7 +377,14 @@ void FApplication::drawObject(FObject* object)
     XMVECTOR throwaway;
     constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
     constant_buffer_data.view = XMMatrixTranspose(XMMatrixInverse(&throwaway, XMLoadFloat4x4(&view_matrix)));
+    constant_buffer_data.view_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
     constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
+    constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
+    constant_buffer_data.light_specular[0] = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    constant_buffer_data.light_direction[0] = XMFLOAT4(0.2f, -0.3f, -1.0f, 0.0f);
+    constant_buffer_data.material_diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+    constant_buffer_data.material_specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 2.0f);
 
     // write constant buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;

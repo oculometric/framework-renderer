@@ -30,6 +30,20 @@ XMFLOAT4 vertex_colours[] =
 	XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)
 };
 
+const float s3 = 1.0f / sqrtf(3.0);
+
+XMFLOAT3 vertex_normals[] =
+{
+	XMFLOAT3(s3, s3, s3),
+	XMFLOAT3(-s3, s3, s3),
+	XMFLOAT3(s3, -s3, s3),
+	XMFLOAT3(-s3, -s3, s3),
+	XMFLOAT3(s3, s3, -s3),
+	XMFLOAT3(-s3, s3, -s3),
+	XMFLOAT3(s3, -s3, -s3),
+	XMFLOAT3(-s3, -s3, -s3)
+};
+
 uint16_t indices[] =
 {
 	0, 1, 2,
@@ -56,6 +70,7 @@ void MyScene::start()
 	FMeshData* data = new FMeshData();
 	data->position = vertex_positions;
 	data->colour = vertex_colours;
+	data->normal = vertex_normals;
 	data->indices = indices;
 	data->vertex_count = 8;
 	data->index_count = 36;
@@ -64,6 +79,7 @@ void MyScene::start()
 	FMeshData* ico = new FMeshData();
 	ico->position = ico_vertex_positions;
 	ico->colour = ico_vertex_colours;
+	ico->normal = new XMFLOAT3[12];
 	ico->indices = ico_indices;
 	ico->vertex_count = 12;
 	ico->index_count = 60;
@@ -80,13 +96,14 @@ void MyScene::start()
 			suzanne.vertices[i].position.z
 		);
 	monkey->colour = new XMFLOAT4[suzanne.vertices.size()];
+	monkey->normal = new XMFLOAT3[suzanne.vertices.size()];
 	monkey->indices = new uint16_t[suzanne.indices.size()];
 	memcpy(monkey->indices, suzanne.indices.data(), suzanne.indices.size() * sizeof(monkey->indices[0]));
 	monkey->vertex_count = suzanne.vertices.size();
 	monkey->index_count = suzanne.indices.size();
 	owner->registerMesh(monkey);
 
-	a.setData(monkey);
+	a.setData(data);
 	b.setData(data);
 
 	b.position.x = 4.5f;
@@ -106,6 +123,7 @@ void MyScene::update(float delta_time)
 {
 	a.eulers.z += 24.0f * delta_time;
 	b.eulers.z -= 180.0f * delta_time;
+	b.eulers.y += 36.0f * delta_time;
 	a.updateTransform();
 	
 	XMFLOAT4X4 camera_transform = active_camera->getTransform();
