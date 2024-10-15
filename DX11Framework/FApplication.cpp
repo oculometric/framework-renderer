@@ -347,6 +347,7 @@ void FApplication::draw()
     {
         scene->active_camera->configuration.aspect_ratio = (float)window_width / (float)window_height;
         scene->active_camera->updateProjectionMatrix();
+        OutputDebugStringA(("drawing scene! about to draw " + to_string(scene->all_objects.size()) + " objects.\n").c_str());
         for (FObject* object : scene->all_objects)
             drawObject(object);
     }
@@ -373,6 +374,7 @@ void FApplication::drawObject(FObject* object)
     constant_buffer_data.view = XMMatrixTranspose(XMMatrixInverse(&throwaway, XMLoadFloat4x4(&view_matrix)));
     constant_buffer_data.view_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
     constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    // data for phong shading. supports up to 8 contributing lights
     constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
     constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
     constant_buffer_data.light_specular[0] = XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f);
