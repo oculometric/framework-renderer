@@ -5,19 +5,20 @@
 #include <d3d11_4.h>
 #include <string>
 
+struct FVertex
+{
+	XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT4 colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT3 normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+};
+
 struct FMeshData
 {
 	// per vertex data
-	XMFLOAT3* position;
-	XMFLOAT4* colour;
+	vector<FVertex> vertices;
 
 	// per face corner data
-	uint16_t* indices;
-	XMFLOAT3* normal;
-
-	// counts
-	uint16_t index_count;
-	uint16_t vertex_count;
+	vector<uint16_t> indices;
 
 	// for rendering
 	ID3D11Buffer* vertex_buffer_ptr;
@@ -38,7 +39,7 @@ private:
 public:
 	inline FObjectType getType() { return FObjectType::MESH; }
 	
-	static FMeshData loadMesh(string path);
+	static FMeshData* loadMesh(string path);
 	inline FMeshData* getData() { return mesh_data; }
 	inline void setData(FMeshData* data) { mesh_data = data; }
 	inline FMaterial* getMaterial() { return material; }

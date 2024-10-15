@@ -4,47 +4,22 @@
 #include <iostream>
 #include "FApplication.h"
 #include "ico.h"
-#include "../oculib/mesh.h"
 
-XMFLOAT3 vertex_positions[] =
+const float s3 = 1.0f / sqrtf(3.0f);
+
+vector<FVertex> cube_vertices =
 {
-	XMFLOAT3(1.0f,  1.0f, 1.0f),
-	XMFLOAT3(-1.0f,  1.0f, 1.0f),
-	XMFLOAT3(1.0f, -1.0f, 1.0f),
-	XMFLOAT3(-1.0f, -1.0f, 1.0f),
-	XMFLOAT3(1.0f,  1.0f, -1.0f),
-	XMFLOAT3(-1.0f,  1.0f, -1.0f),
-	XMFLOAT3(1.0f, -1.0f, -1.0f),
-	XMFLOAT3(-1.0f, -1.0f, -1.0f)
+	FVertex{ XMFLOAT3(1.0f,  1.0f, 1.0f),   XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(s3, s3, s3),   },
+	FVertex{ XMFLOAT3(-1.0f,  1.0f, 1.0f),  XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(-s3, s3, s3),  },
+	FVertex{ XMFLOAT3(1.0f, -1.0f, 1.0f),   XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(s3, -s3, s3),  },
+	FVertex{ XMFLOAT3(-1.0f, -1.0f, 1.0f),  XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-s3, -s3, s3), },
+	FVertex{ XMFLOAT3(1.0f,  1.0f, -1.0f),  XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(s3, s3, -s3),  },
+	FVertex{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(-s3, s3, -s3), },
+	FVertex{ XMFLOAT3(1.0f, -1.0f, -1.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(s3, -s3, -s3), },
+	FVertex{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-s3, -s3, -s3) },
 };
 
-XMFLOAT4 vertex_colours[] =
-{
-	XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-	XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f),
-	XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f),
-	XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
-	XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f),
-	XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),
-	XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),
-	XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)
-};
-
-const float s3 = 1.0f / sqrtf(3.0);
-
-XMFLOAT3 vertex_normals[] =
-{
-	XMFLOAT3(s3, s3, s3),
-	XMFLOAT3(-s3, s3, s3),
-	XMFLOAT3(s3, -s3, s3),
-	XMFLOAT3(-s3, -s3, s3),
-	XMFLOAT3(s3, s3, -s3),
-	XMFLOAT3(-s3, s3, -s3),
-	XMFLOAT3(s3, -s3, -s3),
-	XMFLOAT3(-s3, -s3, -s3)
-};
-
-uint16_t indices[] =
+vector<uint16_t> cube_indices =
 {
 	0, 1, 2,
 	1, 3, 2,
@@ -67,25 +42,17 @@ uint16_t indices[] =
 
 void MyScene::start()
 {
-	FMeshData* data = new FMeshData();
-	data->position = vertex_positions;
-	data->colour = vertex_colours;
-	data->normal = vertex_normals;
-	data->indices = indices;
-	data->vertex_count = 8;
-	data->index_count = 36;
-	owner->registerMesh(data);
+	FMeshData* cube_mesh = new FMeshData();
+	cube_mesh->vertices = cube_vertices;
+	cube_mesh->indices = cube_indices;
+	owner->registerMesh(cube_mesh);
 
 	FMeshData* ico = new FMeshData();
-	ico->position = ico_vertex_positions;
-	ico->colour = ico_vertex_colours;
-	ico->normal = new XMFLOAT3[12];
+	ico->vertices = ico_vertices;
 	ico->indices = ico_indices;
-	ico->vertex_count = 12;
-	ico->index_count = 60;
 	owner->registerMesh(ico);
 
-	OLMesh suzanne = OLMesh("suzanne.obj");
+	/*OLMesh suzanne = OLMesh("suzanne.obj");
 	FMeshData* monkey = new FMeshData();
 	monkey->position = new XMFLOAT3[suzanne.vertices.size()];
 	for (int i = 0; i < suzanne.vertices.size(); i++) 
@@ -101,10 +68,10 @@ void MyScene::start()
 	memcpy(monkey->indices, suzanne.indices.data(), suzanne.indices.size() * sizeof(monkey->indices[0]));
 	monkey->vertex_count = suzanne.vertices.size();
 	monkey->index_count = suzanne.indices.size();
-	owner->registerMesh(monkey);
+	owner->registerMesh(monkey);*/
 
-	a.setData(data);
-	b.setData(data);
+	a.setData(cube_mesh);
+	b.setData(cube_mesh);
 
 	b.position.x = 4.5f;
 	b.scale = XMFLOAT3(0.3f, 0.3f, 0.3f);

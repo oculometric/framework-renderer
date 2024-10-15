@@ -45,24 +45,31 @@ Varyings VS_main(float3 Position : POSITION, float4 Color : COLOR, float3 Normal
 
 float4 PS_main(Varyings input) : SV_TARGET
 {
-    // TODO: wrap this in a for loop
     // TODO: implement non-directional lights
-    float3 light_dir = normalize(light_direction[0].xyz);
     float3 view_dir = normalize(mul(float4(normalize(input.view_position.xyz), 0.0f), view_matrix_inv).xyz);
+    float3 overall_colour = float3(0.0f, 0.0f, 0.0f);
     
-    float3 diffuse_light = saturate(dot(-light_dir, input.normal)) * light_diffuse[0].xyz * material_diffuse.xyz;
-    float3 ambient_light = light_ambient[0].xyz;
+    for (uint i = 0; i < 8; i++)
+    {
+        float3 light_dir = normalize(light_direction[i].xyz);
     
-    float3 specular_light = pow
-    (
-        saturate(dot
+        float3 diffuse_light = saturate(dot(-light_dir, input.normal)) * light_diffuse[i].xyz * material_diffuse.xyz;
+        float3 ambient_light = light_ambient[i].xyz;
+    
+        float3 specular_light = pow
         (
-            reflect(view_dir, input.normal),
-            -light_dir
-        )),
-        material_specular.w
-    ) * light_specular[0].xyz * material_specular.xyz;
-    float3 colour = diffuse_light + ambient_light + specular_light;
+            saturate(dot
+            (
+                reflect(view_dir, input.normal),
+                -light_dir
+            )),
+            material_specular.w
+        ) * light_specular[i].xyz * material_specular.xyz;
+        
+        float3 colour = diffuse_light + ambient_light + specular_light;
+        
+        overall_colour += colour;
+    }
     
     //float3 low_col = float3(87, 8, 3) / 255.0f;
     //float3 mid_col = float3(145, 72, 16) / 255.0f;
@@ -72,5 +79,5 @@ float4 PS_main(Varyings input) : SV_TARGET
     //float exponent = 1.5f;
     //float3 lit = lerp(lerp(mid_col, low_col, pow(clamp(-diffuse_light, 0.0f, 1.0f), exponent)), lit_col, pow(clamp(diffuse_light, 0.0f, 1.0f), exponent));
     //return float4(lit * colour, 1.0f); //float4(input.normal, 1.0f); //input.color; //float4((colour * diffuse_light) + (colour * ambient_light), 1.0f); //input.color;
-    return float4(colour, 1.0f);
+    return float4(overall_colour, 1.0f);
 }

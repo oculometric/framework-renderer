@@ -15,13 +15,6 @@ class FApplication;
 using namespace DirectX;
 //using Microsoft::WRL::ComPtr;
 
-struct FVertex
-{
-	XMFLOAT3 position;
-	XMFLOAT4 colour;
-	XMFLOAT3 normal;
-};
-
 struct ConstantBuffer
 {
 	XMMATRIX projection;

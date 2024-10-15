@@ -266,28 +266,22 @@ void FApplication::registerMesh(FMeshData* mesh_data)
 {
     HRESULT hr = S_OK;
 
-    vector<FVertex> vertex_data(mesh_data->vertex_count);
-    for (int i = 0; i < mesh_data->vertex_count; i++)
-        vertex_data[i] = FVertex{ mesh_data->position[i], mesh_data->colour[i], mesh_data->normal[i] };
-
     D3D11_BUFFER_DESC vertex_buffer_descriptor = { };
-    vertex_buffer_descriptor.ByteWidth = sizeof(FVertex) * mesh_data->vertex_count;
+    vertex_buffer_descriptor.ByteWidth = sizeof(FVertex) * mesh_data->vertices.size();
     vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { vertex_data.data() };
+    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { mesh_data->vertices.data() };
 
     hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &mesh_data->vertex_buffer_ptr);
     if (FAILED(hr)) return;
 
-    uint16_t* index_data = mesh_data->indices;
-
     D3D11_BUFFER_DESC index_buffer_descriptor = { };
-    index_buffer_descriptor.ByteWidth = sizeof(uint16_t) * mesh_data->index_count;
+    index_buffer_descriptor.ByteWidth = sizeof(uint16_t) * mesh_data->indices.size();
     index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA index_subresource_data = { index_data };
+    D3D11_SUBRESOURCE_DATA index_subresource_data = { mesh_data->indices.data() };
 
     hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &mesh_data->index_buffer_ptr);
     if (FAILED(hr)) return;
@@ -381,10 +375,10 @@ void FApplication::drawObject(FObject* object)
     constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
     constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
     constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
-    constant_buffer_data.light_specular[0] = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    constant_buffer_data.light_specular[0] = XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f);
     constant_buffer_data.light_direction[0] = XMFLOAT4(0.2f, -0.3f, -1.0f, 0.0f);
     constant_buffer_data.material_diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-    constant_buffer_data.material_specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 2.0f);
+    constant_buffer_data.material_specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 3.0f);
 
     // write constant buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
@@ -401,5 +395,5 @@ void FApplication::drawObject(FObject* object)
     immediate_context->VSSetShader(vertex_shader, nullptr, 0);
     immediate_context->PSSetShader(pixel_shader, nullptr, 0);
 
-    immediate_context->DrawIndexed(mesh_data->index_count, 0, 0);
+    immediate_context->DrawIndexed(mesh_data->indices.size(), 0, 0);
 }
