@@ -43,15 +43,15 @@ FObject*& FObject::getParent()
 	return parent;
 }
 
-const FObject* FObject::getChild(int i)
+FObject* FObject::getChild(int i) const
 {
 	if (i < children.size()) return children[i];
 	return nullptr;
 }
 
-const int FObject::countChildren()
+int FObject::countChildren() const
 {
-	return children.size();
+	return static_cast<int>(children.size());
 }
 
 void FObject::addChild(FObject* o)

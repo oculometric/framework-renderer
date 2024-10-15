@@ -33,7 +33,7 @@ public:
 	void addObject(FObject* o, FObject* parent);
 
 	inline virtual void start() { }
-	inline virtual void update(float delta_time) { }
+	inline virtual void update(float delta_time) { (delta_time); }
 };
 
 #endif

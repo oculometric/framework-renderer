@@ -267,7 +267,7 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     HRESULT hr = S_OK;
 
     D3D11_BUFFER_DESC vertex_buffer_descriptor = { };
-    vertex_buffer_descriptor.ByteWidth = sizeof(FVertex) * mesh_data->vertices.size();
+    vertex_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(FVertex) * mesh_data->vertices.size());
     vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -277,7 +277,7 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     if (FAILED(hr)) return;
 
     D3D11_BUFFER_DESC index_buffer_descriptor = { };
-    index_buffer_descriptor.ByteWidth = sizeof(uint16_t) * mesh_data->indices.size();
+    index_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(uint16_t) * mesh_data->indices.size());
     index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
     index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
@@ -341,7 +341,7 @@ void FApplication::draw()
     float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
     immediate_context->OMSetRenderTargets(1, &render_target_view, depth_stencil_view);
     immediate_context->ClearRenderTargetView(render_target_view, background_colour);
-    immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
+    immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     if (scene && scene->active_camera)
     {
@@ -395,5 +395,5 @@ void FApplication::drawObject(FObject* object)
     immediate_context->VSSetShader(vertex_shader, nullptr, 0);
     immediate_context->PSSetShader(pixel_shader, nullptr, 0);
 
-    immediate_context->DrawIndexed(mesh_data->indices.size(), 0, 0);
+    immediate_context->DrawIndexed(static_cast<UINT>(mesh_data->indices.size()), 0, 0);
 }

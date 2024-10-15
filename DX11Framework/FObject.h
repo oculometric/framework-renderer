@@ -38,8 +38,8 @@ public:
 	void updateTransform();
 	DirectX::XMFLOAT4X4 getTransform();
 	FObject*& getParent();
-	const FObject* getChild(int i);
-	const int countChildren();
+	FObject* getChild(int i) const;
+	int countChildren() const;
 	void addChild(FObject* o);
 	void removeChild(FObject* o);
 };

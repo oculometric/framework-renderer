@@ -94,12 +94,12 @@ void MyScene::update(float delta_time)
 	a.updateTransform();
 	
 	XMFLOAT4X4 camera_transform = active_camera->getTransform();
-	XMFLOAT4 camera_motion = 
-	XMFLOAT4(
-		(GetAsyncKeyState('D') & 0xF000) - (GetAsyncKeyState('A') & 0xF000),
-		(GetAsyncKeyState('E') & 0xF000) - (GetAsyncKeyState('Q') & 0xF000),
-		(GetAsyncKeyState('W') & 0xF000) - (GetAsyncKeyState('S') & 0xF000),
-		0
+	XMFLOAT4 camera_motion = XMFLOAT4
+	(
+		(float)((GetAsyncKeyState('D') & 0xF000) - (GetAsyncKeyState('A') & 0xF000)),
+		(float)((GetAsyncKeyState('E') & 0xF000) - (GetAsyncKeyState('Q') & 0xF000)),
+		(float)((GetAsyncKeyState('W') & 0xF000) - (GetAsyncKeyState('S') & 0xF000)),
+		0.0f
 	);
 
 	FLOAT speed = GetAsyncKeyState(VK_SHIFT) & 0xF000 ? 8.0f : 3.0f;
