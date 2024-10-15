@@ -12,11 +12,11 @@ inline FFaceCorner splitOBJFaceCorner(string str)
     FFaceCorner fci = { 0,0,0 };
     size_t first_break_ind = str.find('/');
     if (first_break_ind == string::npos) return fci;
-    fci.co = stoi(str.substr(0, first_break_ind)) - 1;
+    fci.co = static_cast<uint16_t>(stoi(str.substr(0, first_break_ind)) - 1);
     size_t second_break_ind = str.find('/', first_break_ind + 1);
     if (second_break_ind != first_break_ind + 1)
-        fci.uv = stoi(str.substr(first_break_ind + 1, second_break_ind - first_break_ind)) - 1;
-    fci.vn = stoi(str.substr(second_break_ind + 1, str.find('/', second_break_ind + 1) - second_break_ind)) - 1;
+        fci.uv = static_cast<uint16_t>(stoi(str.substr(first_break_ind + 1, second_break_ind - first_break_ind)) - 1);
+    fci.vn = static_cast<uint16_t>(stoi(str.substr(second_break_ind + 1, str.find('/', second_break_ind + 1) - second_break_ind)) - 1);
 
     return fci;
 }
@@ -112,9 +112,10 @@ FMeshData* FMesh::loadMesh(string path)
             new_vert.position = tmp_co[fc.co];
             new_vert.normal = tmp_vn[fc.vn];
 
-            fc_normal_uses[fc.co].push_back(pair<uint16_t, uint16_t>(fc.vn, mesh_data->vertices.size()));
+            uint16_t new_index = static_cast<uint16_t>(mesh_data->vertices.size());
+            fc_normal_uses[fc.co].push_back(pair<uint16_t, uint16_t>(fc.vn, new_index));
 
-            mesh_data->indices.push_back(mesh_data->vertices.size());
+            mesh_data->indices.push_back(new_index);
             mesh_data->vertices.push_back(new_vert);
         }
     }
