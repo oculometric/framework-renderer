@@ -51,6 +51,9 @@
     <ClCompile Include="FMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FApplication.h">
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="..\oculib\vertex.h">
       <Filter>oculib</Filter>
+    </ClInclude>
+    <ClInclude Include="FTexture.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

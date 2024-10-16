@@ -21,6 +21,13 @@ inline FFaceCorner splitOBJFaceCorner(string str)
     return fci;
 }
 
+struct FFaceCornerReference
+{
+    uint16_t normal_index;
+    uint16_t uv_index;
+    uint16_t transferred_vert_index;
+};
+
 FMeshData* FMesh::loadMesh(string path)
 {
     ifstream file;
@@ -79,12 +86,10 @@ FMeshData* FMesh::loadMesh(string path)
         file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
-    // TODO: support UV coordinates later!
 
-    // for each coordinate, stores a list of all the times it has been used by a face corner, and what the normal index was for that face corner
-    // this allows us to tell when we should split a vertex (i.e. if it has already been used by another face corner but which had a different normal)
-    // the second half of the pair stores the index of the vertex in the real vertex array for the FVertex which has the model space position given by the index and normal given by the first half of the pair
-    vector<vector<pair<uint16_t, uint16_t>>> fc_normal_uses(tmp_co.size(), vector<pair<uint16_t, uint16_t>>());
+    // for each coordinate, stores a list of all the times it has been used by a face corner, and what the normal/uv index was for that face corner
+    // this allows us to tell when we should split a vertex (i.e. if it has already been used by another face corner but which had a different normal and/or a different uv)
+    vector<vector<FFaceCornerReference>> fc_normal_uses(tmp_co.size(), vector<FFaceCornerReference>());
 
     FMeshData* mesh_data = new FMeshData();
 
@@ -92,12 +97,12 @@ FMeshData* FMesh::loadMesh(string path)
     {
         bool found_matching_vertex = false;
         uint16_t match = 0;
-        for (pair<uint16_t, uint16_t> existing : fc_normal_uses[fc.co])
+        for (FFaceCornerReference existing : fc_normal_uses[fc.co])
         {
-            if (existing.first == fc.vn)
+            if (existing.normal_index == fc.vn && existing.uv_index == fc.uv)
             {
                 found_matching_vertex = true;
-                match = existing.second;
+                match = existing.transferred_vert_index;
                 break;
             }
         }
@@ -111,14 +116,18 @@ FMeshData* FMesh::loadMesh(string path)
             FVertex new_vert;
             new_vert.position = tmp_co[fc.co];
             new_vert.normal = tmp_vn[fc.vn];
+            if (tmp_uv.size() > fc.uv)
+                new_vert.uv = tmp_uv[fc.uv];
 
             uint16_t new_index = static_cast<uint16_t>(mesh_data->vertices.size());
-            fc_normal_uses[fc.co].push_back(pair<uint16_t, uint16_t>(fc.vn, new_index));
+            fc_normal_uses[fc.co].push_back(FFaceCornerReference{ fc.vn, fc.uv, new_index });
 
             mesh_data->indices.push_back(new_index);
             mesh_data->vertices.push_back(new_vert);
         }
     }
+
+    // TODO: calcualte tangents
 
 	return mesh_data;
 }

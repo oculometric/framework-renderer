@@ -11,6 +11,7 @@ class FApplication;
 
 #include "FScene.h"
 #include "FMesh.h"
+#include "FTexture.h"
 //#include <wrl.h>
 
 using namespace DirectX;
@@ -24,7 +25,6 @@ struct ConstantBuffer
 	XMMATRIX world;
 
 	XMFLOAT4 material_diffuse;
-	XMFLOAT4 material_specular;
 
 	XMFLOAT4 light_direction[8];
 	XMFLOAT4 light_diffuse[8];
@@ -49,11 +49,13 @@ private:
 
 	ID3D11RasterizerState* rasterizer_state = nullptr;
 	ID3D11RasterizerState* debug_rasterizer_state = nullptr;
+	ID3D11SamplerState* bilinear_sampler_state = nullptr;
 	ID3D11VertexShader* vertex_shader = nullptr;
 	ID3D11PixelShader* pixel_shader = nullptr;
 	ID3D11InputLayout* input_layout = nullptr;
 	ID3D11Buffer* constant_buffer = nullptr;
 	ID3D11Texture2D* depth_stencil_buffer = nullptr;
+	ID3D11ShaderResourceView* blank_texture = nullptr;
 
 	HWND window_handle;
 
@@ -75,8 +77,13 @@ public:
 	HRESULT initShadersAndInputLayout();
 	HRESULT initPipelineVariables();
 
+	inline bool isFocused() { return GetFocus() == window_handle; }
+
 	void registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);
+
+	FTexture* registerTexture(wstring path);
+	void unregisterTexture(FTexture* texture);
 
 	~FApplication();
 	void update();

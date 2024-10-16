@@ -3,6 +3,7 @@
 #include <queue>
 #include <thread>
 #include "FScene.h"
+#include "DDSTextureLoader.h"
 
 //#define RETURNFAIL(x) if(FAILED(x)) return x;
 
@@ -72,7 +73,7 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
     RegisterClassW(&wnd_class);
 
     window_handle = CreateWindowExW(0, window_name, window_name, WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT,window_width, window_height, nullptr, nullptr, hInstance, nullptr);
-
+    
     return S_OK;
 }
 
@@ -192,7 +193,9 @@ HRESULT FApplication::initShadersAndInputLayout()
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA,   0 },
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D10_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
 
     hr = device->CreateInputLayout(input_element_descriptor, ARRAYSIZE(input_element_descriptor), vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), &input_layout);
@@ -261,6 +264,21 @@ HRESULT FApplication::initPipelineVariables()
     immediate_context->VSSetConstantBuffers(0, 1, &constant_buffer);
     immediate_context->PSSetConstantBuffers(0, 1, &constant_buffer);
 
+    D3D11_SAMPLER_DESC sampler_desc = { };
+    sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampler_desc.MaxLOD = 1;
+    sampler_desc.MinLOD = 0;
+    hr = device->CreateSamplerState(&sampler_desc, &bilinear_sampler_state);
+    if (FAILED(hr)) { return hr; }
+
+    immediate_context->PSSetSamplers(0, 1, &bilinear_sampler_state);
+
+    hr = CreateDDSTextureFromFile(device, L"blank.dds", nullptr, &blank_texture);
+    if (FAILED(hr)) { return hr; }
+
     return S_OK;
 }
 
@@ -293,6 +311,21 @@ void FApplication::unregisterMesh(FMeshData* mesh_data)
 {
     if (mesh_data->vertex_buffer_ptr) { mesh_data->vertex_buffer_ptr->Release(); mesh_data->vertex_buffer_ptr = nullptr; }
     if (mesh_data->index_buffer_ptr) { mesh_data->index_buffer_ptr->Release(); mesh_data->index_buffer_ptr = nullptr; }
+}
+
+FTexture* FApplication::registerTexture(wstring path)
+{
+    FTexture* tex = new FTexture();
+    
+    HRESULT hr = S_OK;
+
+    hr = CreateDDSTextureFromFile(device, path.c_str(), nullptr, &tex->buffer_ptr);
+    return tex;
+}
+
+void FApplication::unregisterTexture(FTexture* texture)
+{
+    texture->buffer_ptr->Release();
 }
 
 FApplication::~FApplication()
@@ -367,6 +400,7 @@ void FApplication::draw()
 
 void FApplication::drawObject(FObject* object)
 {
+    // check if the object we have is valid and a mesh
     if (!object) return;
     if (object->getType() != FObjectType::MESH) return;
     FMesh* mesh_object = (FMesh*)object;
@@ -374,7 +408,7 @@ void FApplication::drawObject(FObject* object)
     if (!mesh_data) return;
     if (!mesh_data->index_buffer_ptr || !mesh_data->vertex_buffer_ptr) return;
 
-    // store relevant data into the constant buffer for the shader to access
+    // store data to the constant buffer that is shared between all shaders
     XMFLOAT4X4 object_matrix = object->getTransform();
     XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
     XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
@@ -383,15 +417,42 @@ void FApplication::drawObject(FObject* object)
     constant_buffer_data.view = XMMatrixTranspose(XMMatrixInverse(&throwaway, XMLoadFloat4x4(&view_matrix)));
     constant_buffer_data.view_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
     constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-    // data for phong shading. supports up to 8 contributing lights
-    constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
-    constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
-    constant_buffer_data.light_specular[0] = XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f);
-    constant_buffer_data.light_direction[0] = XMFLOAT4(0.2f, -0.3f, -1.0f, 0.0f);
-    constant_buffer_data.material_diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-    constant_buffer_data.material_specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 3.0f);
+
+    // if the mesh doesn't have a material, load the base shader
+    FMaterial* material = mesh_object->getMaterial();
+    if (material == nullptr)
+    {
+        // data for phong shading. supports up to 8 contributing lights
+        constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
+        constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
+        constant_buffer_data.light_specular[0] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+        constant_buffer_data.light_direction[0] = XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f);
+        constant_buffer_data.material_diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f);
+
+        immediate_context->PSSetShaderResources(0, 1, &blank_texture);
+        immediate_context->PSSetShaderResources(1, 1, &blank_texture);
+    }
+    else
+    {
+        // TODO: copy relevant data to the custom constnat buffer for the given shader
+        constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
+        constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
+        constant_buffer_data.light_specular[0] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+        constant_buffer_data.light_direction[0] = XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f);
+        constant_buffer_data.material_diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f);
+
+        if (material->textures[0] != nullptr)
+            immediate_context->PSSetShaderResources(0, 1, &material->textures[0]->buffer_ptr);
+        else
+            immediate_context->PSSetShaderResources(0, 1, &blank_texture);
+        if (material->textures[1] != nullptr)
+            immediate_context->PSSetShaderResources(1, 1, &material->textures[1]->buffer_ptr);
+        else
+            immediate_context->PSSetShaderResources(1, 1, &blank_texture);
+    }
 
     // write constant buffer data onto GPU
+    // TODO: adjust size depending on the configuration of the shader
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     immediate_context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
     memcpy(constant_buffer_resource.pData, &constant_buffer_data, sizeof(constant_buffer_data));
@@ -403,6 +464,7 @@ void FApplication::drawObject(FObject* object)
     immediate_context->IASetVertexBuffers(0, 1, &mesh_data->vertex_buffer_ptr, &stride, &offset);
     immediate_context->IASetIndexBuffer(mesh_data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
 
+    // TODO: change this depending on the shader
     immediate_context->VSSetShader(vertex_shader, nullptr, 0);
     immediate_context->PSSetShader(pixel_shader, nullptr, 0);
 

@@ -4,12 +4,15 @@
 #include "FObject.h"
 #include <d3d11_4.h>
 #include <string>
+#include "FTexture.h"
 
 struct FVertex
 {
-	XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT4 colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	XMFLOAT3 normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 position = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT4 colour   = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
+	XMFLOAT3 normal   = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT2 uv       = XMFLOAT2( 0.0f, 0.0f );
+	XMFLOAT3 tangent  = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 };
 
 struct FMeshData
@@ -42,8 +45,12 @@ struct FMaterial
 {
 	// shader to be used
 	FShader* shader;
+	size_t constant_buffer_size;
+	void* constant_buffer;
 
-	// TODO:
+	FTexture* textures[4];
+
+	// TODO: implement the whole shader thing
 };
 
 class FMesh : public FObject
@@ -59,6 +66,7 @@ public:
 	inline FMeshData* getData() { return mesh_data; }
 	inline void setData(FMeshData* data) { mesh_data = data; }
 	inline FMaterial* getMaterial() { return material; }
+	inline void setMaterial(FMaterial* mat) { material = mat; }
 };
 
 #endif
