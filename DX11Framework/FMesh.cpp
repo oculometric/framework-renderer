@@ -28,29 +28,41 @@ struct FFaceCornerReference
     uint16_t transferred_vert_index;
 };
 
-pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 vn_a, XMFLOAT2 uv_a, XMFLOAT2 uv_b)
+pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 co_c, XMFLOAT2 uv_a, XMFLOAT2 uv_b, XMFLOAT2 uv_c, XMFLOAT3 vn_a)
 {
-    XMVECTOR ab = XMLoadFloat3(&co_b) - XMLoadFloat3(&co_a);
-    XMFLOAT2 duv = XMFLOAT2(uv_b.x - uv_a.x, uv_b.y - uv_b.y);
-    XMFLOAT3X3 mat = XMFLOAT3X3
+    XMFLOAT3 ab = XMFLOAT3(co_b.x - co_a.x, co_b.y - co_a.y, co_b.z - co_a.z);
+    XMFLOAT3 ac = XMFLOAT3(co_c.x - co_a.x, co_c.y - co_a.y, co_c.z - co_a.z);
+    XMFLOAT2 uv_ab = XMFLOAT2(uv_b.x - uv_a.x, uv_b.y - uv_a.y);
+    XMFLOAT2 uv_ac = XMFLOAT2(uv_c.x - uv_a.x, uv_c.y - uv_a.y);
+    XMFLOAT3X3 uv_mat = XMFLOAT3X3
     (
-         duv.x,          -duv.y * vn_a.z, duv.y * vn_a.y,
-        -duv.y * vn_a.z,  duv.x,          duv.y * vn_a.x,
-        -duv.y * vn_a.y,  duv.y * vn_a.y, duv.x
+        uv_ab.x, uv_ac.x, 0,
+        uv_ab.y, uv_ac.y, 0,
+        0,       0,        1
     );
+    XMFLOAT3X3 vec_mat = XMFLOAT3X3
+    (
+        ab.x, ac.x, vn_a.x,
+        ab.y, ac.y, vn_a.y,
+        ab.z, ac.z, vn_a.z
+    );
+    
     // FIXME: this may or may not need to be transposed? also just fix this in general
-    XMMATRIX inv = XMMatrixInverse(nullptr, XMLoadFloat3x3(&mat));
-    ab = XMVector3Transform(ab, inv);
+    XMMATRIX result = XMLoadFloat3x3(&vec_mat) * XMMatrixInverse(nullptr, XMLoadFloat3x3(&uv_mat));
 
-    XMVECTOR tangent = XMLoadFloat3(&vn_a); // temporarily normal
-    ab = XMVector3Normalize(XMVector3Cross(tangent, ab)); // bitangent
-    tangent = XMVector3Normalize(XMVector3Cross(ab, tangent)); // now tangent
+    //XMVECTOR tangent = XMLoadFloat3(&vn_a); // temporarily normal
+    //ab = XMVector3Normalize(XMVector3Cross(tangent, ab)); // bitangent
+    //tangent = XMVector3Normalize(XMVector3Cross(ab, tangent)); // now tangent
+    XMStoreFloat3x3(&vec_mat, result);
 
-    pair<XMFLOAT3, XMFLOAT3> result;
-    XMStoreFloat3(&result.first, tangent);
-    XMStoreFloat3(&result.second, ab);
 
-    return result;
+    pair<XMFLOAT3, XMFLOAT3> ret;
+    ret.first = XMFLOAT3(vec_mat._11, vec_mat._21, vec_mat._31);
+    XMStoreFloat3(&ret.first, XMVector3Normalize(XMLoadFloat3(&ret.first)));
+    //XMStoreFloat3(&result., tangent);
+    //XMStoreFloat3(&result.second, ab);
+
+    return ret;
 }
 
 FMeshData* FMesh::loadMesh(string path)
@@ -160,9 +172,9 @@ FMeshData* FMesh::loadMesh(string path)
         uint16_t v1 = mesh_data->indices[(tri * 3) + 1]; FVertex f1 = mesh_data->vertices[v1];
         uint16_t v2 = mesh_data->indices[(tri * 3) + 2]; FVertex f2 = mesh_data->vertices[v2];
         
-        if (!touched[v0]) mesh_data->vertices[v0].tangent = computeTangent(f0.position, f1.position, f1.normal, f0.uv, f1.uv).first;
-        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f2.position, f1.normal, f1.uv, f2.uv).first;
-        if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f2.normal, f2.uv, f0.uv).first;
+        if (!touched[v0]) mesh_data->vertices[v0].tangent = computeTangent(f0.position, f1.position, f2.position, f0.uv, f1.uv, f2.uv, f1.normal).first;
+        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f2.position, f0.position, f1.uv, f2.uv, f0.uv, f1.normal).first;
+        if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f1.position, f2.uv, f0.uv, f1.uv, f2.normal).first;
 
         touched[v0] = true; touched[v1] = true; touched[v2] = true;
     }

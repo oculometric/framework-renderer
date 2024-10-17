@@ -27,6 +27,7 @@ struct Varyings
     float3 normal         : NORMAL;
     float2 uv             : TEXCOORD0;
     float3 tangent        : TANGENT0;
+    float3 bitangent      : BITANGENT0;
 };
 
 Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 normal : NORMAL, float2 uv : TEXCOORD0, float3 tangent : TANGENT0)
@@ -48,6 +49,7 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     output.uv = uv * float2(1.0f, -1.0f);
     
     output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz);
+    output.bitangent = normalize(cross(output.normal, output.bitangent));
     
     return output;
 }
@@ -55,11 +57,20 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
 float4 PS_main(Varyings input) : SV_TARGET
 {
     // TODO: implement non-directional lights
-    float3 true_normal = normalize(input.normal);
     float3 view_dir = normalize(mul(float4(normalize(input.view_position.xyz), 0.0f), view_matrix_inv).xyz);
     float3 overall_colour = float3(0.0f, 0.0f, 0.0f);
     
-    float3 surface_colour = material_diffuse.xyz * albedo.Sample(bilinear_sampler, input.uv).xyz;
+    float3 surface_colour = material_diffuse.rgb * albedo.Sample(bilinear_sampler, input.uv).rgb;
+    float3 surface_normal = normal.Sample(bilinear_sampler, input.uv).xyz;
+    
+    float3 true_normal = normalize(input.normal);
+    bool normal_map_evaluated = false;
+    if (length(surface_normal) <= 1.5f)
+    {
+        float3x3 tangent_matrix = float3x3(normalize(input.tangent), normalize(input.bitangent), true_normal);
+        normal_map_evaluated = true;
+        true_normal = mul(surface_normal, tangent_matrix);
+    }
     
     for (uint i = 0; i < 8; i++)
     {
@@ -67,8 +78,8 @@ float4 PS_main(Varyings input) : SV_TARGET
     
         float dot_norm = dot(-light_dir, true_normal);
         
-        float3 diffuse_light = saturate(dot_norm) * light_diffuse[i].xyz * surface_colour;
-        float3 ambient_light = light_ambient[i].xyz * surface_colour;
+        float3 diffuse_light = saturate(dot_norm) * light_diffuse[i].rgb * surface_colour;
+        float3 ambient_light = light_ambient[i].rgb * surface_colour;
     
         float3 specular_light = pow
         (
@@ -78,20 +89,12 @@ float4 PS_main(Varyings input) : SV_TARGET
                 -light_dir
             )),
             material_diffuse.w
-        ) * light_specular[i].xyz * surface_colour * (dot_norm > 0.0f);
+        ) * light_specular[i].rgb * surface_colour * (dot_norm > 0.0f);
         
         float3 colour = diffuse_light + ambient_light + specular_light;
         
         overall_colour += colour;
     }
     
-    //float3 low_col = float3(87, 8, 3) / 255.0f;
-    //float3 mid_col = float3(145, 72, 16) / 255.0f;
-    //float3 lit_col = float3(255, 125, 7) / 255.0f;
-    //if (abs(floor(input.world_position.x * 5.0f)) % 2.0f == abs(floor(input.world_position.y * 5.0f)) % 2.0f)
-    //    discard;
-    //float exponent = 1.5f;
-    //float3 lit = lerp(lerp(mid_col, low_col, pow(clamp(-diffuse_light, 0.0f, 1.0f), exponent)), lit_col, pow(clamp(diffuse_light, 0.0f, 1.0f), exponent));
-    //return float4(lit * colour, 1.0f); //float4(input.normal, 1.0f); //input.color; //float4((colour * diffuse_light) + (colour * ambient_light), 1.0f); //input.color;
-    return float4(input.tangent, 1.0f);
+    return float4(overall_colour, 1.0f);
 }
