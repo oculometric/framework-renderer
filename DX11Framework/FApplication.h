@@ -61,8 +61,6 @@ private:
 
 	ConstantBuffer constant_buffer_data;
 
-	//chrono::steady_clock::time_point last_frame_time;
-
 public:
 	FScene* scene;
 

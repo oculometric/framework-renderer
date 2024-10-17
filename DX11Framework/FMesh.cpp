@@ -28,6 +28,31 @@ struct FFaceCornerReference
     uint16_t transferred_vert_index;
 };
 
+pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 vn_a, XMFLOAT2 uv_a, XMFLOAT2 uv_b)
+{
+    XMVECTOR ab = XMLoadFloat3(&co_b) - XMLoadFloat3(&co_a);
+    XMFLOAT2 duv = XMFLOAT2(uv_b.x - uv_a.x, uv_b.y - uv_b.y);
+    XMFLOAT3X3 mat = XMFLOAT3X3
+    (
+         duv.x,          -duv.y * vn_a.z, duv.y * vn_a.y,
+        -duv.y * vn_a.z,  duv.x,          duv.y * vn_a.x,
+        -duv.y * vn_a.y,  duv.y * vn_a.y, duv.x
+    );
+    // FIXME: this may or may not need to be transposed? also just fix this in general
+    XMMATRIX inv = XMMatrixInverse(nullptr, XMLoadFloat3x3(&mat));
+    ab = XMVector3Transform(ab, inv);
+
+    XMVECTOR tangent = XMLoadFloat3(&vn_a); // temporarily normal
+    ab = XMVector3Normalize(XMVector3Cross(tangent, ab)); // bitangent
+    tangent = XMVector3Normalize(XMVector3Cross(ab, tangent)); // now tangent
+
+    pair<XMFLOAT3, XMFLOAT3> result;
+    XMStoreFloat3(&result.first, tangent);
+    XMStoreFloat3(&result.second, ab);
+
+    return result;
+}
+
 FMeshData* FMesh::loadMesh(string path)
 {
     ifstream file;
@@ -127,7 +152,20 @@ FMeshData* FMesh::loadMesh(string path)
         }
     }
 
-    // TODO: calcualte tangents
+    vector<bool> touched = vector<bool>(mesh_data->vertices.size(), false);
+
+    for (uint16_t tri = 0; tri < mesh_data->indices.size() / 3; tri++)
+    {
+        uint16_t v0 = mesh_data->indices[(tri * 3) + 0]; FVertex f0 = mesh_data->vertices[v0];
+        uint16_t v1 = mesh_data->indices[(tri * 3) + 1]; FVertex f1 = mesh_data->vertices[v1];
+        uint16_t v2 = mesh_data->indices[(tri * 3) + 2]; FVertex f2 = mesh_data->vertices[v2];
+        
+        if (!touched[v0]) mesh_data->vertices[v0].tangent = computeTangent(f0.position, f1.position, f1.normal, f0.uv, f1.uv).first;
+        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f2.position, f1.normal, f1.uv, f2.uv).first;
+        if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f2.normal, f2.uv, f0.uv).first;
+
+        touched[v0] = true; touched[v1] = true; touched[v2] = true;
+    }
 
 	return mesh_data;
 }

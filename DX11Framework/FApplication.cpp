@@ -28,8 +28,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
-
-    // TODO: implement window resizeability
 }
 
 HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
@@ -387,13 +385,6 @@ void FApplication::draw()
             drawObject(object);
     }
 
-    //chrono::steady_clock::time_point now = chrono::steady_clock::now();
-    //chrono::duration<float> delta = chrono::duration_cast<chrono::seconds>(now - last_frame_time);
-    //float duration = delta.count();
-    //float target_duration = 1.0f / 60.0f;
-    //OutputDebugStringA(("frame time: " + to_string(delta.count()) + " target duration is " + to_string(target_duration)).c_str());
-    ////Sleep(max(target_duration - duration, 0.0f) * 1000.0f);
-    //last_frame_time = now;
     // present backbuffer to screen
     swap_chain->Present(0, 0);
 }

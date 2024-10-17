@@ -93,5 +93,5 @@ float4 PS_main(Varyings input) : SV_TARGET
     //float exponent = 1.5f;
     //float3 lit = lerp(lerp(mid_col, low_col, pow(clamp(-diffuse_light, 0.0f, 1.0f), exponent)), lit_col, pow(clamp(diffuse_light, 0.0f, 1.0f), exponent));
     //return float4(lit * colour, 1.0f); //float4(input.normal, 1.0f); //input.color; //float4((colour * diffuse_light) + (colour * ambient_light), 1.0f); //input.color;
-    return float4(overall_colour, 1.0f);
+    return float4(input.tangent, 1.0f);
 }
