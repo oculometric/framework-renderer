@@ -138,6 +138,7 @@
     <ClCompile Include="FMesh.cpp" />
     <ClCompile Include="FObject.cpp" />
     <ClCompile Include="FObject.h" />
+    <ClCompile Include="FResourceManager.cpp" />
     <ClCompile Include="FScene.cpp" />
     <ClCompile Include="FScene.h" />
     <ClCompile Include="Main.cpp" />
@@ -167,7 +168,9 @@
     <ClInclude Include="..\oculib\vector4.h" />
     <ClInclude Include="..\oculib\vertex.h" />
     <ClInclude Include="FApplication.h" />
+    <ClInclude Include="FMaterial.h" />
     <ClInclude Include="FMesh.h" />
+    <ClInclude Include="FResourceManager.h" />
     <ClInclude Include="FTexture.h" />
     <ClInclude Include="ico.h" />
     <ClInclude Include="MyScene.h" />

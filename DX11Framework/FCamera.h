@@ -1,5 +1,4 @@
-#ifndef FCAMERA_H
-#define FCAMERA_H
+#pragma once
 
 #include "FObject.h"
 
@@ -27,5 +26,3 @@ public:
 	inline XMFLOAT4X4 getProjectionMatrix() { return projection_matrix; }
 
 };
-
-#endif

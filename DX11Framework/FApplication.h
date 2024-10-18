@@ -1,7 +1,4 @@
-class FApplication;
-
-#ifndef FAPPLICATION_H
-#define FAPPLICATION_H
+#pragma once
 
 #include <windows.h>
 #include <d3d11_4.h>
@@ -34,6 +31,7 @@ struct ConstantBuffer
 
 class FApplication
 {
+	friend class FResourceManager;
 private:
 	int window_width = 1280;
 	int window_height = 768;
@@ -67,6 +65,12 @@ public:
 private:
 	void drawObject(FObject* object);
 
+	void registerMesh(FMeshData* mesh_data);
+	void unregisterMesh(FMeshData* mesh_data);
+
+	FTexture* registerTexture(wstring path);
+	void unregisterTexture(FTexture* texture);
+
 public:
 	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createWindowHandle(HINSTANCE hInstance, int nCmdShow);
@@ -77,15 +81,7 @@ public:
 
 	inline bool isFocused() { return GetFocus() == window_handle; }
 
-	void registerMesh(FMeshData* mesh_data);
-	void unregisterMesh(FMeshData* mesh_data);
-
-	FTexture* registerTexture(wstring path);
-	void unregisterTexture(FTexture* texture);
-
 	~FApplication();
 	void update();
 	void draw();
 };
-
-#endif

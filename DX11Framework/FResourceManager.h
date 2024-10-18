@@ -1,0 +1,62 @@
+#pragma once
+
+#include <string>
+#include <map>
+
+using namespace std;
+
+class FApplication;
+class FTexture;
+class FMeshData;
+class FShader;
+class FResourceManager;
+
+class FResourceManager
+{
+	friend class FApplication;
+private:
+	enum FResourceType
+	{
+		TEXTURE,
+		MESH_DATA,
+		SHADER
+	};
+
+	struct FResource
+	{
+		string name;
+		FResourceType type;
+
+		inline bool operator<(const FResource& b) const
+		{
+			return (name < b.name);
+		}
+	};
+	
+
+	FApplication* application;
+
+	map<FResource, void*> registry;
+
+	inline FResourceManager(FApplication* app) : application(app) { }
+
+	static void set(FResourceManager* manager);
+
+public:
+	static FResourceManager* get();
+
+	FTexture*  loadTexture(string path);
+	bool       unloadTexture(FTexture* res);
+
+	FMeshData* loadMesh(string path);
+	bool       unloadMesh(FMeshData* res);
+
+	FShader*   loadShader(string path);
+	bool       unloadShader(FShader* res);
+
+	~FResourceManager();
+
+private:
+	bool	   unload(void* res);
+};
+

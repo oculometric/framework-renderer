@@ -2,6 +2,8 @@
 
 #include <windows.h>
 #include <iostream>
+
+#include "FResourceManager.h"
 #include "FApplication.h"
 #include "ico.h"
 
@@ -42,7 +44,7 @@ vector<uint16_t> cube_indices =
 
 void MyScene::start()
 {
-	FMeshData* cube_mesh = new FMeshData();
+	/*FMeshData* cube_mesh = new FMeshData();
 	cube_mesh->vertices = cube_vertices;
 	cube_mesh->indices = cube_indices;
 	owner->registerMesh(cube_mesh);
@@ -50,25 +52,20 @@ void MyScene::start()
 	FMeshData* ico = new FMeshData();
 	ico->vertices = ico_vertices;
 	ico->indices = ico_indices;
-	owner->registerMesh(ico);
+	owner->registerMesh(ico);*/
 
-	FMeshData* suzanne = FMesh::loadMesh("suzanne.obj");
-	owner->registerMesh(suzanne);
+	FMeshData* suzanne = FResourceManager::get()->loadMesh("suzanne.obj");
 
-	FMeshData* teapot = FMesh::loadMesh("teapot.obj");
-	owner->registerMesh(teapot);
+	FMeshData* teapot = FResourceManager::get()->loadMesh("teapot.obj");
 
-	FMeshData* sphere = FMesh::loadMesh("sphere.obj");
-	owner->registerMesh(sphere);
+	FMeshData* sphere = FResourceManager::get()->loadMesh("sphere.obj");
 
-	FMeshData* cornell = FMesh::loadMesh("cornell.obj");
-	owner->registerMesh(cornell);
+	FMeshData* cornell = FResourceManager::get()->loadMesh("cornell.obj");
 
-	FMeshData* monitor = FMesh::loadMesh("monitor.obj");
-	owner->registerMesh(monitor);
+	FMeshData* monitor = FResourceManager::get()->loadMesh("monitor.obj");
 	FMaterial* monitor_mat = new FMaterial();
-	monitor_mat->textures[0] = owner->registerTexture(L"monitor_t.dds");
-	monitor_mat->textures[1] = owner->registerTexture(L"monitor_n.dds");
+	monitor_mat->textures[0] = FResourceManager::get()->loadTexture("monitor_t.dds");
+	monitor_mat->textures[1] = FResourceManager::get()->loadTexture("monitor_n.dds");
 
 	a.setData(monitor);
 	a.setMaterial(monitor_mat);

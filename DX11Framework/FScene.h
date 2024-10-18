@@ -1,7 +1,4 @@
-class FScene;
-
-#ifndef FSCENE_H
-#define FSCENE_H
+#pragma once
 
 #include <DirectXMath.h>
 
@@ -35,5 +32,3 @@ public:
 	inline virtual void start() { }
 	inline virtual void update(float delta_time) { (delta_time); }
 };
-
-#endif

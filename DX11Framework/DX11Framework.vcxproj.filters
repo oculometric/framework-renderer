@@ -54,6 +54,9 @@
     <ClCompile Include="DDSTextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FApplication.h">
@@ -96,6 +99,12 @@
       <Filter>oculib</Filter>
     </ClInclude>
     <ClInclude Include="FTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

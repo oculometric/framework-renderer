@@ -1,11 +1,12 @@
 #include "FApplication.h"
+
 #include <string>
 #include <queue>
 #include <thread>
-#include "FScene.h"
 #include "DDSTextureLoader.h"
 
-//#define RETURNFAIL(x) if(FAILED(x)) return x;
+#include "FScene.h"
+#include "FResourceManager.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -34,6 +35,8 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
 {
     HRESULT hr = S_OK;
 
+    FResourceManager::set(new FResourceManager(this));
+
     hr = createWindowHandle(hInstance, nShowCmd);
     if (FAILED(hr)) return E_FAIL;
 
@@ -54,7 +57,7 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
 
 HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 {
-    const wchar_t* window_name  = L"DX11Framework";
+    const wchar_t* window_name  = L"SpaceDemoProject";
 
     WNDCLASSW wnd_class;
     wnd_class.style = 0;
@@ -328,6 +331,8 @@ void FApplication::unregisterTexture(FTexture* texture)
 
 FApplication::~FApplication()
 {
+    delete FResourceManager::get();
+
     if (immediate_context) immediate_context->Release();
     if (device) device->Release();
     if (dxgi_device) dxgi_device->Release();

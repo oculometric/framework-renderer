@@ -1,5 +1,4 @@
-#ifndef FOBJECT_H
-#define FOBJECT_H
+#pragma once
 
 #include <DirectXMath.h>
 #include <vector>
@@ -43,5 +42,3 @@ public:
 	void addChild(FObject* o);
 	void removeChild(FObject* o);
 };
-
-#endif
