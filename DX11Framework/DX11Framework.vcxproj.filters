@@ -71,9 +71,6 @@
     <ClInclude Include="FMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ico.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\oculib\camera.h">
       <Filter>oculib</Filter>
     </ClInclude>
