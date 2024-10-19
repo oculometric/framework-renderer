@@ -5,55 +5,9 @@
 
 #include "FResourceManager.h"
 #include "FApplication.h"
-#include "ico.h"
-
-const float s3 = 1.0f / sqrtf(3.0f);
-
-vector<FVertex> cube_vertices =
-{
-	FVertex{ XMFLOAT3(1.0f,  1.0f, 1.0f),   XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(s3, s3, s3),   },
-	FVertex{ XMFLOAT3(-1.0f,  1.0f, 1.0f),  XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(-s3, s3, s3),  },
-	FVertex{ XMFLOAT3(1.0f, -1.0f, 1.0f),   XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(s3, -s3, s3),  },
-	FVertex{ XMFLOAT3(-1.0f, -1.0f, 1.0f),  XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-s3, -s3, s3), },
-	FVertex{ XMFLOAT3(1.0f,  1.0f, -1.0f),  XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(s3, s3, -s3),  },
-	FVertex{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(-s3, s3, -s3), },
-	FVertex{ XMFLOAT3(1.0f, -1.0f, -1.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(s3, -s3, -s3), },
-	FVertex{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-s3, -s3, -s3) },
-};
-
-vector<uint16_t> cube_indices =
-{
-	0, 1, 2,
-	1, 3, 2,
-
-	2, 3, 7,
-	2, 7, 6,
-
-	1, 7, 3,
-	1, 5, 7,
-
-	0, 2, 6,
-	0, 6, 4,
-
-	1, 0, 5,
-	0, 4, 5,
-
-	5, 6, 7,
-	4, 6, 5
-};
 
 void MyScene::start()
 {
-	/*FMeshData* cube_mesh = new FMeshData();
-	cube_mesh->vertices = cube_vertices;
-	cube_mesh->indices = cube_indices;
-	owner->registerMesh(cube_mesh);
-
-	FMeshData* ico = new FMeshData();
-	ico->vertices = ico_vertices;
-	ico->indices = ico_indices;
-	owner->registerMesh(ico);*/
-
 	FMeshData* suzanne = FResourceManager::get()->loadMesh("suzanne.obj");
 
 	FMeshData* teapot = FResourceManager::get()->loadMesh("teapot.obj");
