@@ -36,6 +36,7 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     HRESULT hr = S_OK;
 
     FResourceManager::set(new FResourceManager(this));
+    uniform_buffer = new float[4096];
 
     hr = createWindowHandle(hInstance, nShowCmd);
     if (FAILED(hr)) return E_FAIL;
@@ -44,9 +45,6 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     if (FAILED(hr)) return E_FAIL;
 
     hr = createSwapChainAndFrameBuffer();
-    if (FAILED(hr)) return E_FAIL;
-
-    hr = initShadersAndInputLayout();
     if (FAILED(hr)) return E_FAIL;
 
     hr = initPipelineVariables();
@@ -166,105 +164,18 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     return hr;
 }
 
-HRESULT FApplication::initShadersAndInputLayout()
-{
-    HRESULT hr = S_OK;
-    ID3DBlob* error_blob;
-
-    DWORD shader_flags = D3DCOMPILE_ENABLE_STRICTNESS;
-#ifdef _DEBUG
-    shader_flags |= D3DCOMPILE_DEBUG;
-#endif
-    
-    ID3DBlob* vertex_shader_blob;
-
-    hr =  D3DCompileFromFile(L"SimpleShaders.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS_main", "vs_5_0", shader_flags, 0, &vertex_shader_blob, &error_blob);
-    if (FAILED(hr))
-    {
-        MessageBoxA(window_handle, (char*)error_blob->GetBufferPointer(), nullptr, ERROR);
-        error_blob->Release();
-        return hr;
-    }
-
-    hr = device->CreateVertexShader(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), nullptr, &vertex_shader);
-
-    if (FAILED(hr)) return hr;
-
-    D3D11_INPUT_ELEMENT_DESC input_element_descriptor[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA,   0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D10_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-    };
-
-    hr = device->CreateInputLayout(input_element_descriptor, ARRAYSIZE(input_element_descriptor), vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), &input_layout);
-    if (FAILED(hr)) return hr;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    ID3DBlob* pixel_shader_blob;
-
-    hr = D3DCompileFromFile(L"SimpleShaders.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS_main", "ps_5_0", shader_flags, 0, &pixel_shader_blob, &error_blob);
-    if (FAILED(hr))
-    {
-        MessageBoxA(window_handle, (char*)error_blob->GetBufferPointer(), nullptr, ERROR);
-        error_blob->Release();
-        return hr;
-    }
-
-    hr = device->CreatePixelShader(pixel_shader_blob->GetBufferPointer(), pixel_shader_blob->GetBufferSize(), nullptr, &pixel_shader);
-
-    vertex_shader_blob->Release();
-    pixel_shader_blob->Release();
-
-    return hr;
-}
-
 HRESULT FApplication::initPipelineVariables()
 {
     HRESULT hr = S_OK;
 
-    //Input Assembler
+    // set input assembler
     immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    immediate_context->IASetInputLayout(input_layout);
-
-    // Rasterizer
-    D3D11_RASTERIZER_DESC rasterizer_descriptor = {};
-    rasterizer_descriptor.FillMode = D3D11_FILL_SOLID;
-    rasterizer_descriptor.CullMode = D3D11_CULL_BACK;
-
-    hr = device->CreateRasterizerState(&rasterizer_descriptor, &rasterizer_state);
-    if (FAILED(hr)) return hr;
-
-    // Debug Rasterizer
-    D3D11_RASTERIZER_DESC debug_rasterizer_descriptor = {};
-    debug_rasterizer_descriptor.FillMode = D3D11_FILL_WIREFRAME;
-    debug_rasterizer_descriptor.CullMode = D3D11_CULL_BACK;
-
-    hr = device->CreateRasterizerState(&debug_rasterizer_descriptor, &debug_rasterizer_state);
-    if (FAILED(hr)) return hr;
-
-    immediate_context->RSSetState(rasterizer_state);
-
-    // Viewport Values
+    
+    // create viewport
     viewport = { 0.0f, 0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f };
     immediate_context->RSSetViewports(1, &viewport);
 
-    // Constant Buffer
-    D3D11_BUFFER_DESC constant_buffer_descriptor = { };
-    constant_buffer_descriptor.ByteWidth = sizeof(ConstantBuffer);
-    constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
-    constant_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    constant_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-    hr = device->CreateBuffer(&constant_buffer_descriptor, nullptr, &constant_buffer);
-    if (FAILED(hr)) { return hr; }
-
-    immediate_context->VSSetConstantBuffers(0, 1, &constant_buffer);
-    immediate_context->PSSetConstantBuffers(0, 1, &constant_buffer);
-
+    // create texture sampler
     D3D11_SAMPLER_DESC sampler_desc = { };
     sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
     sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -277,13 +188,26 @@ HRESULT FApplication::initPipelineVariables()
 
     immediate_context->PSSetSamplers(0, 1, &bilinear_sampler_state);
 
+    // load default stuff
     hr = CreateDDSTextureFromFile(device, L"blank.dds", nullptr, &blank_texture);
     if (FAILED(hr)) { return hr; }
+
+    FShader* shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
+    if (shader == nullptr) { return -1; }
+
+    demo_material = FResourceManager::get()->createMaterial(shader, 
+    {
+        { "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f))      },
+        { "light_ambient",    FMaterialParameter(XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f))   },
+        { "light_diffuse",    FMaterialParameter(XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f))      },
+        { "light_specular",   FMaterialParameter(XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f))      },
+        { "light_direction",  FMaterialParameter(XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f))     },
+    });
 
     return S_OK;
 }
 
-void FApplication::registerMesh(FMeshData* mesh_data)
+bool FApplication::registerMesh(FMeshData* mesh_data)
 {
     HRESULT hr = S_OK;
 
@@ -295,7 +219,7 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     D3D11_SUBRESOURCE_DATA vertex_subresource_data = { mesh_data->vertices.data() };
 
     hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &mesh_data->vertex_buffer_ptr);
-    if (FAILED(hr)) return;
+    if (FAILED(hr)) return false;
 
     D3D11_BUFFER_DESC index_buffer_descriptor = { };
     index_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(uint16_t) * mesh_data->indices.size());
@@ -305,11 +229,15 @@ void FApplication::registerMesh(FMeshData* mesh_data)
     D3D11_SUBRESOURCE_DATA index_subresource_data = { mesh_data->indices.data() };
 
     hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &mesh_data->index_buffer_ptr);
-    if (FAILED(hr)) return;
+    if (FAILED(hr)) return false;
+
+    return true;
 }
 
 void FApplication::unregisterMesh(FMeshData* mesh_data)
 {
+    if (mesh_data == nullptr) return;
+
     if (mesh_data->vertex_buffer_ptr) { mesh_data->vertex_buffer_ptr->Release(); mesh_data->vertex_buffer_ptr = nullptr; }
     if (mesh_data->index_buffer_ptr) { mesh_data->index_buffer_ptr->Release(); mesh_data->index_buffer_ptr = nullptr; }
 }
@@ -326,7 +254,143 @@ FTexture* FApplication::registerTexture(wstring path)
 
 void FApplication::unregisterTexture(FTexture* texture)
 {
-    texture->buffer_ptr->Release();
+    if (texture == nullptr) return;
+
+    if (texture->buffer_ptr) { texture->buffer_ptr->Release(); texture->buffer_ptr = nullptr; }
+}
+
+bool FApplication::registerShader(FShader* shader, wstring path)
+{
+    HRESULT hr = S_OK;
+
+    // configure rasterizer state
+    D3D11_RASTERIZER_DESC rasterizer_descriptor = { };
+    rasterizer_descriptor.FillMode = shader->draw_wireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
+    switch (shader->cull_mode)
+    {
+    case FCullMode::FRONT: rasterizer_descriptor.CullMode = D3D11_CULL_FRONT; break;
+    case FCullMode::BACK:  rasterizer_descriptor.CullMode = D3D11_CULL_BACK; break;
+    case FCullMode::OFF:   rasterizer_descriptor.CullMode = D3D11_CULL_NONE; break;
+    }
+
+    hr = device->CreateRasterizerState(&rasterizer_descriptor, &shader->rasterizer);
+    if (FAILED(hr)) return false;
+
+    // load shaders
+    ID3DBlob* error_blob;
+
+    DWORD shader_flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#ifdef _DEBUG
+    shader_flags |= D3DCOMPILE_DEBUG;
+#endif
+
+    ID3DBlob* vertex_shader_blob;
+    hr = D3DCompileFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS_main", "vs_5_0", shader_flags, 0, &vertex_shader_blob, &error_blob);
+    if (FAILED(hr))
+    {
+        MessageBoxA(window_handle, (char*)error_blob->GetBufferPointer(), nullptr, ERROR);
+        error_blob->Release();
+        return false;
+    }
+    hr = device->CreateVertexShader(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), nullptr, &shader->vertex_shader_pointer);
+
+    if (FAILED(hr))
+    {
+        vertex_shader_blob->Release();
+        error_blob->Release();
+        return false;
+    }
+
+    ID3DBlob* pixel_shader_blob;
+    hr = D3DCompileFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS_main", "ps_5_0", shader_flags, 0, &pixel_shader_blob, &error_blob);
+    if (FAILED(hr))
+    {
+        MessageBoxA(window_handle, (char*)error_blob->GetBufferPointer(), nullptr, ERROR);
+        error_blob->Release();
+        return false;
+    }
+    hr = device->CreatePixelShader(pixel_shader_blob->GetBufferPointer(), pixel_shader_blob->GetBufferSize(), nullptr, &shader->pixel_shader_pointer);
+
+    if (FAILED(hr))
+    {
+        shader->vertex_shader_pointer->Release();
+        vertex_shader_blob->Release();
+        pixel_shader_blob->Release();
+        error_blob->Release();
+        return false;
+    }
+
+    static D3D11_INPUT_ELEMENT_DESC input_element_descriptor[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA,   0 },
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D10_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+
+    hr = device->CreateInputLayout(input_element_descriptor, ARRAYSIZE(input_element_descriptor), vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), &shader->input_layout);
+    if (FAILED(hr))
+    {
+        shader->vertex_shader_pointer->Release();
+        shader->pixel_shader_pointer->Release();
+        vertex_shader_blob->Release();
+        pixel_shader_blob->Release();
+        error_blob->Release();
+        return false;
+    }
+
+    hr = D3DReflect(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shader->reflector);
+    if (FAILED(hr))
+    {
+
+        shader->vertex_shader_pointer->Release();
+        shader->pixel_shader_pointer->Release();
+        vertex_shader_blob->Release();
+        pixel_shader_blob->Release();
+        shader->input_layout->Release();
+        error_blob->Release();
+        return false;
+    }
+    
+    D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
+    shader->reflector->GetConstantBufferByIndex(0)->GetDesc(&shader_buffer_descriptor);
+
+    D3D11_BUFFER_DESC constant_buffer_descriptor = { };
+    constant_buffer_descriptor.ByteWidth = shader_buffer_descriptor.Size;
+    constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
+    constant_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    constant_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+    hr = device->CreateBuffer(&constant_buffer_descriptor, nullptr, &shader->uniform_buffer);
+    if (FAILED(hr))
+    {
+        shader->vertex_shader_pointer->Release();
+        shader->pixel_shader_pointer->Release();
+        vertex_shader_blob->Release();
+        pixel_shader_blob->Release();
+        shader->input_layout->Release();
+        shader->reflector->Release();
+        error_blob->Release();
+        return false;
+    }
+
+    vertex_shader_blob->Release();
+    pixel_shader_blob->Release();
+
+    return true;
+}
+
+void FApplication::unregisterShader(FShader* shader)
+{
+    if (shader == nullptr) return;
+
+    if (shader->input_layout) { shader->input_layout->Release(); shader->input_layout = nullptr; }
+    if (shader->rasterizer) { shader->rasterizer->Release(); shader->rasterizer = nullptr; }
+    if (shader->vertex_shader_pointer) { shader->vertex_shader_pointer->Release(); shader->vertex_shader_pointer = nullptr; }
+    if (shader->pixel_shader_pointer) { shader->pixel_shader_pointer->Release(); shader->pixel_shader_pointer = nullptr; }
+    if (shader->reflector) { shader->reflector->Release(); shader->reflector = nullptr; }
+    if (shader->uniform_buffer) { shader->uniform_buffer->Release(); shader->uniform_buffer = nullptr; }
 }
 
 FApplication::~FApplication()
@@ -341,12 +405,6 @@ FApplication::~FApplication()
     if (depth_stencil_view) depth_stencil_view->Release();
     if (swap_chain) swap_chain->Release();
 
-    if (rasterizer_state) rasterizer_state->Release();
-    if (debug_rasterizer_state) debug_rasterizer_state->Release();
-    if (vertex_shader) vertex_shader->Release();
-    if (input_layout) input_layout->Release();
-    if (pixel_shader) pixel_shader->Release();
-    if (constant_buffer) constant_buffer->Release();
     if (depth_stencil_buffer) depth_stencil_buffer->Release();
     if (scene) delete scene;
 }
@@ -366,7 +424,7 @@ void FApplication::update()
     if (GetAsyncKeyState(VK_TAB) & 0x0001)
     {
         is_debug_mode = !is_debug_mode;
-        immediate_context->RSSetState(is_debug_mode ? debug_rasterizer_state : rasterizer_state);
+        //immediate_context->RSSetState(is_debug_mode ? debug_rasterizer_state : rasterizer_state);
     }
     
     if (scene)
@@ -404,65 +462,85 @@ void FApplication::drawObject(FObject* object)
     if (!mesh_data) return;
     if (!mesh_data->index_buffer_ptr || !mesh_data->vertex_buffer_ptr) return;
 
-    // store data to the constant buffer that is shared between all shaders
-    XMFLOAT4X4 object_matrix = object->getTransform();
-    XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
-    XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
-    XMVECTOR throwaway;
-    constant_buffer_data.world = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
-    constant_buffer_data.view = XMMatrixTranspose(XMMatrixInverse(&throwaway, XMLoadFloat4x4(&view_matrix)));
-    constant_buffer_data.view_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
-    constant_buffer_data.projection = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-
-    // if the mesh doesn't have a material, load the base shader
+    // check if the object has a valid material
     FMaterial* material = mesh_object->getMaterial();
     if (material == nullptr)
-    {
-        // data for phong shading. supports up to 8 contributing lights
-        constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
-        constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
-        constant_buffer_data.light_specular[0] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-        constant_buffer_data.light_direction[0] = XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f);
-        constant_buffer_data.material_diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f);
+        material = demo_material;
+    FShader* shader = material->shader;
 
-        immediate_context->PSSetShaderResources(0, 1, &blank_texture);
-        immediate_context->PSSetShaderResources(1, 1, &blank_texture);
-    }
-    else
+    // if this shader is not active, load all its properties
+    if (shader != active_shader)
     {
-        // TODO: copy relevant data to the custom constnat buffer for the given shader
-        constant_buffer_data.light_ambient[0] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
-        constant_buffer_data.light_diffuse[0] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);
-        constant_buffer_data.light_specular[0] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-        constant_buffer_data.light_direction[0] = XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f);
-        constant_buffer_data.material_diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f);
+        immediate_context->IASetInputLayout(shader->input_layout);
+        immediate_context->VSSetShader(shader->vertex_shader_pointer, nullptr, 0);
+        immediate_context->PSSetShader(shader->pixel_shader_pointer, nullptr, 0);
+        immediate_context->RSSetState(shader->rasterizer);
 
-        if (material->textures[0] != nullptr)
-            immediate_context->PSSetShaderResources(0, 1, &material->textures[0]->buffer_ptr);
-        else
-            immediate_context->PSSetShaderResources(0, 1, &blank_texture);
-        if (material->textures[1] != nullptr)
-            immediate_context->PSSetShaderResources(1, 1, &material->textures[1]->buffer_ptr);
-        else
-            immediate_context->PSSetShaderResources(1, 1, &blank_texture);
+        active_shader = shader;
+
+        // make sure this uniform buffer is bound
+        immediate_context->VSSetConstantBuffers(0, 1, &shader->uniform_buffer);
+        immediate_context->PSSetConstantBuffers(0, 1, &shader->uniform_buffer);
     }
 
-    // write constant buffer data onto GPU
-    // TODO: adjust size depending on the configuration of the shader
+    ID3D11ShaderReflectionConstantBuffer* shader_reflection = shader->reflector->GetConstantBufferByIndex(0);
+    D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
+    shader_reflection->GetDesc(&shader_buffer_descriptor);
+
+    // store data to the constant buffer that is shared between all shaders
+    XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
+    XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
+    XMFLOAT4X4 object_matrix = object->getTransform();
+    ((XMMATRIX*)uniform_buffer)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    ((XMMATRIX*)uniform_buffer)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
+    ((XMMATRIX*)uniform_buffer)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+    ((XMMATRIX*)uniform_buffer)[3] = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
+
+    // store the rest of the variables from the material
+    for (size_t i = 4; i < shader_buffer_descriptor.Variables; i++)
+    {
+        ID3D11ShaderReflectionVariable* var = shader_reflection->GetVariableByIndex(i);
+        D3D11_SHADER_VARIABLE_DESC var_descriptor = { };
+        var->GetDesc(&var_descriptor);
+        FMaterialParameter param = material->getParameter(var_descriptor.Name);
+        void* start_ptr = ((uint8_t*)uniform_buffer) + var_descriptor.StartOffset;
+        
+        switch (param.type)
+        {
+        case FShaderUniformType::F1: ((FLOAT*)start_ptr)[0]      = param.f1; break;
+        case FShaderUniformType::F3: ((XMFLOAT3*)start_ptr)[0]   = param.f3; break;
+        case FShaderUniformType::F4: ((XMFLOAT4*)start_ptr)[0]   = param.f4; break;
+        case FShaderUniformType::I1: ((INT*)start_ptr)[0]        = param.i1; break;
+        case FShaderUniformType::I3: ((XMINT3*)start_ptr)[0]     = param.i3; break;
+        case FShaderUniformType::M3: ((XMFLOAT3X3*)start_ptr)[0] = param.m3; break;
+        case FShaderUniformType::M4: ((XMFLOAT4X4*)start_ptr)[0] = param.m4; break;
+        }
+    }
+
+    // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
-    immediate_context->Map(constant_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
-    memcpy(constant_buffer_resource.pData, &constant_buffer_data, sizeof(constant_buffer_data));
-    immediate_context->Unmap(constant_buffer, 0);
+    immediate_context->Map(shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
+    memcpy(constant_buffer_resource.pData, uniform_buffer, shader_buffer_descriptor.Size);
+    immediate_context->Unmap(shader->uniform_buffer, 0);
 
-    // set object variables and draw
-    UINT stride = { sizeof(FVertex) };
-    UINT offset = 0;
-    immediate_context->IASetVertexBuffers(0, 1, &mesh_data->vertex_buffer_ptr, &stride, &offset);
-    immediate_context->IASetIndexBuffer(mesh_data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
+    for (size_t i = 0; i < MAX_TEXTURES; i++)
+    {
+        if (material->textures[i] == nullptr)
+            immediate_context->PSSetShaderResources(i, 1, &blank_texture);
+        else
+            immediate_context->PSSetShaderResources(i, 1, &material->textures[i]->buffer_ptr);
+    }
 
-    // TODO: change this depending on the shader
-    immediate_context->VSSetShader(vertex_shader, nullptr, 0);
-    immediate_context->PSSetShader(pixel_shader, nullptr, 0);
+    // set object variables if this mesh is not currently active
+    if (mesh_data != active_mesh)
+    {
+        UINT stride = { sizeof(FVertex) };
+        UINT offset = 0;
+        immediate_context->IASetVertexBuffers(0, 1, &mesh_data->vertex_buffer_ptr, &stride, &offset);
+        immediate_context->IASetIndexBuffer(mesh_data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
+        active_mesh = mesh_data;;
+    }
 
+    // draw the object
     immediate_context->DrawIndexed(static_cast<UINT>(mesh_data->indices.size()), 0, 0);
 }

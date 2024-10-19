@@ -63,9 +63,15 @@ void MyScene::start()
 	FMeshData* cornell = FResourceManager::get()->loadMesh("cornell.obj");
 
 	FMeshData* monitor = FResourceManager::get()->loadMesh("monitor.obj");
-	FMaterial* monitor_mat = new FMaterial();
-	monitor_mat->textures[0] = FResourceManager::get()->loadTexture("monitor_t.dds");
-	monitor_mat->textures[1] = FResourceManager::get()->loadTexture("monitor_n.dds");
+	FShader* monitor_shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
+	FMaterial* monitor_mat = FResourceManager::get()->createMaterial(monitor_shader,
+	{
+		{ "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f)) }
+	},
+	{
+		FResourceManager::get()->loadTexture("monitor_t.dds"),
+		FResourceManager::get()->loadTexture("monitor_n.dds")
+	});
 
 	a.setData(monitor);
 	a.setMaterial(monitor_mat);

@@ -49,8 +49,13 @@ FMeshData* FResourceManager::loadMesh(string path)
 		return (FMeshData*)(registry[descriptor]);
 
 	FMeshData* res = FMesh::loadMesh(path);
-	application->registerMesh(res);
-	registry.insert_or_assign(descriptor, (void*)res);
+	if (application->registerMesh(res))
+		registry.insert_or_assign(descriptor, (void*)res);
+	else
+	{
+		delete res;
+		return nullptr;
+	}
 
 	return res;
 }
@@ -64,20 +69,54 @@ bool FResourceManager::unloadMesh(FMeshData* res)
 	return unload(res);
 }
 
-FShader* FResourceManager::loadShader(string path)
+FShader* FResourceManager::loadShader(string path, bool wireframe, FCullMode culling)
 {
-	// TODO: load a shader
+	FResource descriptor{ path, FResourceManager::SHADER };
+	if (registry.count(descriptor) > 0)
+		return (FShader*)(registry[descriptor]);
 
-	return nullptr;
+	int wlen = MultiByteToWideChar(CP_UTF8, 0, &path[0], (int)path.size(), nullptr, 0);
+	wstring wstr;
+	wstr.resize(wlen);
+	MultiByteToWideChar(CP_UTF8, 0, &path[0], (int)path.size(), &wstr[0], wlen);
+	FShader* res = new FShader();
+	res->draw_wireframe = wireframe;
+	res->cull_mode = culling;
+	if (application->registerShader(res, wstr))
+		registry.insert_or_assign(descriptor, (void*)res);
+	else
+	{
+		delete res;
+		return nullptr;
+	}
+
+	return res;
 }
 
 bool FResourceManager::unloadShader(FShader* res)
 {
 	if (res == nullptr) return false;
 
-	// TODO: unload a shader
+	application->unregisterShader(res);
 
 	return unload(res);
+}
+
+FMaterial* FResourceManager::createMaterial(FShader* shader, map<string, FMaterialParameter> parameters, vector<FTexture*> textures)
+{
+	if (shader == nullptr) return nullptr;
+
+	FMaterial* res = new FMaterial();
+	res->shader = shader;
+	res->parameters = parameters;
+	size_t i = 0;
+	for (FTexture* tex : textures)
+	{
+		res->assignTexture(tex, i);
+		i++;
+	}
+
+	return res;
 }
 
 FResourceManager::~FResourceManager()

@@ -7,10 +7,10 @@ cbuffer ConstantBuffer : register(b0)
     
     float4 material_diffuse;
     
-    float4 light_direction[8];
-    float4 light_diffuse[8];
-    float4 light_specular[8];
-    float4 light_ambient[8];
+    float4 light_direction;
+    float4 light_diffuse;
+    float4 light_specular;
+    float4 light_ambient;
 }
 
 Texture2D albedo : register(t0);
@@ -72,14 +72,14 @@ float4 PS_main(Varyings input) : SV_TARGET
         true_normal = mul(surface_normal, tangent_matrix);
     }
     
-    for (uint i = 0; i < 8; i++)
-    {
-        float3 light_dir = normalize(light_direction[i].xyz);
+    //for (uint i = 0; i < 8; i++)
+    //{
+        float3 light_dir = normalize(light_direction.xyz);
     
         float dot_norm = dot(-light_dir, true_normal);
         
-        float3 diffuse_light = saturate(dot_norm) * light_diffuse[i].rgb * surface_colour;
-        float3 ambient_light = light_ambient[i].rgb * surface_colour;
+        float3 diffuse_light = saturate(dot_norm) * light_diffuse.rgb * surface_colour;
+        float3 ambient_light = light_ambient.rgb * surface_colour;
     
         float3 specular_light = pow
         (
@@ -89,12 +89,12 @@ float4 PS_main(Varyings input) : SV_TARGET
                 -light_dir
             )),
             material_diffuse.w
-        ) * light_specular[i].rgb * surface_colour * (dot_norm > 0.0f);
+        ) * light_specular.rgb * surface_colour * (dot_norm > 0.0f);
         
         float3 colour = diffuse_light + ambient_light + specular_light;
         
         overall_colour += colour;
-    }
+    //}
     
     return float4(overall_colour, 1.0f);
 }

@@ -2,6 +2,9 @@
 
 #include <string>
 #include <map>
+#include <vector>
+
+#include "FMaterial.h"
 
 using namespace std;
 
@@ -32,7 +35,6 @@ private:
 			return (name < b.name);
 		}
 	};
-	
 
 	FApplication* application;
 
@@ -51,12 +53,13 @@ public:
 	FMeshData* loadMesh(string path);
 	bool       unloadMesh(FMeshData* res);
 
-	FShader*   loadShader(string path);
+	FShader*   loadShader(string path, bool wireframe, FCullMode culling);
 	bool       unloadShader(FShader* res);
+
+	FMaterial* createMaterial(FShader* shader, map<string, FMaterialParameter> parameters = { }, vector<FTexture*> textures = { });
 
 	~FResourceManager();
 
 private:
 	bool	   unload(void* res);
 };
-

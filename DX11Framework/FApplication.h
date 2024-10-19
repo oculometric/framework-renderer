@@ -45,19 +45,16 @@ private:
 	IDXGISwapChain1* swap_chain = nullptr;
 	D3D11_VIEWPORT viewport;
 
-	ID3D11RasterizerState* rasterizer_state = nullptr;
-	ID3D11RasterizerState* debug_rasterizer_state = nullptr;
 	ID3D11SamplerState* bilinear_sampler_state = nullptr;
-	ID3D11VertexShader* vertex_shader = nullptr;
-	ID3D11PixelShader* pixel_shader = nullptr;
-	ID3D11InputLayout* input_layout = nullptr;
-	ID3D11Buffer* constant_buffer = nullptr;
 	ID3D11Texture2D* depth_stencil_buffer = nullptr;
 	ID3D11ShaderResourceView* blank_texture = nullptr;
 
 	HWND window_handle;
 
-	ConstantBuffer constant_buffer_data;
+	FMaterial* demo_material = nullptr;
+	FShader* active_shader = nullptr;
+	FMeshData* active_mesh = nullptr;
+	void* uniform_buffer = nullptr;
 
 public:
 	FScene* scene;
@@ -65,18 +62,20 @@ public:
 private:
 	void drawObject(FObject* object);
 
-	void registerMesh(FMeshData* mesh_data);
+	bool registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);
 
 	FTexture* registerTexture(wstring path);
 	void unregisterTexture(FTexture* texture);
+
+	bool registerShader(FShader* shader, wstring path);
+	void unregisterShader(FShader* shader);
 
 public:
 	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createWindowHandle(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createD3DDevice();
 	HRESULT createSwapChainAndFrameBuffer();
-	HRESULT initShadersAndInputLayout();
 	HRESULT initPipelineVariables();
 
 	inline bool isFocused() { return GetFocus() == window_handle; }
