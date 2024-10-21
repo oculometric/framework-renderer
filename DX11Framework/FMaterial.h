@@ -60,7 +60,7 @@ struct FMaterialParameter
 		XMINT3 i3;
 	};
 
-	inline FMaterialParameter()               { type = FShaderUniformType::INVALID, XMFLOAT4X4();   }
+	inline FMaterialParameter()               { type = FShaderUniformType::INVALID, m4 = XMFLOAT4X4();   }
 	inline FMaterialParameter(FLOAT arg)      { type = FShaderUniformType::F1; f1 = arg; }
 	inline FMaterialParameter(XMFLOAT3 arg)   { type = FShaderUniformType::F3; f3 = arg; }
 	inline FMaterialParameter(XMFLOAT4 arg)   { type = FShaderUniformType::F4; f4 = arg; }

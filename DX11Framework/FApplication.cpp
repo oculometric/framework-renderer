@@ -127,7 +127,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     swap_chain_descriptor.Stereo = FALSE;
     swap_chain_descriptor.SampleDesc.Count = 1;
     swap_chain_descriptor.SampleDesc.Quality = 0;
-    swap_chain_descriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swap_chain_descriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
     swap_chain_descriptor.BufferCount = 2;
     swap_chain_descriptor.Scaling = DXGI_SCALING_STRETCH;
     swap_chain_descriptor.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
@@ -138,28 +138,41 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     if (FAILED(hr)) return hr;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    ID3D11Texture2D* frame_buffer = nullptr;
-
-    hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&frame_buffer));
+    hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&render_target_buffer));
+    /*D3D11_TEXTURE2D_DESC render_target_descriptor = { };
+    render_target_buffer->GetDesc(&render_target_descriptor);
+    render_target_descriptor.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    render_target_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    render_target_buffer->Release();
+    hr = device->CreateTexture2D(&render_target_descriptor, nullptr, &render_target_buffer);*/
 
     if (FAILED(hr)) return hr;
 
-    D3D11_RENDER_TARGET_VIEW_DESC frame_buffer_descriptor = {};
-    frame_buffer_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; //sRGB render target enables hardware gamma correction
-    frame_buffer_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+    D3D11_RENDER_TARGET_VIEW_DESC render_target_view_descriptor = { };
+    render_target_view_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // sRGB render target enables hardware gamma correction
+    render_target_view_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
-    hr = device->CreateRenderTargetView(frame_buffer, &frame_buffer_descriptor, &render_target_view);
+    hr = device->CreateRenderTargetView(render_target_buffer, &render_target_view_descriptor, &render_target_view);
 
     D3D11_TEXTURE2D_DESC depth_buffer_descriptor = { };
-    frame_buffer->GetDesc(&depth_buffer_descriptor);
+    render_target_buffer->GetDesc(&depth_buffer_descriptor);
     depth_buffer_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depth_buffer_descriptor.BindFlags = D3D10_BIND_DEPTH_STENCIL;
+    depth_buffer_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
     device->CreateTexture2D(&depth_buffer_descriptor, nullptr, &depth_stencil_buffer);
     device->CreateDepthStencilView(depth_stencil_buffer, nullptr, &depth_stencil_view);
 
-    frame_buffer->Release();
+    D3D11_SHADER_RESOURCE_VIEW_DESC render_target_resource_descriptor = { };
+    render_target_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    render_target_resource_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    render_target_resource_descriptor.Texture2D.MipLevels = 1;
+    render_target_resource_descriptor.Texture2D.MostDetailedMip = 0;
+
+    hr = device->CreateShaderResourceView(render_target_buffer, &render_target_resource_descriptor, &render_target_resource);
+
+    //render_target_descriptor.Format = DXGI_FORMAT_R24G8_TYPELESS;
+
+    //hr = device->CreateShaderResourceView(depth_stencil_buffer, &render_target_descriptor, &depth_stencil_resource);
 
     return hr;
 }
@@ -195,10 +208,42 @@ HRESULT FApplication::initPipelineVariables()
     FShader* shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
     if (shader == nullptr) { return -1; }
 
-    demo_material = FResourceManager::get()->createMaterial(shader, 
+    placeholder_material = FResourceManager::get()->createMaterial(shader, 
     {
         { "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f)) }
     });
+
+    postprocess_shader = FResourceManager::get()->loadShader("Postprocess.hlsl", false, FCullMode::BACK);
+    FVertex quad_verts[] = 
+    {
+        FVertex{ XMFLOAT3(-1,-1,0), XMFLOAT4(), XMFLOAT3(), XMFLOAT2(-1,-1) },
+        FVertex{ XMFLOAT3( 1,-1,0), XMFLOAT4(), XMFLOAT3(), XMFLOAT2( 1,-1) },
+        FVertex{ XMFLOAT3( 1, 1,0), XMFLOAT4(), XMFLOAT3(), XMFLOAT2( 1, 1) },
+        FVertex{ XMFLOAT3(-1, 1,0), XMFLOAT4(), XMFLOAT3(), XMFLOAT2(-1, 1) }
+    };
+    uint16_t quad_indices[] = 
+    {
+        0, 1, 2,
+        0, 2, 3
+    };
+    D3D11_BUFFER_DESC vertex_buffer_descriptor = { };
+    vertex_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(FVertex) * 4);
+    vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    D3D11_SUBRESOURCE_DATA vertex_subresource_data = { quad_verts };
+
+    hr = device->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &quad_vertex_buffer);
+
+    D3D11_BUFFER_DESC index_buffer_descriptor = { };
+    index_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(uint16_t) * 6);
+    index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA index_subresource_data = { quad_indices };
+
+    hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &quad_index_buffer);
+
+    if (FAILED(hr)) return hr;
 
     return S_OK;
 }
@@ -332,7 +377,6 @@ bool FApplication::registerShader(FShader* shader, wstring path)
         shader->pixel_shader_pointer->Release();
         vertex_shader_blob->Release();
         pixel_shader_blob->Release();
-        error_blob->Release();
         return false;
     }
 
@@ -345,7 +389,6 @@ bool FApplication::registerShader(FShader* shader, wstring path)
         vertex_shader_blob->Release();
         pixel_shader_blob->Release();
         shader->input_layout->Release();
-        error_blob->Release();
         return false;
     }
     
@@ -353,7 +396,7 @@ bool FApplication::registerShader(FShader* shader, wstring path)
     shader->reflector->GetConstantBufferByIndex(0)->GetDesc(&shader_buffer_descriptor);
 
     D3D11_BUFFER_DESC constant_buffer_descriptor = { };
-    constant_buffer_descriptor.ByteWidth = shader_buffer_descriptor.Size;
+    constant_buffer_descriptor.ByteWidth = max(shader_buffer_descriptor.Size, (UINT)16);
     constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
     constant_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     constant_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -367,7 +410,6 @@ bool FApplication::registerShader(FShader* shader, wstring path)
         pixel_shader_blob->Release();
         shader->input_layout->Release();
         shader->reflector->Release();
-        error_blob->Release();
         return false;
     }
 
@@ -439,10 +481,11 @@ void FApplication::draw()
     {
         scene->active_camera->configuration.aspect_ratio = (float)window_width / (float)window_height;
         scene->active_camera->updateProjectionMatrix();
-        OutputDebugStringA(("drawing scene! about to draw " + to_string(scene->all_objects.size()) + " objects.\n").c_str());
         for (FObject* object : scene->all_objects)
             drawObject(object);
     }
+
+    performPostprocessing();
 
     // present backbuffer to screen
     swap_chain->Present(0, 0);
@@ -461,7 +504,7 @@ void FApplication::drawObject(FObject* object)
     // check if the object has a valid material
     FMaterial* material = mesh_object->getMaterial();
     if (material == nullptr)
-        material = demo_material;
+        material = placeholder_material;
     FShader* shader = material->shader;
 
     // if this shader is not active, load all its properties
@@ -545,4 +588,49 @@ void FApplication::drawObject(FObject* object)
 
     // draw the object
     immediate_context->DrawIndexed(static_cast<UINT>(mesh_data->indices.size()), 0, 0);
+}
+
+void FApplication::performPostprocessing()
+{
+    // load input layout and shader
+    immediate_context->IASetInputLayout(postprocess_shader->input_layout);
+    immediate_context->VSSetShader(postprocess_shader->vertex_shader_pointer, nullptr, 0);
+    immediate_context->PSSetShader(postprocess_shader->pixel_shader_pointer, nullptr, 0);
+    immediate_context->RSSetState(postprocess_shader->rasterizer);
+
+    // make sure this uniform buffer is bound
+    immediate_context->VSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
+    immediate_context->PSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
+
+    // update uniform buffer contents
+    XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
+    XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
+    ((XMMATRIX*)uniform_buffer)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    ((XMMATRIX*)uniform_buffer)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
+    ((XMMATRIX*)uniform_buffer)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+
+    // TODO: write other uniforms!
+
+    ID3D11ShaderReflectionConstantBuffer* shader_reflection = postprocess_shader->reflector->GetConstantBufferByIndex(0);
+    D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
+    shader_reflection->GetDesc(&shader_buffer_descriptor);
+
+    // write uniform buffer data onto GPU
+    D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
+    immediate_context->Map(postprocess_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
+    memcpy(constant_buffer_resource.pData, uniform_buffer, shader_buffer_descriptor.Size);
+    immediate_context->Unmap(postprocess_shader->uniform_buffer, 0);
+
+    // bind the special spicy textures
+    //immediate_context->PSSetShaderResources(0, 1, &render_target_resource);
+    //immediate_context->PSSetShaderResources(1, 1, &depth_stencil_resource);
+
+    // bind vertex buffers
+    UINT stride = { sizeof(FVertex) };
+    UINT offset = 0;
+    immediate_context->IASetVertexBuffers(0, 1, &quad_vertex_buffer, &stride, &offset);
+    immediate_context->IASetIndexBuffer(quad_index_buffer, DXGI_FORMAT_R16_UINT, 0);
+
+    // draw the quad
+    immediate_context->DrawIndexed(6, 0, 0);
 }

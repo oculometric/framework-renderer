@@ -146,6 +146,7 @@
     <ClCompile Include="MyScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cornell.mtl" />
     <None Include="SimpleShaders.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
@@ -157,6 +158,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <FileType>Document</FileType>
     </None>
+    <None Include="sphere.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\oculib\camera.h" />
@@ -174,6 +176,34 @@
     <ClInclude Include="FResourceManager.h" />
     <ClInclude Include="FTexture.h" />
     <ClInclude Include="MyScene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Postprocess.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="blank.dds" />
+    <None Include="monitor_n.dds" />
+    <None Include="monitor_n.jpg" />
+    <None Include="monitor_t.dds" />
+    <None Include="monitor_t.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cornell.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="monitor.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="sphere.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="suzanne.obj">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -112,5 +112,41 @@
     <None Include="SimpleShaders.hlsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="cornell.mtl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sphere.mtl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Postprocess.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="blank.dds">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cornell.obj">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="monitor.obj">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="monitor_n.dds">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="monitor_n.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="monitor_t.dds">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="monitor_t.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sphere.obj">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="suzanne.obj">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

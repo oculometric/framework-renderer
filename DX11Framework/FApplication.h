@@ -14,21 +14,6 @@
 using namespace DirectX;
 //using Microsoft::WRL::ComPtr;
 
-struct ConstantBuffer
-{
-	XMMATRIX projection;
-	XMMATRIX view;
-	XMMATRIX view_inv;
-	XMMATRIX world;
-
-	XMFLOAT4 material_diffuse;
-
-	XMFLOAT4 light_direction[8];
-	XMFLOAT4 light_diffuse[8];
-	XMFLOAT4 light_specular[8];
-	XMFLOAT4 light_ambient[8];
-};
-
 class FApplication
 {
 	friend class FResourceManager;
@@ -36,31 +21,41 @@ private:
 	int window_width = 1280;
 	int window_height = 768;
 
-	ID3D11DeviceContext* immediate_context = nullptr;
-	ID3D11Device* device;
-	IDXGIDevice* dxgi_device = nullptr;
-	IDXGIFactory2* dxgi_factory = nullptr;
-	ID3D11RenderTargetView* render_target_view = nullptr;
-	ID3D11DepthStencilView* depth_stencil_view = nullptr;
-	IDXGISwapChain1* swap_chain = nullptr;
+	ID3D11DeviceContext* immediate_context           = nullptr;
+	ID3D11Device* device                             = nullptr;
+	IDXGIDevice* dxgi_device                         = nullptr;
+	IDXGIFactory2* dxgi_factory                      = nullptr;
+	IDXGISwapChain1* swap_chain                      = nullptr;
 	D3D11_VIEWPORT viewport;
 
-	ID3D11SamplerState* bilinear_sampler_state = nullptr;
-	ID3D11Texture2D* depth_stencil_buffer = nullptr;
-	ID3D11ShaderResourceView* blank_texture = nullptr;
+	ID3D11SamplerState* bilinear_sampler_state       = nullptr;
+	ID3D11ShaderResourceView* blank_texture          = nullptr;
+
+	ID3D11Texture2D* render_target_buffer			 = nullptr;
+	ID3D11RenderTargetView* render_target_view       = nullptr;
+	ID3D11ShaderResourceView* render_target_resource = nullptr;
+
+	ID3D11Texture2D* depth_stencil_buffer            = nullptr;
+	ID3D11DepthStencilView* depth_stencil_view       = nullptr;
+	ID3D11ShaderResourceView* depth_stencil_resource = nullptr;
 
 	HWND window_handle;
 
-	FMaterial* demo_material = nullptr;
-	FShader* active_shader = nullptr;
-	FMeshData* active_mesh = nullptr;
-	void* uniform_buffer = nullptr;
+	FShader* postprocess_shader      = nullptr;
+	ID3D11Buffer* quad_vertex_buffer = nullptr;
+	ID3D11Buffer* quad_index_buffer  = nullptr;
+
+	FMaterial* placeholder_material  = nullptr;
+	FShader* active_shader           = nullptr;
+	FMeshData* active_mesh           = nullptr;
+	void* uniform_buffer             = nullptr;
 
 public:
 	FScene* scene;
 
 private:
 	void drawObject(FObject* object);
+	void performPostprocessing();
 
 	bool registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);
