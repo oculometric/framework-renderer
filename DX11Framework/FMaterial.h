@@ -17,7 +17,8 @@ enum FShaderUniformType
 {
 	F1, F3, F4,
 	M3, M4,
-	I1, I3
+	I1, I3,
+	INVALID
 };
 
 enum FCullMode { OFF, BACK, FRONT };
@@ -59,7 +60,7 @@ struct FMaterialParameter
 		XMINT3 i3;
 	};
 
-	inline FMaterialParameter()               { type = FShaderUniformType::I1, i1 = 0;   }
+	inline FMaterialParameter()               { type = FShaderUniformType::INVALID, XMFLOAT4X4();   }
 	inline FMaterialParameter(FLOAT arg)      { type = FShaderUniformType::F1; f1 = arg; }
 	inline FMaterialParameter(XMFLOAT3 arg)   { type = FShaderUniformType::F3; f3 = arg; }
 	inline FMaterialParameter(XMFLOAT4 arg)   { type = FShaderUniformType::F4; f4 = arg; }

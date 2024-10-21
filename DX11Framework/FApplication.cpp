@@ -197,11 +197,7 @@ HRESULT FApplication::initPipelineVariables()
 
     demo_material = FResourceManager::get()->createMaterial(shader, 
     {
-        { "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f))      },
-        { "light_ambient",    FMaterialParameter(XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f))   },
-        { "light_diffuse",    FMaterialParameter(XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f))      },
-        { "light_specular",   FMaterialParameter(XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f))      },
-        { "light_direction",  FMaterialParameter(XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f))     },
+        { "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f)) }
     });
 
     return S_OK;
@@ -495,16 +491,21 @@ void FApplication::drawObject(FObject* object)
     ((XMMATRIX*)uniform_buffer)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
     ((XMMATRIX*)uniform_buffer)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
     ((XMMATRIX*)uniform_buffer)[3] = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
+    XMFLOAT4* light_params = (XMFLOAT4*)((uint8_t*)uniform_buffer + (sizeof(XMMATRIX) * 4));
+    light_params[0] = XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f);    // direction
+    light_params[1] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);     // diffuse
+    light_params[2] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);     // specular
+    light_params[3] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);  // ambient
 
     // store the rest of the variables from the material
-    for (size_t i = 4; i < shader_buffer_descriptor.Variables; i++)
+    for (size_t i = 8; i < shader_buffer_descriptor.Variables; i++)
     {
         ID3D11ShaderReflectionVariable* var = shader_reflection->GetVariableByIndex(i);
         D3D11_SHADER_VARIABLE_DESC var_descriptor = { };
         var->GetDesc(&var_descriptor);
         FMaterialParameter param = material->getParameter(var_descriptor.Name);
         void* start_ptr = ((uint8_t*)uniform_buffer) + var_descriptor.StartOffset;
-        
+
         switch (param.type)
         {
         case FShaderUniformType::F1: ((FLOAT*)start_ptr)[0]      = param.f1; break;
@@ -514,6 +515,7 @@ void FApplication::drawObject(FObject* object)
         case FShaderUniformType::I3: ((XMINT3*)start_ptr)[0]     = param.i3; break;
         case FShaderUniformType::M3: ((XMFLOAT3X3*)start_ptr)[0] = param.m3; break;
         case FShaderUniformType::M4: ((XMFLOAT4X4*)start_ptr)[0] = param.m4; break;
+        case FShaderUniformType::INVALID: memset(start_ptr, (uint8_t)0, var_descriptor.Size); break;
         }
     }
 

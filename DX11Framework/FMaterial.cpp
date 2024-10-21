@@ -8,7 +8,7 @@ void FMaterial::setParameter(string name, FMaterialParameter param)
 FMaterialParameter FMaterial::getParameter(string name)
 {
 	if (parameters.count(name) > 0) return parameters[name];
-	return FMaterialParameter(0);
+	return FMaterialParameter();
 }
 
 void FMaterial::assignTexture(FTexture* tex, size_t index)

@@ -1,16 +1,17 @@
 cbuffer ConstantBuffer : register(b0)
 {
+    // these 8 fields MUST be the first 8
     float4x4 projection_matrix;
     float4x4 view_matrix;
     float4x4 view_matrix_inv;
     float4x4 world_matrix;
     
-    float4 material_diffuse;
+    float4 light_direction = float4(0.0f, 0.0f, -1.0f, 0.0f);
+    float4 light_diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 light_specular = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 light_ambient = float4(0.05f, 0.05f, 0.05f, 1.0f);
     
-    float4 light_direction;
-    float4 light_diffuse;
-    float4 light_specular;
-    float4 light_ambient;
+    float4 material_diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 Texture2D albedo : register(t0);

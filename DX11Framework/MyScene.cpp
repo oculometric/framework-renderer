@@ -20,7 +20,7 @@ void MyScene::start()
 	FShader* monitor_shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
 	FMaterial* monitor_mat = FResourceManager::get()->createMaterial(monitor_shader,
 	{
-		{ "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f)) }
+		{ "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)) },
 	},
 	{
 		FResourceManager::get()->loadTexture("monitor_t.dds"),
