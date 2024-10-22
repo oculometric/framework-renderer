@@ -1,11 +1,11 @@
-#include "FSceneParser.h"
+#include "FJsonParser.h"
 
 #include <fstream>
 
 bool FJsonBlob::validate(const string& s)
 {
     // assume it's good
-    return true;
+    return s.length() > 0;
 }
 
 size_t FJsonBlob::next(const string& s, const size_t start, const char delim)
@@ -224,7 +224,7 @@ FJsonBlob::FJsonBlob(string path)
     if (!validate(everything)) return;
 
     size_t end;
-    root = parse(extract(everything, 0, end));
+    root = FJsonElement(parse(extract(everything, 0, end)));
 }
 
 FJsonBlob::~FJsonBlob()

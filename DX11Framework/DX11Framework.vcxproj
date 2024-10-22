@@ -142,7 +142,7 @@
     <ClCompile Include="FResourceManager.cpp" />
     <ClCompile Include="FScene.cpp" />
     <ClCompile Include="FScene.h" />
-    <ClCompile Include="FSceneParser.cpp" />
+    <ClCompile Include="FJsonParser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MyScene.cpp" />
   </ItemGroup>
@@ -178,7 +178,7 @@
     <ClInclude Include="FMesh.h" />
     <ClInclude Include="FResourceManager.h" />
     <ClInclude Include="FTexture.h" />
-    <ClInclude Include="FSceneParser.h" />
+    <ClInclude Include="FJsonParser.h" />
     <ClInclude Include="MyScene.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <string>
 
 #include "FObject.h"
 #include "FCamera.h"
@@ -15,6 +16,7 @@ class FScene
 
 public:
 	FCamera* active_camera = nullptr;
+	string name = "Scene";
 
 protected:
 	vector<FObject*> all_objects;

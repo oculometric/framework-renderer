@@ -27,7 +27,7 @@ struct FJsonElement
 	union
 	{
 		float f_val;
-		FJsonObject* o_val;
+		FJsonObject* o_val = nullptr;
 	};
 
 private:
@@ -46,10 +46,10 @@ public:
 	inline FJsonElement(FJsonObject* o) { o_val = o; type = FJsonType::JOBJECT; }
 	inline FJsonElement(vector<FJsonElement> a) { a_val = a; type = FJsonType::JARRAY; }
 	inline FJsonElement(const FJsonElement& other) { assign(other); }
-	inline FJsonElement(const FJsonElement&& other) { assign(other); }
+	inline FJsonElement(const FJsonElement&& other) noexcept { assign(other); }
 	inline FJsonElement operator=(const FJsonElement& other) { assign(other); return *this; }
-	inline FJsonElement operator=(const FJsonElement&& other) { assign(other); return *this; }
-	inline ~FJsonElement() { if (FJsonType::JARRAY) a_val.~vector(); }
+	inline FJsonElement operator=(const FJsonElement&& other) noexcept { assign(other); return *this; }
+	inline ~FJsonElement() { if (type == FJsonType::JARRAY) a_val.~vector(); }
 };
 
 struct FJsonObject
@@ -58,13 +58,16 @@ struct FJsonObject
 
 	inline FJsonObject() { }
 	
+	inline bool has(string s, FJsonType t) { if (elements.count(s) <= 0) return false; return elements.at(s).type == t; }
+	inline FJsonElement operator[](string s) { return elements.at(s); }
+	inline FJsonElement operator[](const char* s) { return elements.at(s); }
 };
 
 class FJsonBlob
 {
 private:
 	vector<FJsonObject*> all_objects;
-	FJsonObject* root = nullptr;
+	FJsonElement root = FJsonElement(nullptr);
 
 	bool validate(const string& s);
 	size_t next(const string& s, const size_t start, const char delim);
@@ -81,14 +84,14 @@ public:
 	FJsonBlob operator=(const FJsonBlob& other) = delete;
 	FJsonBlob operator=(const FJsonBlob&& other) = delete;
 
-	inline FJsonObject* getRoot() const { return root; }
+	inline FJsonElement getRoot() const { return root; }
 
 	~FJsonBlob();
 };
 
 // override this in order to parse specific classes out of FJsonObjects
 template <typename T>
-bool operator>>(const FJsonElement& a, T& other);
+inline bool operator>>(const FJsonElement& a, T& other) { };
 
 class FScene;
 class FObject;

@@ -1,6 +1,6 @@
 {
   "name": "MyScene but from JSON",
-  "assets": { // these are assets
+  "assets": {
     "meshes": [
       { "path": "suzanne.obj" },
       { "path": "teapot.obj" },
@@ -8,10 +8,10 @@
       { "path": "cornell.obj" },
       { "path": "uvtest.obj" },
       { "path": "monitor.obj" }
-    ], /* this is a block comment */
+    ],
     "shaders": [
-      { /*
-multiline block */       "path": "SimpleShaders.hlsl",
+      { 
+        "path": "SimpleShaders.hlsl",
         "wireframe": 0,
         "culling": "off"
       }
@@ -43,8 +43,8 @@ multiline block */       "path": "SimpleShaders.hlsl",
           "scale": [ 0.3, 0.3, 0.3 ]
         }
       ]
-    }, // mult /* line block
-   */ {
+    },
+    {
       "class": "mesh",
       "name": "backing",
       "data": "uvtest.obj"
