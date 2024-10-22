@@ -30,23 +30,47 @@ struct FFaceCornerReference
 
 pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 co_c, XMFLOAT2 uv_a, XMFLOAT2 uv_b, XMFLOAT2 uv_c, XMFLOAT3 vn_a)
 {
-    XMFLOAT3 ab = XMFLOAT3(co_b.x - co_a.x, co_b.y - co_a.y, co_b.z - co_a.z);
-    XMFLOAT3 ac = XMFLOAT3(co_c.x - co_a.x, co_c.y - co_a.y, co_c.z - co_a.z);
-    XMFLOAT2 uv_ab = XMFLOAT2(uv_b.x - uv_a.x, uv_b.y - uv_a.y);
-    XMFLOAT2 uv_ac = XMFLOAT2(uv_c.x - uv_a.x, uv_c.y - uv_a.y);
+    XMFLOAT3 debug_tool = XMFLOAT3(1.0f, 1.0f, 1.0f);
+    XMFLOAT2 other_tool = XMFLOAT2(1.0f, 1.0f);
+
+    // vector from the target vertex to the second vertex
+    XMFLOAT3 ab = XMFLOAT3(co_b.x - co_a.x, co_b.y - co_a.y, co_b.z - co_a.z); ab = XMFLOAT3(ab.x * debug_tool.x, ab.y * debug_tool.y, ab.z * debug_tool.z);
+    // vector from the target vertex to the third vertex
+    XMFLOAT3 ac = XMFLOAT3(co_c.x - co_a.x, co_c.y - co_a.y, co_c.z - co_a.z); ac = XMFLOAT3(ac.x * debug_tool.x, ac.y * debug_tool.y, ac.z * debug_tool.z);
+    // delta uv between target and second
+    XMFLOAT2 uv_ab = XMFLOAT2(uv_b.x - uv_a.x, uv_b.y - uv_a.y); uv_ab = XMFLOAT2(uv_ab.x * other_tool.x, uv_ab.y * other_tool.y);
+    // delta uv between target and third
+    XMFLOAT2 uv_ac = XMFLOAT2(uv_c.x - uv_a.x, uv_c.y - uv_a.y); uv_ac = XMFLOAT2(uv_ac.x * other_tool.x, uv_ac.y * other_tool.y);
+    // matrix representing UVs
     XMFLOAT3X3 uv_mat = XMFLOAT3X3
     (
         uv_ab.x, uv_ac.x, 0,
         uv_ab.y, uv_ac.y, 0,
-        0,       0,        1
+        0,       0,       1
     );
+    // matrix representing vectors between vertices
     XMFLOAT3X3 vec_mat = XMFLOAT3X3
     (
-        ab.x, ac.x, vn_a.x,
-        ab.y, ac.y, vn_a.y,
-        ab.z, ac.z, vn_a.z
+        ab.x, ac.x, 0,
+        ab.y, ac.y, 0,
+        ab.z, ac.z, 0
     );
     
+    // we should be able to express the vectors from A->B and A->C with reference to the difference in UV coordinate and the tangent and bitangent:
+    //
+    // AB = (duv_ab.x * T) + (duv_ab.y * B)
+    // AC = (duv_ac.x * T) + (duv_ac.y * B)
+    // 
+    // this gives us 6 simultaneous equations for the XYZ coordinates of the tangent and bitangent
+    // these can be expressed and solved with matrices:
+    // 
+    // [ AB.x  AC.x  0 ]     [ T.x  B.x  N.x ]   [ duv_ab.x  duv_ac.x  0 ]
+    // [ AB.y  AC.y  0 ]  =  [ T.y  B.y  N.y ] * [ duv_ab.y  duv_ac.y  0 ]
+    // [ AB.z  AC.z  0 ]     [ T.z  B.z  N.z ]   [ 0         0         1 ]
+    //
+    // 
+
+
     // FIXME: this may or may not need to be transposed? also just fix this in general
     XMMATRIX result = XMLoadFloat3x3(&vec_mat) * XMMatrixInverse(nullptr, XMLoadFloat3x3(&uv_mat));
 
@@ -57,7 +81,9 @@ pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 c
 
 
     pair<XMFLOAT3, XMFLOAT3> ret;
-    ret.first = XMFLOAT3(vec_mat._11, vec_mat._21, vec_mat._31);
+    ret.first = XMFLOAT3(vec_mat._11, vec_mat._21, vec_mat._31);                 // extract tangent
+    ret.second = XMFLOAT3(vec_mat._12, vec_mat._22, vec_mat._32);                // extract bitangent
+    XMFLOAT3 norm = XMFLOAT3(vec_mat._13, vec_mat._23, vec_mat._33);             // extract normal
     XMStoreFloat3(&ret.first, XMVector3Normalize(XMLoadFloat3(&ret.first)));
     //XMStoreFloat3(&result., tangent);
     //XMStoreFloat3(&result.second, ab);

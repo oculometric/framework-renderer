@@ -139,6 +139,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&render_target_buffer));
+    
     /*D3D11_TEXTURE2D_DESC render_target_descriptor = { };
     render_target_buffer->GetDesc(&render_target_descriptor);
     render_target_descriptor.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;

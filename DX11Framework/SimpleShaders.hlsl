@@ -29,6 +29,8 @@ struct Varyings
     float2 uv             : TEXCOORD0;
     float3 tangent        : TANGENT0;
     float3 bitangent      : BITANGENT0;
+    
+    float3x3 tbn          : MATRIX;
 };
 
 Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 normal : NORMAL, float2 uv : TEXCOORD0, float3 tangent : TANGENT0)
@@ -49,8 +51,12 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     
     output.uv = uv * float2(1.0f, -1.0f);
     
+    float3 bitangent = cross(normal, tangent);
+    
     output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz);
     output.bitangent = normalize(cross(output.normal, output.tangent));
+    
+    output.tbn = float3x3(normalize(tangent), normalize(bitangent), normalize(normal));
     
     return output;
 }
@@ -68,7 +74,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     bool normal_map_evaluated = false;
     if (length(surface_normal) <= 1.5f)
     {
-        float3x3 tangent_matrix = float3x3(normalize(input.tangent), normalize(input.bitangent), true_normal);
+        float3x3 tangent_matrix = input.tbn;
         normal_map_evaluated = true;
         true_normal = mul(tangent_matrix, surface_normal);
     }
@@ -97,5 +103,5 @@ float4 PS_main(Varyings input) : SV_TARGET
         overall_colour += colour;
     //}
     
-    return float4(input.tangent, 1.0f);
+    return float4(overall_colour, 1.0f);
 }
