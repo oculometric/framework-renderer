@@ -10,12 +10,12 @@ using namespace DirectX;
 
 enum FJsonType
 {
-	FLOAT,
-	VECTOR,
-	INT,
-	STRING,
-	OBJECT,
-	ARRAY
+	JFLOAT,
+	JVECTOR,
+	JINT,
+	JSTRING,
+	JOBJECT,
+	JARRAY
 };
 
 struct FJsonObject;
@@ -47,6 +47,7 @@ private:
 	FJsonObject* root = nullptr;
 
 	bool validate(string s);
+	size_t bracketAwareNext(string s, size_t start, char delim);
 	string extractBlock(string s, size_t start, char delim);
 	FJsonObject* parseBlock(string s);
 	string reduce(string s);

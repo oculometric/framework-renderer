@@ -2,6 +2,7 @@
 
 #include "FApplication.h"
 #include "MyScene.h"
+#include "FSceneParser.h"
 
 //Dependencies:user32.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;
 
@@ -9,6 +10,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
+
+	FJsonBlob b("MyScene.json");
+
+	return b.getRoot() == nullptr;
 
 	FApplication application = FApplication();
 	application.scene = new MyScene(&application);
