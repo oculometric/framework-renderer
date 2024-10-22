@@ -104,5 +104,3 @@ bool operator>>(const FJsonElement& a, FScene& other);
 bool operator>>(const FJsonElement& a, FObject& other);
 bool operator>>(const FJsonElement& a, FMesh& other);
 bool operator>>(const FJsonElement& a, FCamera& other);
-bool operator>>(const FJsonElement& a, FMaterial& other);
-bool operator>>(const FJsonElement& a, FShader& other);
