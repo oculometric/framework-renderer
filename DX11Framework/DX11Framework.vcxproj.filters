@@ -19,6 +19,12 @@
     <Filter Include="oculib">
       <UniqueIdentifier>{591a7c72-b825-4f38-9f39-25863df56e42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene Graphs">
+      <UniqueIdentifier>{d960dbe7-fd51-439f-9d78-c214100bd931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Materials">
+      <UniqueIdentifier>{dd6cd4ce-fe96-42d4-9111-cb847e585c30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FApplication.cpp">
@@ -58,6 +64,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FSceneParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,6 +116,9 @@
     <ClInclude Include="FMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FSceneParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleShaders.hlsl">
@@ -147,6 +159,12 @@
     </None>
     <None Include="suzanne.obj">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MyScene.json">
+      <Filter>Scene Graphs</Filter>
+    </None>
+    <None Include="monitor.mat">
+      <Filter>Materials</Filter>
     </None>
   </ItemGroup>
 </Project>

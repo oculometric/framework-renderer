@@ -1,0 +1,7 @@
+{
+	"shader": "SimpleShaders.hlsl",
+	"textures": [
+		"monitor_t.dds",
+		"monitor_n.dds"
+	]
+}

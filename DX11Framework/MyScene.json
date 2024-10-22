@@ -1,0 +1,70 @@
+{
+  "name": "MyScene but from JSON",
+  "assets": {
+    "meshes": [
+      { "path": "suzanne.obj" },
+      { "path": "teapot.obj" },
+      { "path": "sphere.obj" },
+      { "path": "cornell.obj" },
+      { "path": "uvtest.obj" },
+      { "path": "monitor.obj" }
+    ],
+    "shaders": [
+      {
+        "path": "SimpleShaders.hlsl",
+        "wireframe": 0,
+        "culling": "off"
+      }
+    ],
+    "textures": [
+      { "path": "monitor_t.dds" },
+      { "path": "monitor_n.dds" }
+    ],
+    "materials": [
+      { "path": "monitor.mat" }
+    ]
+  },
+  "objects": [
+    {
+      "class": "mesh",
+      "name": "a",
+      "data": "monitor.obj",
+      "material": "monitor.mat",
+      "position": [ 0, 0, 0 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 1, 1, 1 ],
+      "children": [
+        {
+          "class": "mesh",
+          "name": "b",
+          "data": "sphere.obj",
+          "position": [ 0, 0, 4.5 ],
+          "rotation": [ 0, 0, 45.0 ],
+          "scale": [ 0.3, 0.3, 0.3 ]
+        }
+      ]
+    },
+    {
+      "class": "mesh",
+      "name": "backing",
+      "data": "uvtest.obj"
+    },
+    {
+      "class": "mesh",
+      "name": "box",
+      "data": "cornell.obj",
+      "position": [ 0, 0, 6.0 ]
+    },
+    {
+      "class": "camera",
+      "name": "camera",
+      "position": [ 0, 0, 5.0 ],
+      "rotation": [ 0, 180.0, 0 ]
+    },
+    {
+      "class": "mesh",
+      "name": "c",
+      "position": [0, 0, 2.0 ]
+    }
+  ]
+}
