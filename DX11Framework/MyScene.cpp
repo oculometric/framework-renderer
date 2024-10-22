@@ -16,6 +16,8 @@ void MyScene::start()
 
 	FMeshData* cornell = FResourceManager::get()->loadMesh("cornell.obj");
 
+	FMeshData* uvdemo = FResourceManager::get()->loadMesh("uvtest.obj");
+
 	FMeshData* monitor = FResourceManager::get()->loadMesh("monitor.obj");
 	FShader* monitor_shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
 	FMaterial* monitor_mat = FResourceManager::get()->createMaterial(monitor_shader,
@@ -27,10 +29,13 @@ void MyScene::start()
 		FResourceManager::get()->loadTexture("monitor_n.dds")
 	});
 
+	backing.setData(uvdemo);
 	a.setData(monitor);
 	a.setMaterial(monitor_mat);
 	b.setData(suzanne);
 	c.setData(teapot);
+
+	addObject(&backing, nullptr);
 
 	b.position.x = 4.5f;
 	b.scale = XMFLOAT3(0.3f, 0.3f, 0.3f);
@@ -55,7 +60,7 @@ void MyScene::start()
 
 void MyScene::update(float delta_time)
 {
-	a.eulers.z += 24.0f * delta_time;
+	//a.eulers.z += 24.0f * delta_time;
 	b.eulers.z -= 180.0f * delta_time;
 	b.eulers.y += 36.0f * delta_time;
 

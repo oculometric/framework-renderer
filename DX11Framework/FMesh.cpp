@@ -65,6 +65,11 @@ pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 c
     return ret;
 }
 
+inline XMFLOAT3 swizzle(XMFLOAT3 v)
+{
+    return XMFLOAT3(-v.x, -v.z, v.y);
+}
+
 FMeshData* FMesh::loadMesh(string path)
 {
     ifstream file;
@@ -93,7 +98,7 @@ FMeshData* FMesh::loadMesh(string path)
             file >> tmp3.x;
             file >> tmp3.y;
             file >> tmp3.z;
-            tmp_co.push_back(tmp3);
+            tmp_co.push_back(swizzle(tmp3));
         }
         else if (tmps == "vn")
         {
@@ -101,7 +106,7 @@ FMeshData* FMesh::loadMesh(string path)
             file >> tmp3.x;
             file >> tmp3.y;
             file >> tmp3.z;
-            tmp_vn.push_back(tmp3);
+            tmp_vn.push_back(swizzle(tmp3));
         }
         else if (tmps == "vt")
         {
@@ -173,7 +178,7 @@ FMeshData* FMesh::loadMesh(string path)
         uint16_t v2 = mesh_data->indices[(tri * 3) + 2]; FVertex f2 = mesh_data->vertices[v2];
         
         if (!touched[v0]) mesh_data->vertices[v0].tangent = computeTangent(f0.position, f1.position, f2.position, f0.uv, f1.uv, f2.uv, f1.normal).first;
-        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f2.position, f0.position, f1.uv, f2.uv, f0.uv, f1.normal).first;
+        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f0.position, f2.position, f1.uv, f0.uv, f2.uv, f1.normal).first;
         if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f1.position, f2.uv, f0.uv, f1.uv, f2.normal).first;
 
         touched[v0] = true; touched[v1] = true; touched[v2] = true;

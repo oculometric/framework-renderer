@@ -9,6 +9,7 @@ private:
 	FMesh a;
 	FMesh b;
 	FMesh c;
+	FMesh backing;
 
 public:
 	using FScene::FScene;

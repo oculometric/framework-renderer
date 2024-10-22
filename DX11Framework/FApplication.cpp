@@ -213,7 +213,7 @@ HRESULT FApplication::initPipelineVariables()
         { "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f)) }
     });
 
-    postprocess_shader = FResourceManager::get()->loadShader("Postprocess.hlsl", false, FCullMode::BACK);
+    postprocess_shader = FResourceManager::get()->loadShader("Postprocess.hlsl", false, FCullMode::OFF);
     FVertex quad_verts[] = 
     {
         FVertex{ XMFLOAT3(-1,-1,0), XMFLOAT4(), XMFLOAT3(), XMFLOAT2(-1,-1) },
@@ -485,7 +485,7 @@ void FApplication::draw()
             drawObject(object);
     }
 
-    performPostprocessing();
+    //performPostprocessing();
 
     // present backbuffer to screen
     swap_chain->Present(0, 0);
@@ -602,6 +602,9 @@ void FApplication::performPostprocessing()
     immediate_context->VSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
     immediate_context->PSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
 
+    active_shader = postprocess_shader;
+    active_mesh = nullptr;
+
     // update uniform buffer contents
     XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
     XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
@@ -622,7 +625,7 @@ void FApplication::performPostprocessing()
     immediate_context->Unmap(postprocess_shader->uniform_buffer, 0);
 
     // bind the special spicy textures
-    //immediate_context->PSSetShaderResources(0, 1, &render_target_resource);
+    immediate_context->PSSetShaderResources(0, 1, &render_target_resource);
     //immediate_context->PSSetShaderResources(1, 1, &depth_stencil_resource);
 
     // bind vertex buffers

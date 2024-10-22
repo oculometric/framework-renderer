@@ -50,7 +50,7 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     output.uv = uv * float2(1.0f, -1.0f);
     
     output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz);
-    output.bitangent = normalize(cross(output.normal, output.bitangent));
+    output.bitangent = normalize(cross(output.normal, output.tangent));
     
     return output;
 }
@@ -62,7 +62,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     float3 overall_colour = float3(0.0f, 0.0f, 0.0f);
     
     float3 surface_colour = material_diffuse.rgb * albedo.Sample(bilinear_sampler, input.uv).rgb;
-    float3 surface_normal = normal.Sample(bilinear_sampler, input.uv).xyz;
+    float3 surface_normal = (normal.Sample(bilinear_sampler, input.uv).xyz * 2.0f) - 1.0f;
     
     float3 true_normal = normalize(input.normal);
     bool normal_map_evaluated = false;
@@ -70,7 +70,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     {
         float3x3 tangent_matrix = float3x3(normalize(input.tangent), normalize(input.bitangent), true_normal);
         normal_map_evaluated = true;
-        true_normal = mul(surface_normal, tangent_matrix);
+        true_normal = mul(tangent_matrix, surface_normal);
     }
     
     //for (uint i = 0; i < 8; i++)
@@ -97,5 +97,5 @@ float4 PS_main(Varyings input) : SV_TARGET
         overall_colour += colour;
     //}
     
-    return float4(overall_colour, 1.0f);
+    return float4(input.tangent, 1.0f);
 }

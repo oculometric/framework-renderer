@@ -28,6 +28,7 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
 
 float4 PS_main(Varyings input) : SV_TARGET
 {
+    return screen.Sample(bilinear_sampler, input.uv);
     return float4(input.uv, 0.0f, 1.0f);
 
 }
