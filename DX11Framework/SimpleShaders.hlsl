@@ -20,17 +20,24 @@ SamplerState bilinear_sampler : register(s0);
 
 struct Varyings
 {
-    float4 position       : SV_POSITION;
-    float3 model_position : COLOR1;
-    float3 world_position : COLOR2;
-    float3 view_position  : COLOR3;
-    float4 colour         : COLOR;
-    float3 normal         : NORMAL;
-    float2 uv             : TEXCOORD0;
-    float3 tangent        : TANGENT0;
-    float3 bitangent      : BITANGENT0;
+    float4 position         : SV_POSITION;
+    float3 model_position   : COLOR1;
+    float3 world_position   : COLOR2;
+    float3 view_position    : COLOR3;
+    float4 colour           : COLOR;
+    float3 normal           : NORMAL;
+    float2 uv               : TEXCOORD0;
+    float3 tangent          : TANGENT0;
+    float3 bitangent        : BITANGENT0;
     
-    float3x3 tbn          : MATRIX;
+    float3x3 tbn            : MATRIX;
+};
+
+struct Fragment
+{
+    float4 colour           : SV_TARGET;
+    float4 normal           : SV_TARGET1;
+    float depth             : SV_DEPTH;
 };
 
 Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 normal : NORMAL, float2 uv : TEXCOORD0, float3 tangent : TANGENT0)
@@ -61,7 +68,7 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     return output;
 }
 
-float4 PS_main(Varyings input) : SV_TARGET
+Fragment PS_main(Varyings input)
 {
     // TODO: implement non-directional lights
     float3 view_dir = normalize(mul(float4(normalize(input.view_position.xyz), 0.0f), view_matrix_inv).xyz);
@@ -103,5 +110,10 @@ float4 PS_main(Varyings input) : SV_TARGET
         overall_colour += colour;
     //}
     
-    return float4(overall_colour, 1.0f);
+    Fragment output = (Fragment)0;
+    output.colour = float4(overall_colour, 1.0f);
+    output.normal = float4(true_normal, 1.0f);
+    output.depth = 1.0f - (1.0f / (input.position.w + 1.0f));
+    
+    return output;
 }

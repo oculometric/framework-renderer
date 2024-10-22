@@ -137,43 +137,70 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     hr = dxgi_factory->CreateSwapChainForHwnd(device, window_handle, &swap_chain_descriptor, nullptr, nullptr, &swap_chain);
     if (FAILED(hr)) return hr;
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&render_target_buffer));
+    // grab a reference to the main render target texture
+    hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&colour_buffer));
     
-    /*D3D11_TEXTURE2D_DESC render_target_descriptor = { };
-    render_target_buffer->GetDesc(&render_target_descriptor);
-    render_target_descriptor.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-    render_target_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-    render_target_buffer->Release();
-    hr = device->CreateTexture2D(&render_target_descriptor, nullptr, &render_target_buffer);*/
+    // create a new texture with the same setup as the render target, which will be our intermediate for post-processing
+    D3D11_TEXTURE2D_DESC colour_buffer_descriptor = { };
+    colour_buffer->GetDesc(&colour_buffer_descriptor);
+    hr = device->CreateTexture2D(&colour_buffer_descriptor, nullptr, &colour_buffer_intermediate);
 
     if (FAILED(hr)) return hr;
 
-    D3D11_RENDER_TARGET_VIEW_DESC render_target_view_descriptor = { };
-    render_target_view_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // sRGB render target enables hardware gamma correction
-    render_target_view_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+    // create a view around the render target
+    D3D11_RENDER_TARGET_VIEW_DESC colour_buffer_view_descriptor = { };
+    colour_buffer_view_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // sRGB render target enables hardware gamma correction
+    colour_buffer_view_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
-    hr = device->CreateRenderTargetView(render_target_buffer, &render_target_view_descriptor, &render_target_view);
+    hr = device->CreateRenderTargetView(colour_buffer, &colour_buffer_view_descriptor, &colour_buffer_view);
 
+    // create a second, intermediate view around the intermediate render target
+    colour_buffer_view_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+    hr = device->CreateRenderTargetView(colour_buffer_intermediate, &colour_buffer_view_descriptor, &colour_buffer_intermediate_view);
+
+    // create a shader resource view around the intermediate render target
+    D3D11_SHADER_RESOURCE_VIEW_DESC colour_buffer_resource_descriptor = { };
+    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    colour_buffer_resource_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    colour_buffer_resource_descriptor.Texture2D.MipLevels = 1;
+    colour_buffer_resource_descriptor.Texture2D.MostDetailedMip = 0;
+
+    hr = device->CreateShaderResourceView(colour_buffer_intermediate, &colour_buffer_resource_descriptor, &colour_buffer_resource);
+
+    if (FAILED(hr)) return hr;
+
+    // create a new texture for the depth buffer
     D3D11_TEXTURE2D_DESC depth_buffer_descriptor = { };
-    render_target_buffer->GetDesc(&depth_buffer_descriptor);
-    depth_buffer_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depth_buffer_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    colour_buffer->GetDesc(&depth_buffer_descriptor);
+    depth_buffer_descriptor.Format = DXGI_FORMAT_R24G8_TYPELESS;
+    depth_buffer_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 
-    device->CreateTexture2D(&depth_buffer_descriptor, nullptr, &depth_stencil_buffer);
-    device->CreateDepthStencilView(depth_stencil_buffer, nullptr, &depth_stencil_view);
+    device->CreateTexture2D(&depth_buffer_descriptor, nullptr, &depth_buffer);
 
-    D3D11_SHADER_RESOURCE_VIEW_DESC render_target_resource_descriptor = { };
-    render_target_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    render_target_resource_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    render_target_resource_descriptor.Texture2D.MipLevels = 1;
-    render_target_resource_descriptor.Texture2D.MostDetailedMip = 0;
+    // create a view around the depth buffer
+    D3D11_DEPTH_STENCIL_VIEW_DESC depth_buffer_view_descriptor = { };
+    depth_buffer_view_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depth_buffer_view_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    depth_buffer_view_descriptor.Texture2D.MipSlice = 0;
+    device->CreateDepthStencilView(depth_buffer, &depth_buffer_view_descriptor, &depth_buffer_view);
 
-    hr = device->CreateShaderResourceView(render_target_buffer, &render_target_resource_descriptor, &render_target_resource);
+    // create a shader resource view around the depth buffer
+    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 
-    //render_target_descriptor.Format = DXGI_FORMAT_R24G8_TYPELESS;
+    hr = device->CreateShaderResourceView(depth_buffer, &colour_buffer_resource_descriptor, &depth_buffer_resource);
 
-    //hr = device->CreateShaderResourceView(depth_stencil_buffer, &render_target_descriptor, &depth_stencil_resource);
+    if (FAILED(hr)) return hr;
+
+    // create a normal buffer texture
+    hr = device->CreateTexture2D(&colour_buffer_descriptor, nullptr, &normal_buffer);
+
+    // create a render target view around that texture
+    hr = device->CreateRenderTargetView(normal_buffer, &colour_buffer_view_descriptor, &normal_buffer_view);
+
+    // create a shader resource view around the normal buffer
+    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    hr = device->CreateShaderResourceView(normal_buffer, &colour_buffer_resource_descriptor, &normal_buffer_resource);
 
     return hr;
 }
@@ -440,11 +467,11 @@ FApplication::~FApplication()
     if (device) device->Release();
     if (dxgi_device) dxgi_device->Release();
     if (dxgi_factory) dxgi_factory->Release();
-    if (render_target_view) render_target_view->Release();
-    if (depth_stencil_view) depth_stencil_view->Release();
+    if (colour_buffer_view) colour_buffer_view->Release();
+    if (depth_buffer_view) depth_buffer_view->Release();
     if (swap_chain) swap_chain->Release();
 
-    if (depth_stencil_buffer) depth_stencil_buffer->Release();
+    if (depth_buffer) depth_buffer->Release();
     if (scene) delete scene;
 }
 
@@ -473,10 +500,13 @@ void FApplication::update()
 void FApplication::draw()
 {    
     // present unbinds render target, so rebind and clear at start of each frame
-    float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };  
-    immediate_context->OMSetRenderTargets(1, &render_target_view, depth_stencil_view);
-    immediate_context->ClearRenderTargetView(render_target_view, background_colour);
-    immediate_context->ClearDepthStencilView(depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+    float zero[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    ID3D11RenderTargetView* targets[] = { colour_buffer_intermediate_view, normal_buffer_view };
+    immediate_context->OMSetRenderTargets(2, targets, depth_buffer_view);
+    immediate_context->ClearRenderTargetView(colour_buffer_intermediate_view, background_colour);
+    immediate_context->ClearRenderTargetView(normal_buffer_view, zero);
+    immediate_context->ClearDepthStencilView(depth_buffer_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     if (scene && scene->active_camera)
     {
@@ -486,7 +516,7 @@ void FApplication::draw()
             drawObject(object);
     }
 
-    //performPostprocessing();
+    performPostprocessing();
 
     // present backbuffer to screen
     swap_chain->Present(0, 0);
@@ -593,6 +623,9 @@ void FApplication::drawObject(FObject* object)
 
 void FApplication::performPostprocessing()
 {
+    ID3D11RenderTargetView* targets[] = { colour_buffer_view, nullptr };
+    immediate_context->OMSetRenderTargets(2, targets, nullptr);
+
     // load input layout and shader
     immediate_context->IASetInputLayout(postprocess_shader->input_layout);
     immediate_context->VSSetShader(postprocess_shader->vertex_shader_pointer, nullptr, 0);
@@ -626,8 +659,9 @@ void FApplication::performPostprocessing()
     immediate_context->Unmap(postprocess_shader->uniform_buffer, 0);
 
     // bind the special spicy textures
-    immediate_context->PSSetShaderResources(0, 1, &render_target_resource);
-    //immediate_context->PSSetShaderResources(1, 1, &depth_stencil_resource);
+    immediate_context->PSSetShaderResources(0, 1, &colour_buffer_resource);
+    immediate_context->PSSetShaderResources(1, 1, &depth_buffer_resource);
+    immediate_context->PSSetShaderResources(2, 1, &normal_buffer_resource);
 
     // bind vertex buffers
     UINT stride = { sizeof(FVertex) };
@@ -637,4 +671,10 @@ void FApplication::performPostprocessing()
 
     // draw the quad
     immediate_context->DrawIndexed(6, 0, 0);
+
+    // unbind the magic buffers
+    ID3D11ShaderResourceView* tmp = nullptr;
+    immediate_context->PSSetShaderResources(0, 1, &tmp);
+    immediate_context->PSSetShaderResources(1, 1, &tmp);
+    immediate_context->PSSetShaderResources(2, 1, &tmp);
 }

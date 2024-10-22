@@ -32,7 +32,7 @@ void MyScene::start()
 	backing.setData(uvdemo);
 	a.setData(monitor);
 	a.setMaterial(monitor_mat);
-	b.setData(suzanne);
+	b.setData(sphere);
 	c.setData(teapot);
 
 	addObject(&backing, nullptr);

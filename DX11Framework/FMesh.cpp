@@ -91,9 +91,9 @@ pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 c
     return ret;
 }
 
-inline XMFLOAT3 swizzle(XMFLOAT3 v)
+inline XMFLOAT3 swizzle(XMFLOAT3 v, bool normal)
 {
-    return XMFLOAT3(-v.x, -v.z, v.y);
+    return normal ? XMFLOAT3(-v.x, -v.z, v.y) : XMFLOAT3(-v.x, -v.z, v.y);
 }
 
 FMeshData* FMesh::loadMesh(string path)
@@ -124,7 +124,7 @@ FMeshData* FMesh::loadMesh(string path)
             file >> tmp3.x;
             file >> tmp3.y;
             file >> tmp3.z;
-            tmp_co.push_back(swizzle(tmp3));
+            tmp_co.push_back(swizzle(tmp3, false));
         }
         else if (tmps == "vn")
         {
@@ -132,7 +132,7 @@ FMeshData* FMesh::loadMesh(string path)
             file >> tmp3.x;
             file >> tmp3.y;
             file >> tmp3.z;
-            tmp_vn.push_back(swizzle(tmp3));
+            tmp_vn.push_back(swizzle(tmp3, true));
         }
         else if (tmps == "vt")
         {

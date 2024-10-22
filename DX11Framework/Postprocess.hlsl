@@ -26,9 +26,51 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     return output;
 }
 
+float4 sharpen(Texture2D tex, float2 uv, float2 pixels_in_image)
+{
+    float2 step = 1.0f / pixels_in_image;
+    
+    const float kernel[] =
+    {
+        -0.5f, -1.0f, -0.5f,
+        -1.0f,  7.0f, -1.0f,
+        -0.5f, -1.0f, -0.5f
+    };
+    
+    return (tex.Sample(bilinear_sampler, uv + (step * float2(-1, -1))) * kernel[0])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2( 0, -1))) * kernel[1])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2( 1, -1))) * kernel[2])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2(-1,  0))) * kernel[3])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2( 0,  0))) * kernel[4])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2( 1,  0))) * kernel[5])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2(-1,  1))) * kernel[6])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2( 0,  1))) * kernel[7])
+         + (tex.Sample(bilinear_sampler, uv + (step * float2( 1,  1))) * kernel[8]);
+}
+
 float4 PS_main(Varyings input) : SV_TARGET
 {
-    return screen.Sample(bilinear_sampler, input.uv);
-    return float4(input.uv, 0.0f, 1.0f);
-
+    float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
+    
+    
+    float2 pixels = float2(1280, 960) / 3.0f;
+    
+    float2 pixelated_uv = ceil(screen_uv * pixels) / pixels;
+    
+    float4 colour_sample = screen.Sample(bilinear_sampler, pixelated_uv);
+    float f = depth.Sample(bilinear_sampler, pixelated_uv).r;
+    float4 depth_sample = float4(f,f,f,1.0f);
+    float4 normal_sample = normal.Sample(bilinear_sampler, pixelated_uv);
+    float4 sharpened_sample = sharpen(screen, pixelated_uv, pixels);
+    
+    float mixer = ((screen_uv.x + screen_uv.y * -0.2f) + 1.0f) % 1.0f;
+    
+    if (mixer < 0.25f)
+        return sharpened_sample;
+    else if (mixer < 0.5f)
+        return colour_sample;
+    else if (mixer < 0.75f)
+        return depth_sample;
+    else
+        return normal_sample;
 }

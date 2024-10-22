@@ -31,13 +31,19 @@ private:
 	ID3D11SamplerState* bilinear_sampler_state       = nullptr;
 	ID3D11ShaderResourceView* blank_texture          = nullptr;
 
-	ID3D11Texture2D* render_target_buffer			 = nullptr;
-	ID3D11RenderTargetView* render_target_view       = nullptr;
-	ID3D11ShaderResourceView* render_target_resource = nullptr;
+	ID3D11Texture2D* colour_buffer							= nullptr;
+	ID3D11Texture2D* colour_buffer_intermediate				= nullptr;
+	ID3D11RenderTargetView* colour_buffer_view              = nullptr;
+	ID3D11RenderTargetView* colour_buffer_intermediate_view = nullptr;
+	ID3D11ShaderResourceView* colour_buffer_resource		= nullptr;
 
-	ID3D11Texture2D* depth_stencil_buffer            = nullptr;
-	ID3D11DepthStencilView* depth_stencil_view       = nullptr;
-	ID3D11ShaderResourceView* depth_stencil_resource = nullptr;
+	ID3D11Texture2D* depth_buffer							= nullptr;
+	ID3D11DepthStencilView* depth_buffer_view				= nullptr;
+	ID3D11ShaderResourceView* depth_buffer_resource			= nullptr;
+
+	ID3D11Texture2D* normal_buffer = nullptr;
+	ID3D11RenderTargetView* normal_buffer_view = nullptr;
+	ID3D11ShaderResourceView* normal_buffer_resource = nullptr;
 
 	HWND window_handle;
 
