@@ -11,8 +11,6 @@ using namespace DirectX;
 enum FJsonType
 {
 	JFLOAT,
-	JVECTOR,
-	JINT,
 	JSTRING,
 	JOBJECT,
 	JARRAY
@@ -24,20 +22,42 @@ struct FJsonElement
 {
 	FJsonType type;
 	
+	string s_val;
+	vector<FJsonElement> a_val;
 	union
 	{
 		float f_val;
-		XMFLOAT3 v_val;
-		int i_val;
-		string s_val;
 		FJsonObject* o_val;
-		vector<FJsonElement> a_val;
 	};
+
+private:
+	inline void assign(const FJsonElement& other)
+	{
+		type = other.type;
+		a_val = other.a_val;
+		s_val = other.s_val;
+		o_val = other.o_val;
+	}
+
+public:
+
+	inline FJsonElement(float f) { f_val = f; type = FJsonType::JFLOAT; }
+	inline FJsonElement(string s) { s_val = s; type = FJsonType::JSTRING; }
+	inline FJsonElement(FJsonObject* o) { o_val = o; type = FJsonType::JOBJECT; }
+	inline FJsonElement(vector<FJsonElement> a) { a_val = a; type = FJsonType::JARRAY; }
+	inline FJsonElement(const FJsonElement& other) { assign(other); }
+	inline FJsonElement(const FJsonElement&& other) { assign(other); }
+	inline FJsonElement operator=(const FJsonElement& other) { assign(other); return *this; }
+	inline FJsonElement operator=(const FJsonElement&& other) { assign(other); return *this; }
+	inline ~FJsonElement() { if (FJsonType::JARRAY) a_val.~vector(); }
 };
 
 struct FJsonObject
 {
-	map<string, FJsonElement> elements;
+	map<string, FJsonElement> elements = map<string, FJsonElement>({ });
+
+	inline FJsonObject() { }
+	
 };
 
 class FJsonBlob
@@ -46,11 +66,12 @@ private:
 	vector<FJsonObject*> all_objects;
 	FJsonObject* root = nullptr;
 
-	bool validate(string s);
-	size_t bracketAwareNext(string s, size_t start, char delim);
-	string extractBlock(string s, size_t start, char delim);
-	FJsonObject* parseBlock(string s);
-	string reduce(string s);
+	bool validate(const string& s);
+	size_t next(const string& s, const size_t start, const char delim);
+	string extract(const string& s, const size_t start, size_t& end);
+	FJsonElement decode(const string& s);
+	FJsonObject* parse(const string& s);
+	string reduce(const string& s);
 
 public:
 	FJsonBlob(string path);
@@ -60,7 +81,9 @@ public:
 	FJsonBlob operator=(const FJsonBlob& other) = delete;
 	FJsonBlob operator=(const FJsonBlob&& other) = delete;
 
-	inline FJsonObject* getRoot() { return root; }
+	inline FJsonObject* getRoot() const { return root; }
+
+	~FJsonBlob();
 };
 
 // override this in order to parse specific classes out of FJsonObjects
