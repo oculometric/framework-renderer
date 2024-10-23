@@ -31,7 +31,7 @@ struct FFaceCornerReference
 pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 co_c, XMFLOAT2 uv_a, XMFLOAT2 uv_b, XMFLOAT2 uv_c, XMFLOAT3 vn_a)
 {
     XMFLOAT3 debug_tool = XMFLOAT3(1.0f, 1.0f, 1.0f);
-    XMFLOAT2 other_tool = XMFLOAT2(1.0f, 1.0f);
+    XMFLOAT2 other_tool = XMFLOAT2(1.0f, -1.0f);
 
     // vector from the target vertex to the second vertex
     XMFLOAT3 ab = XMFLOAT3(co_b.x - co_a.x, co_b.y - co_a.y, co_b.z - co_a.z); ab = XMFLOAT3(ab.x * debug_tool.x, ab.y * debug_tool.y, ab.z * debug_tool.z);
@@ -70,7 +70,7 @@ pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 c
     //
     // 
 
-
+    // CHECK THE TEXTURE
     // FIXME: this may or may not need to be transposed? also just fix this in general
     XMMATRIX result = XMLoadFloat3x3(&vec_mat) * XMMatrixInverse(nullptr, XMLoadFloat3x3(&uv_mat));
 
