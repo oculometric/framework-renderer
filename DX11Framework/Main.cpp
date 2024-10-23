@@ -2,7 +2,7 @@
 
 #include "FApplication.h"
 #include "MyScene.h"
-#include "FJsonParser.h"
+#include "FResourceManager.h"
 
 //Dependencies:user32.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;
 
@@ -18,19 +18,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return -1;
 	}
 
-	FJsonBlob b("MyScene.json");
-	FScene* scene = new FScene(&application);
-
-	if (b.getRoot().o_val)
-	{
-		b.getRoot() >> *scene;
-	}
-	else
-	{
-		return -1;
-	}
-	//application.scene = new MyScene(&application);
-	application.scene = scene;
+	application.scene = new MyScene(&application, "MyScene.fscn");
+	application.scene->finalizePreload();
 	application.scene->start();
 
 	// Main message loop
@@ -50,6 +39,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			application.draw();
 		}
 	}
+
+	// FIXME: this breaks something, oops
+	//delete FResourceManager::get();
 
 	return (int)msg.wParam;
 }

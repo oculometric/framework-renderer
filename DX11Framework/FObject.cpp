@@ -1,5 +1,7 @@
 #include "FObject.h"
 
+#include "FJsonParser.h"
+
 using namespace DirectX;
 
 FObject::FObject()

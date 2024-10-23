@@ -8,69 +8,14 @@
 
 void MyScene::start()
 {
-	FMeshData* suzanne = FResourceManager::get()->loadMesh("suzanne.obj");
-
-	FMeshData* teapot = FResourceManager::get()->loadMesh("teapot.obj");
-
-	FMeshData* sphere = FResourceManager::get()->loadMesh("sphere.obj");
-
-	FMeshData* cornell = FResourceManager::get()->loadMesh("cornell.obj");
-
-	FMeshData* uvdemo = FResourceManager::get()->loadMesh("uvtest.obj");
-
-	FMeshData* monitor = FResourceManager::get()->loadMesh("monitor.obj");
-	FShader* monitor_shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
-	FMaterial* monitor_mat = FResourceManager::get()->createMaterial(monitor_shader,
-	{
-		{ "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)) },
-	},
-	{
-		FResourceManager::get()->loadTexture("monitor_t.dds"),
-		FResourceManager::get()->loadTexture("monitor_n.dds")
-	});
-
-	backing.setData(uvdemo);
-	a.setData(monitor);
-	a.setMaterial(monitor_mat);
-	b.setData(sphere);
-	c.setData(teapot);
-
-	addObject(&backing, nullptr);
-
-	b.position.x = 4.5f;
-	b.scale = XMFLOAT3(0.3f, 0.3f, 0.3f);
-	b.eulers.z = 45.0f;
-	addObject(&a, nullptr);
-	addObject(&b, &a);
-
-	c.position = XMFLOAT3(0.0f, 0.0f, 2.0f);
-	addObject(&c, nullptr);
-
-	active_camera = new FCamera();
-	active_camera->position.z = 5.0f;
-	active_camera->eulers.y = 180.0f;
-	active_camera->updateProjectionMatrix();
-	addObject(active_camera, nullptr);
-
-	FMesh* box = new FMesh();
-	box->position.z = 6.0f;
-	box->setData(cornell);
-	addObject(box, nullptr);
+	// 99% of the initialisation is now done from the config file! see MyScene.json
 }
 
 void MyScene::update(float delta_time)
 {
-	//a.eulers.z += 24.0f * delta_time;
-	b.eulers.z -= 180.0f * delta_time;
-	b.eulers.y += 36.0f * delta_time;
-
-	c.eulers.x += 24.0f * delta_time;
-	c.eulers.y += 36.0f * delta_time;
-	c.eulers.z += 12.0f * delta_time;
-
 	root.updateTransform();
 	
-	if (owner->isFocused())
+	if (owner->isFocused() && active_camera != nullptr)
 	{
 		XMFLOAT4X4 camera_transform = active_camera->getTransform();
 		XMFLOAT4 camera_motion = XMFLOAT4

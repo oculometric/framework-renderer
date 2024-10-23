@@ -5,6 +5,7 @@
 #include <thread>
 #include "DDSTextureLoader.h"
 
+#include "FJsonParser.h"
 #include "FScene.h"
 #include "FResourceManager.h"
 
@@ -236,10 +237,18 @@ HRESULT FApplication::initPipelineVariables()
     FShader* shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
     if (shader == nullptr) { return -1; }
 
-    placeholder_material = FResourceManager::get()->createMaterial(shader, 
+    FJsonBlob material_blob("placeholder.fmat");
+    FJsonElement mat_root = material_blob.getRoot();
+    if (mat_root.type == JOBJECT && mat_root.o_val != nullptr)
     {
-        { "material_diffuse", FMaterialParameter(XMFLOAT4(1.0f, 1.0f, 1.0f, 8.0f)) }
-    });
+        FMaterialPreload mp;
+        mat_root >> mp;
+        placeholder_material = FResourceManager::get()->createMaterial("placeholder.mat", mp);
+    }
+    else
+    {
+        return -1;
+    }
 
     postprocess_shader = FResourceManager::get()->loadShader("Postprocess.hlsl", false, FCullMode::OFF);
     FVertex quad_verts[] = 
@@ -574,7 +583,7 @@ void FApplication::drawObject(FObject* object)
     // store the rest of the variables from the material
     for (size_t i = 8; i < shader_buffer_descriptor.Variables; i++)
     {
-        ID3D11ShaderReflectionVariable* var = shader_reflection->GetVariableByIndex(i);
+        ID3D11ShaderReflectionVariable* var = shader_reflection->GetVariableByIndex((UINT)i);
         D3D11_SHADER_VARIABLE_DESC var_descriptor = { };
         var->GetDesc(&var_descriptor);
         FMaterialParameter param = material->getParameter(var_descriptor.Name);
@@ -602,9 +611,9 @@ void FApplication::drawObject(FObject* object)
     for (size_t i = 0; i < MAX_TEXTURES; i++)
     {
         if (material->textures[i] == nullptr)
-            immediate_context->PSSetShaderResources(i, 1, &blank_texture);
+            immediate_context->PSSetShaderResources((UINT)i, 1, &blank_texture);
         else
-            immediate_context->PSSetShaderResources(i, 1, &material->textures[i]->buffer_ptr);
+            immediate_context->PSSetShaderResources((UINT)i, 1, &material->textures[i]->buffer_ptr);
     }
 
     // set object variables if this mesh is not currently active

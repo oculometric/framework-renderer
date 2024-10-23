@@ -1,0 +1,7 @@
+{
+	"shader": "SimpleShaders.hlsl",
+	"textures": [],
+	"uniforms": [
+		{ "param": "material_diffuse", "value": [1, 1, 1, 8], "type": "float4" }
+	]
+}

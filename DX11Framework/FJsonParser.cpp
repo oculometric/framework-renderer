@@ -112,16 +112,18 @@ FJsonElement FJsonBlob::decode(const string& s)
 
         vector<FJsonElement> elements;
         string inner = extract(s, 0, tmp);
-
-        do
+        if (inner.length() > 0)
         {
-            section_end = next(inner, section_start, ',');
-            string section = inner.substr(section_start, section_end - section_start);
-            section_start = section_end + 1;
+            do
+            {
+                section_end = next(inner, section_start, ',');
+                string section = inner.substr(section_start, section_end - section_start);
+                section_start = section_end + 1;
 
-            elements.push_back(decode(section));
+                elements.push_back(decode(section));
+            }
+            while (section_start - 1 != string::npos);
         }
-        while (section_start - 1 != string::npos);
 
         return FJsonElement(elements);
     }

@@ -90,17 +90,15 @@ public:
 };
 
 // override this in order to parse specific classes out of FJsonObjects
-template <typename T>
-inline bool operator>>(const FJsonElement& a, T& other) { };
+// inline bool operator>>(const FJsonElement& a, T& other) { };
 
 class FScene;
-class FObject;
-class FMesh;
-class FCamera;
-class FMaterial;
-class FShader;
+struct FObjectPreload;
+struct FMaterialPreload;
 
 bool operator>>(const FJsonElement& a, FScene& other);
-bool operator>>(const FJsonElement& a, FObject& other);
-bool operator>>(const FJsonElement& a, FMesh& other);
-bool operator>>(const FJsonElement& a, FCamera& other);
+bool operator>>(const FJsonElement& a, FObjectPreload& other);
+bool operator>>(const FJsonElement& a, FMaterialPreload& other);
+bool operator>>(const FJsonElement& a, XMFLOAT3& other);
+bool operator>>(const FJsonElement& a, XMFLOAT4& other);
+bool operator>>(const FJsonElement& a, XMINT3& other);

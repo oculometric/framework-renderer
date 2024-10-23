@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <map>
+#include <vector>
 
 #include "FTexture.h"
 
@@ -68,6 +69,13 @@ struct FMaterialParameter
 	inline FMaterialParameter(XMFLOAT4X4 arg) { type = FShaderUniformType::M4; m4 = arg; }
 	inline FMaterialParameter(INT arg)        { type = FShaderUniformType::I1; i1 = arg; }
 	inline FMaterialParameter(XMINT3 arg)     { type = FShaderUniformType::I3; i3 = arg; }
+};
+
+struct FMaterialPreload
+{
+	string shader;
+	map<string, FMaterialParameter> parameters;
+	vector<string> textures;
 };
 
 class FMaterial

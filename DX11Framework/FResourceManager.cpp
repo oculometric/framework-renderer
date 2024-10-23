@@ -19,7 +19,7 @@ FResourceManager* FResourceManager::get()
 
 FTexture* FResourceManager::loadTexture(string path)
 {
-	FResource descriptor{ path, FResourceManager::TEXTURE };
+	FResource descriptor{ path, FResourceType::TEXTURE };
 	if (registry.count(descriptor) > 0)
 		return (FTexture*)(registry[descriptor]);
 
@@ -44,7 +44,7 @@ bool FResourceManager::unloadTexture(FTexture* res)
 
 FMeshData* FResourceManager::loadMesh(string path)
 {
-	FResource descriptor{ path, FResourceManager::MESH_DATA };
+	FResource descriptor{ path, FResourceType::MESH_DATA };
 	if (registry.count(descriptor) > 0)
 		return (FMeshData*)(registry[descriptor]);
 
@@ -71,7 +71,7 @@ bool FResourceManager::unloadMesh(FMeshData* res)
 
 FShader* FResourceManager::loadShader(string path, bool wireframe, FCullMode culling)
 {
-	FResource descriptor{ path, FResourceManager::SHADER };
+	FResource descriptor{ path, FResourceType::SHADER };
 	if (registry.count(descriptor) > 0)
 		return (FShader*)(registry[descriptor]);
 
@@ -102,21 +102,51 @@ bool FResourceManager::unloadShader(FShader* res)
 	return unload(res);
 }
 
-FMaterial* FResourceManager::createMaterial(FShader* shader, map<string, FMaterialParameter> parameters, vector<FTexture*> textures)
+FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 {
+	FResource descriptor{ name, FResourceType::MATERIAL };
+	if (registry.count(descriptor) > 0)
+		return (FMaterial*)(registry[descriptor]);
+
+	FShader* shader = nullptr;
+	FResource shader_descriptor{ mp.shader, FResourceType::SHADER };
+	if (registry.count(shader_descriptor) > 0)
+		shader = (FShader*)registry[shader_descriptor];
 	if (shader == nullptr) return nullptr;
 
 	FMaterial* res = new FMaterial();
 	res->shader = shader;
-	res->parameters = parameters;
+	res->parameters = mp.parameters;
 	size_t i = 0;
-	for (FTexture* tex : textures)
+	for (string tex_name : mp.textures)
 	{
-		res->assignTexture(tex, i);
+		if (tex_name.empty()) { i++; continue; }
+
+		FResource texture_descriptor{ tex_name, FResourceType::TEXTURE };
+		if (registry.count(texture_descriptor) > 0)
+			res->assignTexture((FTexture*)registry[texture_descriptor], i);
 		i++;
 	}
 
+	registry.insert_or_assign(descriptor, (void*)res);
+
 	return res;
+}
+
+FMaterial* FResourceManager::getMaterial(string name)
+{
+	FResource descriptor{ name, FResourceType::MATERIAL };
+	if (registry.count(descriptor) > 0)
+		return (FMaterial*)(registry[descriptor]);
+
+	return nullptr;
+}
+
+bool FResourceManager::unloadMaterial(FMaterial* mat)
+{
+	if (mat == nullptr) return false;
+
+	return unload(mat);
 }
 
 FResourceManager::~FResourceManager()
@@ -132,6 +162,7 @@ FResourceManager::~FResourceManager()
 		case FResourceType::TEXTURE:   unloadTexture((FTexture*)(res_pair.second)); break;
 		case FResourceType::MESH_DATA: unloadMesh((FMeshData*)(res_pair.second)); break;
 		case FResourceType::SHADER:    unloadShader((FShader*)(res_pair.second)); break;
+		case FResourceType::MATERIAL:  unloadMaterial((FMaterial*)(res_pair.second)); break;
 		}
 	}
 }
@@ -143,6 +174,7 @@ bool FResourceManager::unload(void* res)
 		if (res_pair.second == res)
 		{
 			registry.erase(res_pair.first);
+			delete res;
 			return true;
 		}
 	}

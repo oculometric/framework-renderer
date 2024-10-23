@@ -148,8 +148,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cornell.mtl" />
-    <None Include="monitor.mat" />
-    <None Include="MyScene.json" />
+    <None Include="monitor.fmat" />
+    <None Include="MyScene.fscn" />
+    <None Include="placeholder.fmat" />
     <None Include="SimpleShaders.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>

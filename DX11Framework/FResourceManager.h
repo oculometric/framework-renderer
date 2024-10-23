@@ -22,7 +22,8 @@ private:
 	{
 		TEXTURE,
 		MESH_DATA,
-		SHADER
+		SHADER,
+		MATERIAL
 	};
 
 	struct FResource
@@ -56,7 +57,9 @@ public:
 	FShader*   loadShader(string path, bool wireframe, FCullMode culling);
 	bool       unloadShader(FShader* res);
 
-	FMaterial* createMaterial(FShader* shader, map<string, FMaterialParameter> parameters = { }, vector<FTexture*> textures = { });
+	FMaterial* createMaterial(string name, FMaterialPreload mp);
+	FMaterial* getMaterial(string name);
+	bool	   unloadMaterial(FMaterial* mat);
 
 	~FResourceManager();
 

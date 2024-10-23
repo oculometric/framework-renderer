@@ -1,0 +1,10 @@
+{
+	"shader": "SimpleShaders.hlsl",
+	"textures": [
+		"monitor_t.dds",
+		"monitor_n.dds"
+	],
+	"uniforms": [
+		{ "param": "material_diffuse", "value": [1, 0, 1, 4], "type": "float4" }
+	]
+}

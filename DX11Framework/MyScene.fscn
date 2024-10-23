@@ -21,7 +21,7 @@
       { "path": "monitor_n.dds" }
     ],
     "materials": [
-      { "path": "monitor.mat" }
+      { "path": "monitor.fmat" }
     ]
   },
   "objects": [
@@ -29,7 +29,7 @@
       "class": "mesh",
       "name": "a",
       "data": "monitor.obj",
-      "material": "monitor.mat",
+      "material": "monitor.fmat",
       "position": [ 0, 0, 0 ],
       "rotation": [ 0, 0, 0 ],
       "scale": [ 1, 1, 1 ],
@@ -38,7 +38,7 @@
           "class": "mesh",
           "name": "b",
           "data": "sphere.obj",
-          "position": [ 0, 0, 4.5 ],
+          "position": [ 4.5, 0, 0 ],
           "rotation": [ 0, 0, 45.0 ],
           "scale": [ 0.3, 0.3, 0.3 ]
         }
@@ -64,6 +64,7 @@
     {
       "class": "mesh",
       "name": "c",
+      "data": "teapot.obj",
       "position": [ 0, 0, 2.0 ]
     }
   ]

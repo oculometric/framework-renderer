@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include <vector>
+#include <string>
 
 using namespace DirectX;
 using namespace std;
@@ -20,9 +21,10 @@ private:
 	XMFLOAT4X4 world_transform;
 
 	FObject* parent;
-	vector<FObject*> children; // TODO: make this be a reference to a resource manager which stores the children to solve all the memory deallocation problems from before
+	vector<FObject*> children;
 
 public:
+	string name = "Object";
 	XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 eulers = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 scale = XMFLOAT3(1.0f, 1.0f, 1.0f);

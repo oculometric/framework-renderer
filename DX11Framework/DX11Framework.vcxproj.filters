@@ -160,10 +160,13 @@
     <None Include="suzanne.obj">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="MyScene.json">
+    <None Include="MyScene.fscn">
       <Filter>Scene Graphs</Filter>
     </None>
-    <None Include="monitor.mat">
+    <None Include="monitor.fmat">
+      <Filter>Materials</Filter>
+    </None>
+    <None Include="placeholder.fmat">
       <Filter>Materials</Filter>
     </None>
   </ItemGroup>
