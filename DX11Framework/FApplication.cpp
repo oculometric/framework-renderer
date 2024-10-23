@@ -472,16 +472,35 @@ FApplication::~FApplication()
 {
     delete FResourceManager::get();
 
+    if (scene) delete scene;
+
+    if (bilinear_sampler_state) bilinear_sampler_state->Release();
+    if (blank_texture) blank_texture->Release();
+    
+    if (colour_buffer_resource) colour_buffer_resource->Release();
+    if (colour_buffer_view) colour_buffer_view->Release();
+    if (colour_buffer_intermediate_view) colour_buffer_intermediate_view->Release();
+    if (colour_buffer) colour_buffer->Release();
+    if (colour_buffer_intermediate) colour_buffer_intermediate->Release();
+
+    if (depth_buffer_resource) depth_buffer_resource->Release();
+    if (depth_buffer_view) depth_buffer_view->Release();
+    if (depth_buffer) depth_buffer->Release();
+
+    if (normal_buffer_resource) normal_buffer_resource->Release();
+    if (normal_buffer_view) normal_buffer_view->Release();
+    if (normal_buffer) normal_buffer->Release();
+
+    if (quad_index_buffer) quad_index_buffer->Release();
+    if (quad_vertex_buffer) quad_vertex_buffer->Release();
+
+    delete uniform_buffer;
+
+    if (swap_chain) swap_chain->Release();
     if (immediate_context) immediate_context->Release();
     if (device) device->Release();
     if (dxgi_device) dxgi_device->Release();
     if (dxgi_factory) dxgi_factory->Release();
-    if (colour_buffer_view) colour_buffer_view->Release();
-    if (depth_buffer_view) depth_buffer_view->Release();
-    if (swap_chain) swap_chain->Release();
-
-    if (depth_buffer) depth_buffer->Release();
-    if (scene) delete scene;
 }
 
 void FApplication::update()
