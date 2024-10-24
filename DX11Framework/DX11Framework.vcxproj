@@ -147,7 +147,6 @@
     <ClCompile Include="MyScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cornell.mtl" />
     <None Include="monitor.fmat" />
     <None Include="MyScene.fscn" />
     <None Include="placeholder.fmat" />
@@ -162,18 +161,8 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <FileType>Document</FileType>
     </None>
-    <None Include="sphere.mtl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\oculib\camera.h" />
-    <ClInclude Include="..\oculib\image.h" />
-    <ClInclude Include="..\oculib\matrix4.h" />
-    <ClInclude Include="..\oculib\mesh.h" />
-    <ClInclude Include="..\oculib\object.h" />
-    <ClInclude Include="..\oculib\vector2.h" />
-    <ClInclude Include="..\oculib\vector3.h" />
-    <ClInclude Include="..\oculib\vector4.h" />
-    <ClInclude Include="..\oculib\vertex.h" />
     <ClInclude Include="FApplication.h" />
     <ClInclude Include="FMaterial.h" />
     <ClInclude Include="FMesh.h" />

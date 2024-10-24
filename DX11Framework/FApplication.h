@@ -55,6 +55,7 @@ private:
 	FShader* active_shader           = nullptr;
 	FMeshData* active_mesh           = nullptr;
 	void* uniform_buffer             = nullptr;
+	float total_time = 0.0f;
 
 public:
 	FScene* scene;

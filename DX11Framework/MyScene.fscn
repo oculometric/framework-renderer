@@ -7,7 +7,8 @@
       { "path": "sphere.obj" },
       { "path": "cornell.obj" },
       { "path": "uvtest.obj" },
-      { "path": "monitor.obj" }
+      { "path": "monitor.obj" },
+      { "path": "uvcube.obj" }
     ],
     "shaders": [
       { 
@@ -30,7 +31,7 @@
       "name": "a",
       "data": "monitor.obj",
       "material": "monitor.fmat",
-      "position": [ 0, 0, 0 ],
+      "position": [ 0, 0, 1 ],
       "rotation": [ 0, 0, 0 ],
       "scale": [ 1, 1, 1 ],
       "children": [
@@ -47,7 +48,7 @@
     {
       "class": "mesh",
       "name": "backing",
-      "data": "uvtest.obj"
+      "data": "uvcube.obj"
     },
     {
       "class": "mesh",

@@ -64,7 +64,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     float4 sharpened_sample = sharpen(screen, pixelated_uv, pixels);
     
     float mixer = ((screen_uv.x + screen_uv.y * -0.2f) + 1.0f) % 1.0f;
-    
+ 
     if (mixer < 0.25f)
         return sharpened_sample;
     else if (mixer < 0.5f)

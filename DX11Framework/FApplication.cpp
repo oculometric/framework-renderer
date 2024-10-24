@@ -511,7 +511,6 @@ void FApplication::update()
     float delta_time = (frame_now - frame_start) / 1000.0f;
     frame_start = frame_now;
 
-    static float total_time = 0.0f;
     total_time += delta_time;
 
     static bool is_debug_mode = false;
@@ -598,6 +597,7 @@ void FApplication::drawObject(FObject* object)
     light_params[1] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);     // diffuse
     light_params[2] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);     // specular
     light_params[3] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);  // ambient
+    light_params[4] = XMFLOAT4(total_time, 0.0f, 0.0f, 0.0f); // time
 
     // store the rest of the variables from the material
     for (size_t i = 8; i < shader_buffer_descriptor.Variables; i++)

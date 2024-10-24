@@ -13,17 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{5394c41e-db37-4ff9-a493-8ca4e597f8ec}</UniqueIdentifier>
+    <Filter Include="Resource Files\Materials">
+      <UniqueIdentifier>{dd6cd4ce-fe96-42d4-9111-cb847e585c30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="oculib">
-      <UniqueIdentifier>{591a7c72-b825-4f38-9f39-25863df56e42}</UniqueIdentifier>
+    <Filter Include="Resource Files\Meshes">
+      <UniqueIdentifier>{e5b96baa-1226-4a7b-a54f-52706b0b2cd2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene Graphs">
+    <Filter Include="Resource Files\Scenes">
       <UniqueIdentifier>{d960dbe7-fd51-439f-9d78-c214100bd931}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Materials">
-      <UniqueIdentifier>{dd6cd4ce-fe96-42d4-9111-cb847e585c30}</UniqueIdentifier>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{788ab6e9-73a2-423c-96bc-0f73d6a6e543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{5394c41e-db37-4ff9-a493-8ca4e597f8ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -80,33 +83,6 @@
     <ClInclude Include="FMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\oculib\camera.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\image.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\matrix4.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\mesh.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\object.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\vector2.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\vector3.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\vector4.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\oculib\vertex.h">
-      <Filter>oculib</Filter>
-    </ClInclude>
     <ClInclude Include="FTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -122,52 +98,46 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleShaders.hlsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="cornell.mtl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="sphere.mtl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Postprocess.hlsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="blank.dds">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="cornell.obj">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="monitor.obj">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="monitor_n.dds">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="monitor_n.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="monitor_t.dds">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="monitor_t.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="sphere.obj">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="suzanne.obj">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="MyScene.fscn">
-      <Filter>Scene Graphs</Filter>
+      <Filter>Resource Files\Scenes</Filter>
     </None>
     <None Include="monitor.fmat">
-      <Filter>Materials</Filter>
+      <Filter>Resource Files\Materials</Filter>
     </None>
     <None Include="placeholder.fmat">
-      <Filter>Materials</Filter>
+      <Filter>Resource Files\Materials</Filter>
+    </None>
+    <None Include="monitor.obj">
+      <Filter>Resource Files\Meshes</Filter>
+    </None>
+    <None Include="cornell.obj">
+      <Filter>Resource Files\Meshes</Filter>
+    </None>
+    <None Include="sphere.obj">
+      <Filter>Resource Files\Meshes</Filter>
+    </None>
+    <None Include="suzanne.obj">
+      <Filter>Resource Files\Meshes</Filter>
+    </None>
+    <None Include="blank.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="monitor_n.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="monitor_n.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="monitor_t.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="monitor_t.jpg">
+      <Filter>Resource Files\Textures</Filter>
     </None>
   </ItemGroup>
 </Project>

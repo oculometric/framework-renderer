@@ -28,10 +28,12 @@ struct FFaceCornerReference
     uint16_t transferred_vert_index;
 };
 
+inline float sign(float f) { return f >= 0 ? 1 : -1;  }
+
 pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 co_c, XMFLOAT2 uv_a, XMFLOAT2 uv_b, XMFLOAT2 uv_c, XMFLOAT3 vn_a)
 {
     XMFLOAT3 debug_tool = XMFLOAT3(1.0f, 1.0f, 1.0f);
-    XMFLOAT2 other_tool = XMFLOAT2(1.0f, -1.0f);
+    XMFLOAT2 other_tool = XMFLOAT2(1.0f, 1.0f);
 
     // vector from the target vertex to the second vertex
     XMFLOAT3 ab = XMFLOAT3(co_b.x - co_a.x, co_b.y - co_a.y, co_b.z - co_a.z); ab = XMFLOAT3(ab.x * debug_tool.x, ab.y * debug_tool.y, ab.z * debug_tool.z);
@@ -70,30 +72,19 @@ pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 c
     //
     // 
 
-    // CHECK THE TEXTURE
     // FIXME: this may or may not need to be transposed? also just fix this in general
     XMMATRIX result = XMLoadFloat3x3(&vec_mat) * XMMatrixInverse(nullptr, XMLoadFloat3x3(&uv_mat));
 
-    //XMVECTOR tangent = XMLoadFloat3(&vn_a); // temporarily normal
-    //ab = XMVector3Normalize(XMVector3Cross(tangent, ab)); // bitangent
-    //tangent = XMVector3Normalize(XMVector3Cross(ab, tangent)); // now tangent
     XMStoreFloat3x3(&vec_mat, result);
-
 
     pair<XMFLOAT3, XMFLOAT3> ret;
     ret.first = XMFLOAT3(vec_mat._11, vec_mat._21, vec_mat._31);                 // extract tangent
-    ret.second = XMFLOAT3(vec_mat._12, vec_mat._22, vec_mat._32);                // extract bitangent
-    XMFLOAT3 norm = XMFLOAT3(vec_mat._13, vec_mat._23, vec_mat._33);             // extract normal
+    ret.second = XMFLOAT3(vec_mat._12, vec_mat._22, vec_mat._32);                 // extract bitangent
     XMStoreFloat3(&ret.first, XMVector3Normalize(XMLoadFloat3(&ret.first)));
-    //XMStoreFloat3(&result., tangent);
-    //XMStoreFloat3(&result.second, ab);
+    XMStoreFloat3(&ret.second, XMVector3Normalize(XMLoadFloat3(&ret.second)));
+    XMFLOAT3 other_norm; XMStoreFloat3(&other_norm, XMVector3Cross(XMLoadFloat3(&ret.first), XMLoadFloat3(&ret.second)));
 
     return ret;
-}
-
-inline XMFLOAT3 swizzle(XMFLOAT3 v, bool normal)
-{
-    return normal ? XMFLOAT3(-v.x, -v.z, v.y) : XMFLOAT3(-v.x, -v.z, v.y);
 }
 
 FMeshData* FMesh::loadMesh(string path)
@@ -124,7 +115,7 @@ FMeshData* FMesh::loadMesh(string path)
             file >> tmp3.x;
             file >> tmp3.y;
             file >> tmp3.z;
-            tmp_co.push_back(swizzle(tmp3, false));
+            tmp_co.push_back(tmp3);
         }
         else if (tmps == "vn")
         {
@@ -132,7 +123,7 @@ FMeshData* FMesh::loadMesh(string path)
             file >> tmp3.x;
             file >> tmp3.y;
             file >> tmp3.z;
-            tmp_vn.push_back(swizzle(tmp3, true));
+            tmp_vn.push_back(tmp3);
         }
         else if (tmps == "vt")
         {
@@ -195,8 +186,8 @@ FMeshData* FMesh::loadMesh(string path)
         }
     }
 
+    // compute tangents
     vector<bool> touched = vector<bool>(mesh_data->vertices.size(), false);
-
     for (uint16_t tri = 0; tri < mesh_data->indices.size() / 3; tri++)
     {
         uint16_t v0 = mesh_data->indices[(tri * 3) + 0]; FVertex f0 = mesh_data->vertices[v0];
@@ -208,6 +199,14 @@ FMeshData* FMesh::loadMesh(string path)
         if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f1.position, f2.uv, f0.uv, f1.uv, f2.normal).first;
 
         touched[v0] = true; touched[v1] = true; touched[v2] = true;
+    }
+
+    // transform from Z back Y up space into Z up Y forward space
+    for (FVertex& fv : mesh_data->vertices)
+    {
+        fv.position = XMFLOAT3(-fv.position.x, -fv.position.z, fv.position.y);
+        fv.normal = XMFLOAT3(fv.normal.x, -fv.normal.z, fv.normal.y);
+        fv.tangent = XMFLOAT3(fv.tangent.x, -fv.tangent.z, fv.tangent.y);
     }
 
 	return mesh_data;

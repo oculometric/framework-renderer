@@ -11,6 +11,9 @@ cbuffer ConstantBuffer : register(b0)
     float4 light_specular = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float4 light_ambient = float4(0.05f, 0.05f, 0.05f, 1.0f);
     
+    float time;
+    float3 padding;
+    
     float4 material_diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
@@ -83,7 +86,7 @@ Fragment PS_main(Varyings input)
     {
         float3x3 tangent_matrix = input.tbn;
         normal_map_evaluated = true;
-        true_normal = mul(tangent_matrix, surface_normal);
+        true_normal = lerp(true_normal, mul(tangent_matrix, true_normal), 0.0f); // TODO: fix normal mapping (tangents)
     }
     
     //for (uint i = 0; i < 8; i++)
@@ -111,7 +114,7 @@ Fragment PS_main(Varyings input)
     //}
     
     Fragment output = (Fragment)0;
-    output.colour = float4(overall_colour, 1.0f);
+    output.colour = float4(true_normal, 1.0f);
     output.normal = float4(true_normal, 1.0f);
     output.depth = 1.0f - (1.0f / (input.position.w + 1.0f));
     
