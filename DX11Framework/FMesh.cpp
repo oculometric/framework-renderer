@@ -70,19 +70,17 @@ pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 c
     // [ AB.y  AC.y  0 ]  =  [ T.y  B.y  N.y ] * [ duv_ab.y  duv_ac.y  0 ]
     // [ AB.z  AC.z  0 ]     [ T.z  B.z  N.z ]   [ 0         0         1 ]
     //
-    // 
 
-    // FIXME: this may or may not need to be transposed? also just fix this in general
-    XMMATRIX result = XMLoadFloat3x3(&vec_mat) * XMMatrixInverse(nullptr, XMLoadFloat3x3(&uv_mat));
+    XMMATRIX result =  XMLoadFloat3x3(&vec_mat) * XMMatrixInverse(nullptr, XMLoadFloat3x3(&uv_mat));
 
     XMStoreFloat3x3(&vec_mat, result);
 
     pair<XMFLOAT3, XMFLOAT3> ret;
     ret.first = XMFLOAT3(vec_mat._11, vec_mat._21, vec_mat._31);                 // extract tangent
-    ret.second = XMFLOAT3(vec_mat._12, vec_mat._22, vec_mat._32);                 // extract bitangent
+    //ret.second = XMFLOAT3(vec_mat._12, vec_mat._22, vec_mat._32);                 // extract bitangent
     XMStoreFloat3(&ret.first, XMVector3Normalize(XMLoadFloat3(&ret.first)));
-    XMStoreFloat3(&ret.second, XMVector3Normalize(XMLoadFloat3(&ret.second)));
-    XMFLOAT3 other_norm; XMStoreFloat3(&other_norm, XMVector3Cross(XMLoadFloat3(&ret.first), XMLoadFloat3(&ret.second)));
+    //XMStoreFloat3(&ret.second, XMVector3Normalize(XMLoadFloat3(&ret.second)));
+    //XMFLOAT3 other_norm; XMStoreFloat3(&other_norm, XMVector3Cross(XMLoadFloat3(&ret.first), XMLoadFloat3(&ret.second)));
 
     return ret;
 }

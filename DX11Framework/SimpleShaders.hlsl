@@ -81,12 +81,15 @@ Fragment PS_main(Varyings input)
     float3 surface_normal = (normal.Sample(bilinear_sampler, input.uv).xyz * 2.0f) - 1.0f;
     
     float3 true_normal = normalize(input.normal);
-    bool normal_map_evaluated = false;
     if (length(surface_normal) <= 1.5f)
     {
         float3x3 tangent_matrix = input.tbn;
-        normal_map_evaluated = true;
-        true_normal = lerp(true_normal, mul(tangent_matrix, true_normal), 0.0f); // TODO: fix normal mapping (tangents)
+        // the fix was.... drum roll.......... switching these \/ two around. fucking kill me.
+        true_normal = lerp(true_normal, mul(surface_normal, tangent_matrix), 1.0f);
+    }
+    else
+    {
+        true_normal = mul(float3(0,0,1), input.tbn);
     }
     
     //for (uint i = 0; i < 8; i++)
@@ -114,7 +117,7 @@ Fragment PS_main(Varyings input)
     //}
     
     Fragment output = (Fragment)0;
-    output.colour = float4(true_normal, 1.0f);
+    output.colour = float4(overall_colour, 1.0f);
     output.normal = float4(true_normal, 1.0f);
     output.depth = 1.0f - (1.0f / (input.position.w + 1.0f));
     
