@@ -3,12 +3,13 @@ cbuffer ConstantBuffer : register(b0)
     float4x4 projection_matrix;
     float4x4 view_matrix;
     float4x4 view_matrix_inv;
-    float4x4 world_matrix;
+    float4x4 projection_matrix_inv;
 }
 
 Texture2D screen : register(t0);
 Texture2D depth  : register(t1);
 Texture2D normal : register(t2);
+TextureCube skybox : register(t3);
 SamplerState bilinear_sampler : register(s0);
 
 struct Varyings
@@ -52,19 +53,26 @@ float4 PS_main(Varyings input) : SV_TARGET
 {
     float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
     
-    
     float2 pixels = float2(1280, 960) / 3.0f;
     
     float2 pixelated_uv = ceil(screen_uv * pixels) / pixels;
     
+    float4 clip_dir = normalize(float4(input.uv, 1, 1));
+    float3 direction = mul(mul(clip_dir, projection_matrix_inv) * float4(1, 1, 1, 0), view_matrix_inv).xyz * float3(-1, 1, 1);
+    
     float4 colour_sample = screen.Sample(bilinear_sampler, pixelated_uv);
+    float4 skybox_sample = skybox.Sample(bilinear_sampler, direction.xzy);
     float f = depth.Sample(bilinear_sampler, pixelated_uv).r;
     float4 depth_sample = float4(f,f,f,1.0f);
     float4 normal_sample = normal.Sample(bilinear_sampler, pixelated_uv);
     float4 sharpened_sample = sharpen(screen, pixelated_uv, pixels);
+    colour_sample = f > 0.99f ? skybox_sample : colour_sample;
+    sharpened_sample = f > 0.99f ? skybox_sample : sharpened_sample;
     
     float mixer = ((screen_uv.x + screen_uv.y * -0.2f) + 1.0f) % 1.0f;
  
+   // return sharpened_sample;
+    
     if (mixer < 0.25f)
         return sharpened_sample;
     else if (mixer < 0.5f)

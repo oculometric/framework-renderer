@@ -5,6 +5,6 @@
 		"monitor_n.dds"
 	],
 	"uniforms": [
-		{ "param": "material_diffuse", "value": [1, 0, 1, 4], "type": "float4" }
+		{ "param": "material_diffuse", "value": [1, 1, 1, 4], "type": "float4" }
 	]
 }

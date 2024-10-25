@@ -50,6 +50,7 @@ private:
 	FShader* postprocess_shader      = nullptr;
 	ID3D11Buffer* quad_vertex_buffer = nullptr;
 	ID3D11Buffer* quad_index_buffer  = nullptr;
+	ID3D11ShaderResourceView* skybox_texture = nullptr;
 
 	FMaterial* placeholder_material  = nullptr;
 	FShader* active_shader           = nullptr;
@@ -79,6 +80,7 @@ public:
 	HRESULT createD3DDevice();
 	HRESULT createSwapChainAndFrameBuffer();
 	HRESULT initPipelineVariables();
+	HRESULT loadDefaultResources();
 
 	inline bool isFocused() { return GetFocus() == window_handle; }
 
