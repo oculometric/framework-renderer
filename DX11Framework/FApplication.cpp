@@ -51,6 +51,9 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     hr = initPipelineVariables();
     if (FAILED(hr)) return E_FAIL;
 
+    hr = loadDefaultResources();
+    if (FAILED(hr)) return E_FAIL;
+
     return hr;
 }
 
@@ -153,6 +156,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     colour_buffer_view_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // sRGB render target enables hardware gamma correction
     colour_buffer_view_descriptor.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
+    if (colour_buffer == nullptr) return -1;
     hr = device->CreateRenderTargetView(colour_buffer, &colour_buffer_view_descriptor, &colour_buffer_view);
 
     // create a second, intermediate view around the intermediate render target
@@ -184,6 +188,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     depth_buffer_view_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     depth_buffer_view_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     depth_buffer_view_descriptor.Texture2D.MipSlice = 0;
+    if (depth_buffer == nullptr) return -1;
     device->CreateDepthStencilView(depth_buffer, &depth_buffer_view_descriptor, &depth_buffer_view);
 
     // create a shader resource view around the depth buffer
@@ -197,6 +202,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
     hr = device->CreateTexture2D(&colour_buffer_descriptor, nullptr, &normal_buffer);
 
     // create a render target view around that texture
+    if (normal_buffer == nullptr) return -1;
     hr = device->CreateRenderTargetView(normal_buffer, &colour_buffer_view_descriptor, &normal_buffer_view);
 
     // create a shader resource view around the normal buffer
@@ -212,7 +218,7 @@ HRESULT FApplication::initPipelineVariables()
 
     // set input assembler
     immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    
+
     // create viewport
     viewport = { 0.0f, 0.0f, (float)window_width, (float)window_height, 0.0f, 1.0f };
     immediate_context->RSSetViewports(1, &viewport);
@@ -230,13 +236,21 @@ HRESULT FApplication::initPipelineVariables()
 
     immediate_context->PSSetSamplers(0, 1, &bilinear_sampler_state);
 
-    // load default stuff
+    return hr;
+}
+
+HRESULT FApplication::loadDefaultResources()
+{
+    HRESULT hr = S_OK;
+
+    // load blank texture
     hr = CreateDDSTextureFromFile(device, L"blank.dds", nullptr, &blank_texture);
     if (FAILED(hr)) { return hr; }
 
     FShader* shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
     if (shader == nullptr) { return -1; }
 
+    // load placeholder material
     FJsonBlob material_blob("placeholder.fmat");
     FJsonElement mat_root = material_blob.getRoot();
     if (mat_root.type == JOBJECT && mat_root.o_val != nullptr)
@@ -246,11 +260,11 @@ HRESULT FApplication::initPipelineVariables()
         placeholder_material = FResourceManager::get()->createMaterial("placeholder.mat", mp);
     }
     else
-    {
-        return -1;
-    }
+        return E_FAIL;
 
+    // load post processor
     postprocess_shader = FResourceManager::get()->loadShader("Postprocess.hlsl", false, FCullMode::OFF);
+    if (postprocess_shader == nullptr) return E_FAIL;
     FVertex quad_verts[] = 
     {
         FVertex{ XMFLOAT3(-1,-1,0), XMFLOAT4(), XMFLOAT3(), XMFLOAT2(-1,-1) },
@@ -281,6 +295,9 @@ HRESULT FApplication::initPipelineVariables()
     hr = device->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &quad_index_buffer);
 
     if (FAILED(hr)) return hr;
+
+    // load skybox
+    hr = CreateDDSTextureFromFile(device, L"skybox.dds", nullptr, &skybox_texture);
 
     return S_OK;
 }
@@ -420,13 +437,28 @@ bool FApplication::registerShader(FShader* shader, wstring path)
     hr = D3DReflect(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shader->reflector);
     if (FAILED(hr))
     {
-
         shader->vertex_shader_pointer->Release();
         shader->pixel_shader_pointer->Release();
         vertex_shader_blob->Release();
         pixel_shader_blob->Release();
         shader->input_layout->Release();
         return false;
+    }
+
+    if (FAILED(shader->reflector->GetConstantBufferByIndex(0)->GetDesc(nullptr)))
+    {
+        // if failed, use the pixel shader reflection instead
+        shader->reflector->Release();
+        hr = D3DReflect(pixel_shader_blob->GetBufferPointer(), pixel_shader_blob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shader->reflector);
+        if (FAILED(hr))
+        {
+            shader->vertex_shader_pointer->Release();
+            shader->pixel_shader_pointer->Release();
+            vertex_shader_blob->Release();
+            pixel_shader_blob->Release();
+            shader->input_layout->Release();
+            return false;
+        }
     }
     
     D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
@@ -673,8 +705,7 @@ void FApplication::performPostprocessing()
     ((XMMATRIX*)uniform_buffer)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
     ((XMMATRIX*)uniform_buffer)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
     ((XMMATRIX*)uniform_buffer)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
-
-    // TODO: write other uniforms!
+    ((XMMATRIX*)uniform_buffer)[3] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&projection_matrix)));
 
     ID3D11ShaderReflectionConstantBuffer* shader_reflection = postprocess_shader->reflector->GetConstantBufferByIndex(0);
     D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
@@ -690,6 +721,9 @@ void FApplication::performPostprocessing()
     immediate_context->PSSetShaderResources(0, 1, &colour_buffer_resource);
     immediate_context->PSSetShaderResources(1, 1, &depth_buffer_resource);
     immediate_context->PSSetShaderResources(2, 1, &normal_buffer_resource);
+    
+    // bind skybox texture
+    immediate_context->PSSetShaderResources(3, 1, &skybox_texture);
 
     // bind vertex buffers
     UINT stride = { sizeof(FVertex) };
