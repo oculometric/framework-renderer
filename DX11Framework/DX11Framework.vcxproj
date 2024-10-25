@@ -145,11 +145,13 @@
     <ClCompile Include="FJsonParser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MyScene.cpp" />
+    <ClCompile Include="PlanetScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="monitor.fmat" />
     <None Include="MyScene.fscn" />
     <None Include="placeholder.fmat" />
+    <None Include="PlanetScene.fscn" />
     <None Include="SimpleShaders.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
@@ -170,6 +172,7 @@
     <ClInclude Include="FTexture.h" />
     <ClInclude Include="FJsonParser.h" />
     <ClInclude Include="MyScene.h" />
+    <ClInclude Include="PlanetScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Postprocess.hlsl">
@@ -196,6 +199,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="suzanne.obj">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PhysicalShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

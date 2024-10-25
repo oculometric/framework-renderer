@@ -1,15 +1,12 @@
 #pragma once
 
 #include "FScene.h"
-#include "FMesh.h"
-#include "FJsonParser.h"
 
-class MyScene : public FScene
+class PlanetScene : public FScene
 {
 private:
-	FMesh* a;
-	FMesh* b;
-	FMesh* c;
+	FObject* ship_root;
+	float speed = 1.0f;
 
 public:
 	using FScene::FScene;

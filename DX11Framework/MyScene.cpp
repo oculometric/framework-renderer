@@ -52,4 +52,14 @@ void MyScene::update(float delta_time)
 		);
 		active_camera->updateTransform();
 	}
+
+
+	FObject* demo = findObjectWithName<FObject>("backing");
+	if (GetAsyncKeyState('U')) demo->eulers.x += delta_time * 100.0f;
+	if (GetAsyncKeyState('I')) demo->eulers.x -= delta_time * 100.0f;
+	if (GetAsyncKeyState('H')) demo->eulers.y += delta_time * 100.0f;
+	if (GetAsyncKeyState('J')) demo->eulers.y -= delta_time * 100.0f;
+	if (GetAsyncKeyState('B')) demo->eulers.z += delta_time * 100.0f;
+	if (GetAsyncKeyState('N')) demo->eulers.z -= delta_time * 100.0f;
+	demo->updateTransform();
 }

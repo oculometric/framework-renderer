@@ -18,7 +18,7 @@ void FObject::updateTransform()
 		XMMatrixIdentity() 
 		* XMMatrixScaling(scale.x, scale.y, scale.z) 
 		* XMMatrixRotationY(XMConvertToRadians(eulers.y))
-		* XMMatrixRotationX(XMConvertToRadians(eulers.x))
+		* XMMatrixRotationX(XMConvertToRadians(-eulers.x))
 		* XMMatrixRotationZ(XMConvertToRadians(eulers.z))
 		* XMMatrixTranslation(position.x, position.y, position.z));
 

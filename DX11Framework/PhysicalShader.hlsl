@@ -71,15 +71,15 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     output.model_position = position;
     output.world_position = mul(float4(output.model_position, 1), world_matrix).xyz;
     output.view_position = mul(float4(output.world_position, 1), view_matrix).xyz;
-    output.position = mul(float4(output.view_position, 1), projection_matrix).xyz;
+    output.position = mul(float4(output.view_position, 1), projection_matrix);
     
     output.uv = uv * float2(1.0f, -1.0f);
     
     float3 transformed_normal = normalize(mul(float4(normalize(normal), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
     output.normal = transformed_normal;
-    float3 tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
-    float3 bitangent = normalize(cross(transformed_normal, tangent)) * float3(-1, 1, 1);
-    output.tbn = float3x3(tangent, bitangent, transformed_normal);
+    float3 transformed_tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
+    float3 bitangent = normalize(cross(transformed_normal, transformed_tangent)) * float3(-1, 1, 1);
+    output.tbn = float3x3(transformed_tangent, bitangent, transformed_normal);
     
     return output;
 }

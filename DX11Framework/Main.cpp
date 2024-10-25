@@ -1,6 +1,7 @@
 #include <windows.h>
 
 #include "FApplication.h"
+#include "PlanetScene.h"
 #include "MyScene.h"
 #include "FResourceManager.h"
 
@@ -18,7 +19,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return -1;
 	}
 
-	application.scene = new MyScene(&application, "MyScene.fscn");
+	application.scene = new PlanetScene(&application, "PlanetScene.fscn");
+	//application.scene = new MyScene(&application, "MyScene.fscn");
 	application.scene->finalizePreload();
 	application.scene->start();
 

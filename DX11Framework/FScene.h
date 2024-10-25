@@ -52,7 +52,6 @@ public:
 	inline void queueForPreload(FObjectPreload& o) { preload_array.push_back(o); }
 	inline virtual void start() { }
 	inline virtual void update(float delta_time) { (delta_time); }
-	inline virtual string getJsonPath() { return ""; }
 
 private:
 	void finalizeObject(FObjectPreload& o, FObject* parent);

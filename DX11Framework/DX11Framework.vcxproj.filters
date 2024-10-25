@@ -28,71 +28,83 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{5394c41e-db37-4ff9-a493-8ca4e597f8ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{7940ac7d-d08b-47ee-b26a-fc551c9ad2ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{f1e721fb-a2e3-4523-928b-9ccc24464cb7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FApplication.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FObject.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FScene.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MyScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FCamera.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FObject.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FScene.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FApplication.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="FCamera.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FJsonParser.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FMaterial.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="FMesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FObject.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FResourceManager.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FScene.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="DDSTextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FJsonParser.cpp">
+    <ClCompile Include="PlanetScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FApplication.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MyScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FMaterial.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="FApplication.h">
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="FJsonParser.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FMaterial.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FMesh.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FResourceManager.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FTexture.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PlanetScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -138,6 +150,12 @@
     </None>
     <None Include="monitor_t.jpg">
       <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="PlanetScene.fscn">
+      <Filter>Resource Files\Scenes</Filter>
+    </None>
+    <None Include="PhysicalShader.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
