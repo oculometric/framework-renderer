@@ -57,16 +57,12 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     
     output.colour = colour;
     
-    output.normal = normalize(mul(float4(normalize(normal), 0.0f), world_matrix).xyz);
+    output.normal = normalize(mul(float4(normalize(normal), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
+    output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
+    output.bitangent = normalize(cross(output.normal, output.tangent)) * float3(-1, 1, 1);
+    output.tbn = float3x3(output.tangent, output.bitangent, output.normal);
     
     output.uv = uv * float2(1.0f, -1.0f);
-    
-    float3 bitangent = cross(normal, tangent);
-    
-    output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz);
-    output.bitangent = normalize(cross(output.normal, output.tangent));
-    
-    output.tbn = float3x3(normalize(tangent), normalize(bitangent), normalize(normal));
     
     return output;
 }
@@ -83,13 +79,8 @@ Fragment PS_main(Varyings input)
     float3 true_normal = normalize(input.normal);
     if (length(surface_normal) <= 1.5f)
     {
-        float3x3 tangent_matrix = input.tbn;
-        // the fix was.... drum roll.......... switching these \/ two around. fucking kill me.
-        true_normal = lerp(true_normal, mul(surface_normal, tangent_matrix), 1.0f);
-    }
-    else
-    {
-        true_normal = mul(float3(0,0,1), input.tbn);
+        // the fix was.... drum roll.......... switching these two around. fucking kill me.
+        true_normal = mul(surface_normal, input.tbn);
     }
     
     //for (uint i = 0; i < 8; i++)

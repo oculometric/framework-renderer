@@ -45,7 +45,8 @@ public:
 	FScene(FScene&& other) = delete;
 
 	void addObject(FObject* o, FObject* parent);
-	FObject* findObjectWithName(string name);
+	template <typename T>
+	T* findObjectWithName(string name);
 
 	void finalizePreload();
 	inline void queueForPreload(FObjectPreload& o) { preload_array.push_back(o); }
@@ -56,3 +57,13 @@ public:
 private:
 	void finalizeObject(FObjectPreload& o, FObject* parent);
 };
+
+template<typename T>
+inline T* FScene::findObjectWithName(string name)
+{
+	for (FObject* obj : all_objects)
+		if (obj->name == name)
+			return (T*)obj;
+
+	return nullptr;
+}
