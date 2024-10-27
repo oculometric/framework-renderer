@@ -27,7 +27,7 @@ enum FCullMode { OFF, BACK, FRONT };
 class FShader
 {
 	friend class FResourceManager;
-	friend class FApplication;
+	friend class FGraphicsEngine;
 	friend class FMaterial;
 
 private:
@@ -81,7 +81,7 @@ struct FMaterialPreload
 class FMaterial
 {
 	friend class FResourceManager;
-	friend class FApplication;
+	friend class FGraphicsEngine;
 
 private:
 	inline FMaterial() { };

@@ -5,7 +5,7 @@
 
 class FTexture
 {
-	friend class FApplication;
+	friend class FGraphicsEngine;
 private:
 	inline FTexture() { };
 

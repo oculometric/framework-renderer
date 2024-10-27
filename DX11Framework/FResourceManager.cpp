@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 #include "FMesh.h"
-#include "FApplication.h"
+#include "FGraphicsEngine.h"
 
 static FResourceManager* resource_manager;
 

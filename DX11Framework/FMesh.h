@@ -19,7 +19,7 @@ struct FVertex
 class FMeshData
 {
 	friend class FMesh;
-	friend class FApplication;
+	friend class FGraphicsEngine;
 private:
 	inline FMeshData() { };
 

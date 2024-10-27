@@ -9,6 +9,7 @@
 using namespace std;
 
 class FApplication;
+class FGraphicsEngine;
 class FTexture;
 class FMeshData;
 class FShader;
@@ -32,17 +33,14 @@ private:
 		string name;
 		FResourceType type;
 
-		inline bool operator<(const FResource& b) const
-		{
-			return (name < b.name);
-		}
+		inline bool operator<(const FResource& b) const { return (name < b.name); }
 	};
 
-	FApplication* application;
+	FGraphicsEngine* application = nullptr;
 
 	map<FResource, void*> registry;
 
-	inline FResourceManager(FApplication* app) : application(app) { }
+	inline FResourceManager(FGraphicsEngine* engine) : application(engine) { }
 
 	static void set(FResourceManager* manager);
 

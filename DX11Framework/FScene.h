@@ -29,7 +29,7 @@ struct FObjectPreload
 
 class FScene
 {
-	friend class FApplication;
+	friend class FGraphicsEngine;
 
 public:
 	FCamera* active_camera = nullptr;

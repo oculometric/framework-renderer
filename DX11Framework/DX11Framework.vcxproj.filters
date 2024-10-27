@@ -81,6 +81,12 @@
     <ClCompile Include="PlanetScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FGraphicsEngine.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="FDebug.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyScene.h">
@@ -106,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="PlanetScene.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FGraphicsEngine.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FDebug.h">
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
