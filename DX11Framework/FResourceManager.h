@@ -23,7 +23,8 @@ private:
 		TEXTURE,
 		MESH_DATA,
 		SHADER,
-		MATERIAL
+		MATERIAL,
+		CAMERA_DATA
 	};
 
 	struct FResource

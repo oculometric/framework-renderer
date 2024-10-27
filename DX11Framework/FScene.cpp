@@ -56,6 +56,11 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 	case FObjectType::CAMERA:
 	{
 		FCamera* cam = new FCamera();
+		if (o.float1 > 0) cam->aspect_ratio = o.float1;
+		if (o.float2 > 0) cam->field_of_view = o.float2;
+		if (o.float3 > 0) cam->near_clip = o.float3;
+		if (o.float4 > 0) cam->far_clip = o.float4;
+
 		cam->updateProjectionMatrix();
 		obj = cam;
 		active_camera = cam;
@@ -133,7 +138,10 @@ bool operator>>(const FJsonElement& a, FObjectPreload& other)
 	else if (object_class == "camera")
 	{
 		other.object_type = FObjectType::CAMERA;
-		// TODO: add support for pointing to a camera resource
+		if (obj->has("aspect_ratio", JFLOAT)) other.float1;
+		if (obj->has("field_of_view", JFLOAT)) other.float2;
+		if (obj->has("near_clip", JFLOAT)) other.float3;
+		if (obj->has("far_clip", JFLOAT)) other.float4;
 	}
 	else if (object_class == "empty")
 		other.object_type = FObjectType::EMPTY;

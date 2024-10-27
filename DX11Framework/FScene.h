@@ -21,6 +21,10 @@ struct FObjectPreload
 	vector<FObjectPreload> children;
 	string data_name = "";
 	string material_name = "";
+	float float1 = 0;
+	float float2 = 0;
+	float float3 = 0;
+	float float4 = 0;
 };
 
 class FScene

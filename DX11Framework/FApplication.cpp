@@ -582,7 +582,7 @@ void FApplication::draw()
 
     if (scene && scene->active_camera)
     {
-        scene->active_camera->configuration.aspect_ratio = (float)window_width / (float)window_height;
+        scene->active_camera->aspect_ratio = (float)window_width / (float)window_height;
         scene->active_camera->updateProjectionMatrix();
 
         // write out common constant buffer variables. none of these change per-object

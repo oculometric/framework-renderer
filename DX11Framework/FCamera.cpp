@@ -9,5 +9,5 @@ void FCamera::lookAt(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up)
 
 void FCamera::updateProjectionMatrix()
 {
-	XMStoreFloat4x4(&projection_matrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(configuration.field_of_view), configuration.aspect_ratio, configuration.near_clip, configuration.far_clip));
+	XMStoreFloat4x4(&projection_matrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(field_of_view), aspect_ratio, near_clip, far_clip));
 }

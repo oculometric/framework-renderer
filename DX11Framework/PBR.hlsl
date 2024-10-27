@@ -43,7 +43,7 @@ struct PBRTextures
 void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants constants, PBRVaryings varyings, out float4 colour, out float3 normal, out float depth)
 {
     // calculate direciton from the camera to the target fragment
-    float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 0.0f), constants.view_matrix_inv).xyz);
+    float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 1), constants.view_matrix_inv).xyz);
     
     // surface colour is the product of albedo (!!!) texture colour and base colour
     float3 surface_colour = textures.albedo.Sample(textures.texture_sampler, varyings.uv).rgb * surface.base_colour.rgb;
@@ -72,8 +72,7 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         // TODO: make this physically accurate (energy-preserving)
         float specular_exp = 10.0f * (1.0f - surface.roughness_factor);
         // specular component of the light's contribution
-        // FIXME: specular highlight broken
-        float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), -light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
+        float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
         float3 specular_colour = lerp(specular_colour.rgb, surface_colour, surface.metallic_factor);
         float3 specular_light = specular_highlight * light_col * surface_colour;
         
