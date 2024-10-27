@@ -13,21 +13,22 @@ FScene::FScene(FApplication* application, string scene_file)
 
 void FScene::addObject(FObject* o, FObject* parent)
 {
-	if (!o) return;
+	if (o == nullptr) return;
+	if (all_objects.count(o) > 0) return;
+
 	if (parent == nullptr)
 	{
-		all_objects.push_back(o);
+		all_objects.insert(o);
 		root.addChild(o);
 		o->updateTransform();
 	}
 	else
 	{
-		all_objects.push_back(o);
+		if (all_objects.count(parent) == 0) return;
+		all_objects.insert(o);
 		parent->addChild(o);
 		o->updateTransform();
-		// TODO: check that parent is in the scene (if not, abort)
 	}
-	// TODO: check that the object is not already in the scene (if not, abort)
 }
 
 void FScene::finalizePreload()

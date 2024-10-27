@@ -95,7 +95,6 @@ private:
 	// textures to be used
 	FTexture* textures[MAX_TEXTURES] = { nullptr };
 
-	// TODO: implement the whole shader thing
 public:
 	void setParameter(string name, FMaterialParameter param);
 	FMaterialParameter getParameter(string name);

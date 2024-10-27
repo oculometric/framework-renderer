@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include <string>
+#include <unordered_set>
 
 #include "FObject.h"
 #include "FCamera.h"
@@ -31,7 +32,7 @@ public:
 	string name = "Scene";
 
 protected:
-	vector<FObject*> all_objects;
+	unordered_set<FObject*> all_objects;
 	FObject root;
 	FApplication* owner = nullptr;
 

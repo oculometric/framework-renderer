@@ -1,8 +1,8 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include <vector>
 #include <string>
+#include <unordered_set>
 
 using namespace DirectX;
 using namespace std;
@@ -21,7 +21,7 @@ private:
 	XMFLOAT4X4 world_transform;
 
 	FObject* parent;
-	vector<FObject*> children;
+	unordered_set<FObject*> children;
 
 public:
 	string name = "Object";
@@ -37,9 +37,8 @@ public:
 	inline virtual FObjectType getType() { return FObjectType::EMPTY; }
 
 	void updateTransform();
-	DirectX::XMFLOAT4X4 getTransform();
-	FObject*& getParent();
-	FObject* getChild(int i) const;
+	XMFLOAT4X4 getTransform() const;
+	FObject* getParent() const;
 	int countChildren() const;
 	void addChild(FObject* o);
 	void removeChild(FObject* o);

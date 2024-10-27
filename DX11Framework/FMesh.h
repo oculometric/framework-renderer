@@ -31,14 +31,14 @@ private:
 
 	// for rendering
 	ID3D11Buffer* vertex_buffer_ptr = nullptr;
-	ID3D11Buffer* index_buffer_ptr = nullptr;
+	ID3D11Buffer* index_buffer_ptr  = nullptr;
 };
 
 class FMesh : public FObject
 {
 private:
-	FMeshData* mesh_data;
-	FMaterial* material;
+	FMeshData* mesh_data = nullptr;
+	FMaterial* material  = nullptr;
 
 public:
 	inline FObjectType getType() { return FObjectType::MESH; }

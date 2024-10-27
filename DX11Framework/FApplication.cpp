@@ -61,7 +61,7 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 {
     const wchar_t* window_name  = L"SpaceDemoProject";
 
-    WNDCLASSW wnd_class;
+    WNDCLASSW wnd_class = { };
     wnd_class.style = 0;
     wnd_class.lpfnWndProc = WndProc;
     wnd_class.cbClsExtra = 0;
@@ -124,7 +124,7 @@ HRESULT FApplication::createSwapChainAndFrameBuffer()
 {
     HRESULT hr = S_OK;
 
-    DXGI_SWAP_CHAIN_DESC1 swap_chain_descriptor;
+    DXGI_SWAP_CHAIN_DESC1 swap_chain_descriptor = { };
     swap_chain_descriptor.Width = 0; // Defer to WindowWidth
     swap_chain_descriptor.Height = 0; // Defer to WindowHeight
     swap_chain_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //FLIP* modes don't support sRGB backbuffer

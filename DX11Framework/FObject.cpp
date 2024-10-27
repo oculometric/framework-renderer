@@ -2,12 +2,8 @@
 
 #include "FJsonParser.h"
 
-using namespace DirectX;
-
 FObject::FObject()
-{
-	updateTransform();
-}
+{ updateTransform(); }
 
 // TODO: local and global transform functions
 
@@ -35,33 +31,31 @@ void FObject::updateTransform()
 	for (FObject* obj : children) obj->updateTransform();
 }
 
-XMFLOAT4X4 FObject::getTransform()
-{
-	return world_transform;
-}
+XMFLOAT4X4 FObject::getTransform() const
+{ return world_transform; }
 
-FObject*& FObject::getParent()
-{
-	return parent;
-}
-
-FObject* FObject::getChild(int i) const
-{
-	if (i < children.size()) return children[i];
-	return nullptr;
-}
+FObject* FObject::getParent() const
+{ return parent; }
 
 int FObject::countChildren() const
-{
-	return static_cast<int>(children.size());
-}
+{ return static_cast<int>(children.size()); }
 
 void FObject::addChild(FObject* o)
 {
-	// TODO: if child exists, abort
-	// TODO: if child has a parent already, abort
-	// TODO: if child is null, abort
+	if (o == nullptr) return;
+	if (children.count(o) > 0) return;
+	if (o->parent != nullptr) return;
 
-	children.push_back(o);
+	children.insert(o);
 	o->parent = this;
+}
+
+void FObject::removeChild(FObject* o)
+{
+	if (o == nullptr) return;
+	if (children.count(o) == 0) return;
+	if (o->parent == nullptr) return;
+
+	children.erase(o);
+	o->parent = nullptr;
 }

@@ -4,10 +4,8 @@
 
 struct FFaceCorner { uint16_t co; uint16_t uv; uint16_t vn; };
 
-// TODO: doxygen-ify all the comments
-
 // splits a formatted OBJ face corner into its component indices
-inline FFaceCorner splitOBJFaceCorner(string str)
+static inline FFaceCorner splitOBJFaceCorner(string str)
 {
     FFaceCorner fci = { 0,0,0 };
     size_t first_break_ind = str.find('/');
@@ -28,9 +26,7 @@ struct FFaceCornerReference
     uint16_t transferred_vert_index;
 };
 
-inline float sign(float f) { return f >= 0 ? 1 : -1;  }
-
-pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 co_c, XMFLOAT2 uv_a, XMFLOAT2 uv_b, XMFLOAT2 uv_c, XMFLOAT3 vn_a)
+static pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMFLOAT3 co_c, XMFLOAT2 uv_a, XMFLOAT2 uv_b, XMFLOAT2 uv_c)
 {
     XMFLOAT3 debug_tool = XMFLOAT3(1.0f, 1.0f, 1.0f);
     XMFLOAT2 other_tool = XMFLOAT2(1.0f, 1.0f);
@@ -100,8 +96,8 @@ FMeshData* FMesh::loadMesh(string path)
 
     // temporary locations for reading data to
     string tmps;
-    XMFLOAT3 tmp3;
-    XMFLOAT2 tmp2;
+    XMFLOAT3 tmp3 = XMFLOAT3();
+    XMFLOAT2 tmp2 = XMFLOAT2();
 
     // repeat for every line in the file
     while (!file.eof())
@@ -188,13 +184,13 @@ FMeshData* FMesh::loadMesh(string path)
     vector<bool> touched = vector<bool>(mesh_data->vertices.size(), false);
     for (uint16_t tri = 0; tri < mesh_data->indices.size() / 3; tri++)
     {
-        uint16_t v0 = mesh_data->indices[(tri * 3) + 0]; FVertex f0 = mesh_data->vertices[v0];
-        uint16_t v1 = mesh_data->indices[(tri * 3) + 1]; FVertex f1 = mesh_data->vertices[v1];
-        uint16_t v2 = mesh_data->indices[(tri * 3) + 2]; FVertex f2 = mesh_data->vertices[v2];
+        uint16_t v0 = mesh_data->indices[((uint32_t)tri * 3) + 0]; FVertex f0 = mesh_data->vertices[v0];
+        uint16_t v1 = mesh_data->indices[((uint32_t)tri * 3) + 1]; FVertex f1 = mesh_data->vertices[v1];
+        uint16_t v2 = mesh_data->indices[((uint32_t)tri * 3) + 2]; FVertex f2 = mesh_data->vertices[v2];
         
-        if (!touched[v0]) mesh_data->vertices[v0].tangent = computeTangent(f0.position, f1.position, f2.position, f0.uv, f1.uv, f2.uv, f1.normal).first;
-        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f0.position, f2.position, f1.uv, f0.uv, f2.uv, f1.normal).first;
-        if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f1.position, f2.uv, f0.uv, f1.uv, f2.normal).first;
+        if (!touched[v0]) mesh_data->vertices[v0].tangent = computeTangent(f0.position, f1.position, f2.position, f0.uv, f1.uv, f2.uv).first;
+        if (!touched[v1]) mesh_data->vertices[v1].tangent = computeTangent(f1.position, f0.position, f2.position, f1.uv, f0.uv, f2.uv).first;
+        if (!touched[v2]) mesh_data->vertices[v2].tangent = computeTangent(f2.position, f0.position, f1.position, f2.uv, f0.uv, f1.uv).first;
 
         touched[v0] = true; touched[v1] = true; touched[v2] = true;
     }

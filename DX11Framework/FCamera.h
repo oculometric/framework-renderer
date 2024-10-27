@@ -13,7 +13,7 @@ struct FCameraConfiguration
 class FCamera : public FObject
 {
 private:
-	XMFLOAT4X4 projection_matrix;
+	XMFLOAT4X4 projection_matrix = XMFLOAT4X4();
 
 public:
 	FCameraConfiguration configuration;
@@ -24,5 +24,4 @@ public:
 	void lookAt(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up);
 	void updateProjectionMatrix();
 	inline XMFLOAT4X4 getProjectionMatrix() { return projection_matrix; }
-
 };
