@@ -98,6 +98,8 @@ private:
 	bool registerShader(FShader* shader, wstring path);
 	void unregisterShader(FShader* shader);
 
+	bool frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds);
+
 	inline ID3D11DeviceContext* getContext() { return application->getContext(); }
 	inline ID3D11Device* getDevice() { return application->getDevice(); }
 	inline IDXGIFactory2* getFactory() { return application->getFactory(); }

@@ -73,10 +73,7 @@ static pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMF
 
     pair<XMFLOAT3, XMFLOAT3> ret;
     ret.first = XMFLOAT3(vec_mat._11, vec_mat._21, vec_mat._31);                 // extract tangent
-    //ret.second = XMFLOAT3(vec_mat._12, vec_mat._22, vec_mat._32);                 // extract bitangent
     XMStoreFloat3(&ret.first, XMVector3Normalize(XMLoadFloat3(&ret.first)));
-    //XMStoreFloat3(&ret.second, XMVector3Normalize(XMLoadFloat3(&ret.second)));
-    //XMFLOAT3 other_norm; XMStoreFloat3(&other_norm, XMVector3Cross(XMLoadFloat3(&ret.first), XMLoadFloat3(&ret.second)));
 
     return ret;
 }
@@ -203,5 +200,73 @@ FMeshData* FMesh::loadMesh(string path)
         fv.tangent = XMFLOAT3(fv.tangent.x, -fv.tangent.z, fv.tangent.y);
     }
 
+    XMFLOAT3 max_c = XMFLOAT3(0,0,0);
+    XMFLOAT3 min_c = XMFLOAT3(0,0,0);
+
+    // compute bounding box
+    if (mesh_data->vertices.size() > 0)
+    {
+        max_c = mesh_data->vertices[0].position;
+        min_c = mesh_data->vertices[0].position;
+    }
+
+    for (FVertex& v : mesh_data->vertices)
+    {
+        max_c.x = max(v.position.x, max_c.x);
+        max_c.y = max(v.position.y, max_c.y);
+        max_c.z = max(v.position.z, max_c.z);
+
+        min_c.x = min(v.position.x, min_c.x);
+        min_c.y = min(v.position.y, min_c.y);
+        min_c.z = min(v.position.z, min_c.z);
+    }
+
+    mesh_data->bounds = FBoundingBox{ max_c, min_c };
+
 	return mesh_data;
+}
+
+FBoundingBox FMesh::getWorldSpaceBounds()
+{
+    XMFLOAT3 mi = mesh_data->bounds.min_corner;
+    XMFLOAT3 ma = mesh_data->bounds.max_corner;
+    XMFLOAT4 nnn = XMFLOAT4(mi.x, mi.y, mi.z, 1);
+    XMFLOAT4 ppp = XMFLOAT4(ma.x, ma.y, ma.z, 1);
+    vector<XMFLOAT4> corners =
+    {
+        nnn,
+        XMFLOAT4(ppp.x, nnn.y, nnn.z, 1),
+        XMFLOAT4(nnn.x, ppp.y, nnn.z, 1),
+        XMFLOAT4(ppp.x, ppp.y, nnn.z, 1),
+        XMFLOAT4(nnn.x, nnn.y, ppp.z, 1),
+        XMFLOAT4(ppp.x, nnn.y, ppp.z, 1),
+        XMFLOAT4(nnn.x, ppp.y, ppp.z, 1),
+        ppp
+    };
+
+    FBoundingBox world_bounds = FBoundingBox{ };
+    XMMATRIX world_matrix = XMLoadFloat4x4(&world_transform);
+    bool is_first = true;
+    for (XMFLOAT4 v : corners)
+    {
+        XMFLOAT3 ws; XMStoreFloat3(&ws, XMVector4Transform(XMLoadFloat4(&v), world_matrix));
+        
+        if (is_first)
+        {
+            world_bounds.max_corner = ws;
+            world_bounds.min_corner = ws;
+        }
+        
+        world_bounds.max_corner.x = max(ws.x, world_bounds.max_corner.x);
+        world_bounds.max_corner.y = max(ws.y, world_bounds.max_corner.y);
+        world_bounds.max_corner.z = max(ws.z, world_bounds.max_corner.z);
+
+        world_bounds.min_corner.x = min(ws.x, world_bounds.min_corner.x);
+        world_bounds.min_corner.y = min(ws.y, world_bounds.min_corner.y);
+        world_bounds.min_corner.z = min(ws.z, world_bounds.min_corner.z);
+
+        is_first = false;
+    }
+
+    return world_bounds;
 }

@@ -16,7 +16,7 @@ enum FObjectType
 
 class FObject
 {
-private:
+protected:
 	XMFLOAT4X4 local_transform;
 	XMFLOAT4X4 world_transform;
 

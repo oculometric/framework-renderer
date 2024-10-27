@@ -11,7 +11,7 @@ class FDebug
 private:
 	HWND window;
 
-	FDebug(HWND window_handle);
+	inline FDebug(HWND window_handle) : window(window_handle) { };
 	static void set(FDebug* debug);
 
 public:

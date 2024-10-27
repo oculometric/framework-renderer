@@ -366,7 +366,6 @@ bool FGraphicsEngine::registerShader(FShader* shader, wstring path)
         return false;
     }
 
-    // TODO: improve this to be more comprehensive in searhcing for the right size.
     if (FAILED(shader->reflector->GetConstantBufferByIndex(0)->GetDesc(nullptr)))
     {
         // if failed, use the pixel shader reflection instead
@@ -422,6 +421,41 @@ void FGraphicsEngine::unregisterShader(FShader* shader)
     if (shader->uniform_buffer) { shader->uniform_buffer->Release(); shader->uniform_buffer = nullptr; }
 }
 
+bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds)
+{
+    XMFLOAT3 mi = bounds.min_corner;
+    XMFLOAT3 ma = bounds.max_corner;
+    XMFLOAT4 nnn = XMFLOAT4(mi.x, mi.y, mi.z, 1);
+    XMFLOAT4 ppp = XMFLOAT4(ma.x, ma.y, ma.z, 1);
+    vector<XMFLOAT4> corners =
+    {
+        nnn,
+        XMFLOAT4(ppp.x, nnn.y, nnn.z, 1),
+        XMFLOAT4(nnn.x, ppp.y, nnn.z, 1),
+        XMFLOAT4(ppp.x, ppp.y, nnn.z, 1),
+        XMFLOAT4(nnn.x, nnn.y, ppp.z, 1),
+        XMFLOAT4(ppp.x, nnn.y, ppp.z, 1),
+        XMFLOAT4(nnn.x, ppp.y, ppp.z, 1),
+        ppp
+    };
+
+    FBoundingBox world_bounds = FBoundingBox{ };
+    XMMATRIX world_to_proj = XMMatrixIdentity() * XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_inv)) * XMLoadFloat4x4(&projection);
+    for (XMFLOAT4 v : corners)
+    {
+        XMFLOAT4 ws; XMStoreFloat4(&ws, XMVector4Transform(XMLoadFloat4(&v), world_to_proj));
+        ws = XMFLOAT4(ws.x / ws.w, ws.y / ws.w, ws.z / ws.w, 1);
+
+        if (ws.x <= 1 && ws.x >= -1
+         && ws.y <= 1 && ws.y >= -1
+         && ws.z <= 1 && ws.z >= -1)
+            return true;
+    }
+
+    // TODO: improve this, sometimes it falseley culls things
+    return false;
+}
+
 FGraphicsEngine::~FGraphicsEngine()
 {
     delete FResourceManager::get();
@@ -471,10 +505,10 @@ void FGraphicsEngine::draw()
 
         // write out common constant buffer variables. none of these change per-object
         XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
-        XMFLOAT4X4 view_matrix = getScene()->active_camera->getTransform();
+        XMFLOAT4X4 view_matrix_inv = getScene()->active_camera->getTransform();
         common_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-        common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
-        common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+        common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
+        common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix_inv));
         common_buffer_data->lights[0] = FLightData{ XMFLOAT3(0.8f, 0.7f, 0.6f), 1.0f, XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f), XMFLOAT3(0, 0, 0), 0 };
         common_buffer_data->lights[1] = FLightData{ };
         common_buffer_data->lights[2] = FLightData{ };
@@ -494,7 +528,7 @@ void FGraphicsEngine::draw()
             if (object != nullptr && object->getType() == FObjectType::MESH)
             {
                 FMesh* mesh_object = (FMesh*)object;
-                if (frustumCulling(projection_matrix, view_matrix, mesh_object->getWorldSpaceBounds()))
+                if (frustrumCull(projection_matrix, view_matrix_inv, mesh_object->getWorldSpaceBounds()))
                     drawObject(mesh_object);
             }
         }
@@ -534,14 +568,6 @@ void FGraphicsEngine::drawObject(FMesh* object)
         getContext()->VSSetConstantBuffers(0, 1, &shader->uniform_buffer);
         getContext()->PSSetConstantBuffers(0, 1, &shader->uniform_buffer);
     }
-
-    // write common-to-all-shaders cbuffer b1 to the GPU
-    ID3D11ShaderReflectionConstantBuffer* shader_reflection_2 = shader->reflector->GetConstantBufferByIndex(1);
-    D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor_2 = { };
-    shader_reflection_2->GetDesc(&shader_buffer_descriptor_2);
-    ID3D11ShaderReflectionVariable* var_2 = shader_reflection_2->GetVariableByIndex(0);
-    D3D11_SHADER_VARIABLE_DESC var_descriptor_2 = { };
-    var_2->GetDesc(&var_descriptor_2);
 
     // store data to the constant buffer that is shared between all shaders
     XMFLOAT4X4 object_matrix = object->getTransform();
