@@ -1,9 +1,8 @@
 #include "Common.hlsl"
+#include "PBR.hlsl"
 
 cbuffer ConstantBuffer : register(b0)
 {
-    CommonConstants common;     // this struct must always be present, and first in the constant buffer
-    
     float4 base_colour;         // base colour of the material. multiplied with all texture samples
     float4 specular_colour;     // specular colour of the material
     
@@ -12,6 +11,8 @@ cbuffer ConstantBuffer : register(b0)
     float normal_strength;      // strength of the normal mapping effect
     float emission_strength;    // strength of emission factor
 }
+
+COMMON_CONSTANT_BUFFER;         // defines a second constant buffer in register b1 with the variable 'common'
 
 Texture2D      albedo       : register(t0); // contains surface colour information (alpha in A channel)
 Texture2D      normal       : register(t1); // contains surface normal information
@@ -52,40 +53,40 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
 
 Fragment PS_main(Varyings input)
 {
-    //PBRSurface pbr_surface = (PBRSurface)0;
-    //pbr_surface.base_colour = base_colour;
-    //pbr_surface.specular_colour = specular_colour;
-    //pbr_surface.roughness_factor = roughness_factor;
-    //pbr_surface.metallic_factor = metallic_factor;
-    //pbr_surface.normal_strength = normal_strength;
-    //pbr_surface.emission_strength = emission_strength;
+    PBRSurface pbr_surface = (PBRSurface)0;
+    pbr_surface.base_colour = base_colour;
+    pbr_surface.specular_colour = specular_colour;
+    pbr_surface.roughness_factor = roughness_factor;
+    pbr_surface.metallic_factor = metallic_factor;
+    pbr_surface.normal_strength = normal_strength;
+    pbr_surface.emission_strength = emission_strength;
     
-    //PBRTextures pbr_textures;
-    //pbr_textures.albedo = albedo;
-    //pbr_textures.normal = normal;
-    //pbr_textures.texture_sampler = bilinear_sampler;
+    PBRTextures pbr_textures;
+    pbr_textures.albedo = albedo;
+    pbr_textures.normal = normal;
+    pbr_textures.texture_sampler = bilinear_sampler;
     
-    //PBRConstants pbr_constants = (PBRConstants)0;
-    //pbr_constants.lights = common.lights;
-    //pbr_constants.light_ambient = common.light_ambient.rgb;
-    //pbr_constants.view_matrix_inv = common.view_matrix_inv;
+    PBRConstants pbr_constants = (PBRConstants)0;
+    pbr_constants.lights = common.lights;
+    pbr_constants.light_ambient = common.light_ambient.rgb;
+    pbr_constants.view_matrix_inv = common.view_matrix_inv;
     
-    //PBRVaryings pbr_varyings = (PBRVaryings)0;
-    //pbr_varyings.position = input.position;
-    //pbr_varyings.view_position = input.view_position;
-    //pbr_varyings.normal = input.normal;
-    //pbr_varyings.uv = input.uv;
-    //pbr_varyings.tbn = input.tbn;
+    PBRVaryings pbr_varyings = (PBRVaryings)0;
+    pbr_varyings.position = input.position;
+    pbr_varyings.view_position = input.view_position;
+    pbr_varyings.normal = input.normal;
+    pbr_varyings.uv = input.uv;
+    pbr_varyings.tbn = input.tbn;
     
-    //float4 col;
-    //float3 norm;
-    //float depth;
-    //evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm, depth);
+    float4 col;
+    float3 norm;
+    float depth;
+    evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm, depth);
     
     Fragment frag = (Fragment)0;
-    frag.colour = float4(0,0,1,1);//col;
-    frag.normal = float4(1,0,0,1);//float4(norm, 1.0f);
-    //frag.depth = depth;
+    frag.colour = col;
+    frag.normal = float4(norm, 1.0f);
+    frag.depth = depth;
     
     return frag;
 }

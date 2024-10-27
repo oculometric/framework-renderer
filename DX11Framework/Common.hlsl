@@ -7,8 +7,8 @@
 
 struct Fragment
 {
-    float4 colour           : SV_TARGET1;   // colour buffer output
-    float4 normal           : SV_TARGET2;   // normal buffer output
+    float4 colour           : SV_TARGET0;   // colour buffer output
+    float4 normal           : SV_TARGET1;   // normal buffer output
     float depth             : SV_DEPTH;     // depth buffer output
 };
 
@@ -25,5 +25,7 @@ struct CommonConstants
     float time;                 // current world time in seconds
     float3 _;                   // padding
 };
+
+#define COMMON_CONSTANT_BUFFER cbuffer CommonConstantBuffer : register(b1) { CommonConstants common; }
 
 #endif

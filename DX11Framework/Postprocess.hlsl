@@ -7,8 +7,8 @@ cbuffer ConstantBuffer : register(b0)
 }
 
 Texture2D screen : register(t0);
-Texture2D depth  : register(t1);
-Texture2D normal : register(t2);
+Texture2D normal : register(t1);
+Texture2D depth  : register(t2);
 TextureCube skybox : register(t3);
 SamplerState bilinear_sampler : register(s0);
 

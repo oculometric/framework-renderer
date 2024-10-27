@@ -37,7 +37,7 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     HRESULT hr = S_OK;
 
     FResourceManager::set(new FResourceManager(this));
-    uniform_buffer = new float[16384];
+    uniform_buffer_data = new float[16384];
 
     hr = createWindowHandle(hInstance, nShowCmd);
     if (FAILED(hr)) return E_FAIL;
@@ -235,6 +235,18 @@ HRESULT FApplication::initPipelineVariables()
     if (FAILED(hr)) { return hr; }
 
     immediate_context->PSSetSamplers(0, 1, &bilinear_sampler_state);
+
+    // create common constant buffer
+    D3D11_BUFFER_DESC common_buffer_descriptor = { };
+    common_buffer_descriptor.ByteWidth = sizeof(FCommonConstantData);
+    common_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
+    common_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    common_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+    hr = device->CreateBuffer(&common_buffer_descriptor, nullptr, &common_buffer);
+    if (FAILED(hr)) { return hr; }
+
+    common_buffer_data = new FCommonConstantData();
 
     return hr;
 }
@@ -446,7 +458,6 @@ bool FApplication::registerShader(FShader* shader, wstring path)
     }
 
     // TODO: improve this to be more comprehensive in searhcing for the right size.
-    // TODO: move the always-present uniforms into a separate uniform buffer
     if (FAILED(shader->reflector->GetConstantBufferByIndex(0)->GetDesc(nullptr)))
     {
         // if failed, use the pixel shader reflection instead
@@ -528,7 +539,7 @@ FApplication::~FApplication()
     if (quad_index_buffer) quad_index_buffer->Release();
     if (quad_vertex_buffer) quad_vertex_buffer->Release();
 
-    delete uniform_buffer;
+    delete uniform_buffer_data;
 
     if (swap_chain) swap_chain->Release();
     if (immediate_context) immediate_context->Release();
@@ -561,11 +572,11 @@ void FApplication::update()
 void FApplication::draw()
 {    
     // present unbinds render target, so rebind and clear at start of each frame
-    float background_colour[4] = { 1, 0, 1, 1 };
+    float clear[4] = { 0, 0, 0, 1 };
     float zero[4] = { 0, 0, 0, 1 };
     ID3D11RenderTargetView* targets[] = { colour_buffer_intermediate_view, normal_buffer_view };
     immediate_context->OMSetRenderTargets(2, targets, depth_buffer_view);
-    immediate_context->ClearRenderTargetView(colour_buffer_intermediate_view, background_colour);
+    immediate_context->ClearRenderTargetView(colour_buffer_intermediate_view, clear);
     immediate_context->ClearRenderTargetView(normal_buffer_view, zero);
     immediate_context->ClearDepthStencilView(depth_buffer_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -573,6 +584,27 @@ void FApplication::draw()
     {
         scene->active_camera->configuration.aspect_ratio = (float)window_width / (float)window_height;
         scene->active_camera->updateProjectionMatrix();
+
+        // write out common constant buffer variables. none of these change per-object
+        XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
+        XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
+        common_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+        common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
+        common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+        common_buffer_data->lights[0] = FLightData{ XMFLOAT3(0.8f, 0.7f, 0.6f), 1.0f, XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f), XMFLOAT3(0, 0, 0), 0 };
+        common_buffer_data->lights[1] = FLightData{ };
+        common_buffer_data->lights[2] = FLightData{ };
+        common_buffer_data->lights[3] = FLightData{ };
+        common_buffer_data->lights[4] = FLightData{ };
+        common_buffer_data->lights[5] = FLightData{ };
+        common_buffer_data->lights[6] = FLightData{ };
+        common_buffer_data->lights[7] = FLightData{ };
+        common_buffer_data->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
+        common_buffer_data->time = total_time;
+
+        immediate_context->VSSetConstantBuffers(1, 1, &common_buffer);
+        immediate_context->PSSetConstantBuffers(1, 1, &common_buffer);
+
         for (FObject* object : scene->all_objects)
             drawObject(object);
     }
@@ -582,8 +614,6 @@ void FApplication::draw()
     // present backbuffer to screen
     swap_chain->Present(0, 0);
 }
-
-// TODO: HERE: colour buffer data seems to end up in the normal buffer now, nothing is written to colour buffer. shader parameter list size is still zero for some fucking reason
 
 void FApplication::drawObject(FObject* object)
 {
@@ -616,39 +646,35 @@ void FApplication::drawObject(FObject* object)
         immediate_context->PSSetConstantBuffers(0, 1, &shader->uniform_buffer);
     }
 
+    // write common-to-all-shaders cbuffer b1 to the GPU
+    ID3D11ShaderReflectionConstantBuffer* shader_reflection_2 = shader->reflector->GetConstantBufferByIndex(1);
+    D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor_2 = { };
+    shader_reflection_2->GetDesc(&shader_buffer_descriptor_2);
+    ID3D11ShaderReflectionVariable* var_2 = shader_reflection_2->GetVariableByIndex(0);
+    D3D11_SHADER_VARIABLE_DESC var_descriptor_2 = { };
+    var_2->GetDesc(&var_descriptor_2);
+
+    // store data to the constant buffer that is shared between all shaders
+    XMFLOAT4X4 object_matrix = object->getTransform();
+    common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
+
+    D3D11_MAPPED_SUBRESOURCE common_buffer_resource;
+    immediate_context->Map(common_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &common_buffer_resource);
+    memcpy(common_buffer_resource.pData, (uint8_t*)common_buffer_data, sizeof(FCommonConstantData));
+    immediate_context->Unmap(common_buffer, 0);
+
+    // store the rest of the variables from the material
     ID3D11ShaderReflectionConstantBuffer* shader_reflection = shader->reflector->GetConstantBufferByIndex(0);
     D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
     shader_reflection->GetDesc(&shader_buffer_descriptor);
-
-    // store data to the constant buffer that is shared between all shaders
-    XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
-    XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
-    XMFLOAT4X4 object_matrix = object->getTransform();
-    // TODO: move some parts of this so that they're not overwritten for every single object (only the world_matrix should be updated per-object)
-    FCommonConstantData* commons = (FCommonConstantData*)uniform_buffer;
-    commons->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-    commons->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
-    commons->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
-    commons->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
-    commons->lights[0] = FLightData{ XMFLOAT3(0.8f, 0.7f, 0.6f), 1.0f, XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f), XMFLOAT3(0, 0, 0), 0 };
-    commons->lights[1] = FLightData{ };
-    commons->lights[2] = FLightData{ };
-    commons->lights[3] = FLightData{ };
-    commons->lights[4] = FLightData{ };
-    commons->lights[5] = FLightData{ };
-    commons->lights[6] = FLightData{ };
-    commons->lights[7] = FLightData{ };
-    commons->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
-    commons->time = total_time;
-
-    // store the rest of the variables from the material
-    for (size_t i = 1; i < shader_buffer_descriptor.Variables; i++)
+    
+    for (size_t i = 0; i < shader_buffer_descriptor.Variables; i++)
     {
         ID3D11ShaderReflectionVariable* var = shader_reflection->GetVariableByIndex((UINT)i);
         D3D11_SHADER_VARIABLE_DESC var_descriptor = { };
         var->GetDesc(&var_descriptor);
         FMaterialParameter param = material->getParameter(var_descriptor.Name);
-        void* start_ptr = ((uint8_t*)uniform_buffer) + var_descriptor.StartOffset;
+        void* start_ptr = ((uint8_t*)uniform_buffer_data) + var_descriptor.StartOffset;
 
         switch (param.type)
         {
@@ -666,7 +692,7 @@ void FApplication::drawObject(FObject* object)
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     immediate_context->Map(shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
-    memcpy(constant_buffer_resource.pData, uniform_buffer, max(shader_buffer_descriptor.Size, (UINT)sizeof(FCommonConstantData)));
+    memcpy(constant_buffer_resource.pData, uniform_buffer_data, max(shader_buffer_descriptor.Size, (UINT)sizeof(FCommonConstantData)));
     immediate_context->Unmap(shader->uniform_buffer, 0);
 
     for (size_t i = 0; i < MAX_TEXTURES; i++)
@@ -712,10 +738,10 @@ void FApplication::performPostprocessing()
     // update uniform buffer contents
     XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
     XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
-    ((XMMATRIX*)uniform_buffer)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-    ((XMMATRIX*)uniform_buffer)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
-    ((XMMATRIX*)uniform_buffer)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
-    ((XMMATRIX*)uniform_buffer)[3] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&projection_matrix)));
+    ((XMMATRIX*)uniform_buffer_data)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    ((XMMATRIX*)uniform_buffer_data)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
+    ((XMMATRIX*)uniform_buffer_data)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+    ((XMMATRIX*)uniform_buffer_data)[3] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&projection_matrix)));
 
     ID3D11ShaderReflectionConstantBuffer* shader_reflection = postprocess_shader->reflector->GetConstantBufferByIndex(0);
     D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
@@ -724,13 +750,13 @@ void FApplication::performPostprocessing()
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     immediate_context->Map(postprocess_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
-    memcpy(constant_buffer_resource.pData, uniform_buffer, shader_buffer_descriptor.Size);
+    memcpy(constant_buffer_resource.pData, uniform_buffer_data, shader_buffer_descriptor.Size);
     immediate_context->Unmap(postprocess_shader->uniform_buffer, 0);
 
     // bind the special spicy textures
     immediate_context->PSSetShaderResources(0, 1, &colour_buffer_resource);
-    immediate_context->PSSetShaderResources(1, 1, &depth_buffer_resource);
-    immediate_context->PSSetShaderResources(2, 1, &normal_buffer_resource);
+    immediate_context->PSSetShaderResources(1, 1, &normal_buffer_resource);
+    immediate_context->PSSetShaderResources(2, 1, &depth_buffer_resource);
     
     // bind skybox texture
     immediate_context->PSSetShaderResources(3, 1, &skybox_texture);

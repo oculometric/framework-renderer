@@ -75,15 +75,17 @@ private:
 
 	HWND window_handle;
 
-	FShader* postprocess_shader      = nullptr;
-	ID3D11Buffer* quad_vertex_buffer = nullptr;
-	ID3D11Buffer* quad_index_buffer  = nullptr;
+	FShader* postprocess_shader				= nullptr;
+	ID3D11Buffer* quad_vertex_buffer		= nullptr;
+	ID3D11Buffer* quad_index_buffer			= nullptr;
 	ID3D11ShaderResourceView* skybox_texture = nullptr;
 
-	FMaterial* placeholder_material  = nullptr;
-	FShader* active_shader           = nullptr;
-	FMeshData* active_mesh           = nullptr;
-	void* uniform_buffer             = nullptr;
+	FMaterial* placeholder_material			= nullptr;
+	FShader* active_shader					= nullptr;
+	FMeshData* active_mesh					= nullptr;
+	void* uniform_buffer_data					= nullptr;
+	FCommonConstantData* common_buffer_data	= nullptr;
+	ID3D11Buffer* common_buffer				= nullptr;
 	float total_time = 0.0f;
 
 public:

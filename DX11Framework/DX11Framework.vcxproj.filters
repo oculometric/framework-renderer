@@ -109,9 +109,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SimpleShaders.hlsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="Postprocess.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
