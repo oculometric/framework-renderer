@@ -148,8 +148,10 @@
     <ClCompile Include="PlanetScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Light.hlsl" />
     <None Include="monitor.fmat" />
     <None Include="MyScene.fscn" />
+    <None Include="PBR.hlsl" />
     <None Include="placeholder.fmat" />
     <None Include="PlanetScene.fscn" />
     <None Include="SimpleShaders.hlsl">
@@ -204,6 +206,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PhysicalShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

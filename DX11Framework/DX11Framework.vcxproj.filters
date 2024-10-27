@@ -157,5 +157,14 @@
     <None Include="PhysicalShader.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Light.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="PBR.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Common.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

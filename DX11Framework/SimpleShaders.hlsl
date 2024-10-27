@@ -1,18 +1,8 @@
+#include "Common.hlsl"
+
 cbuffer ConstantBuffer : register(b0)
 {
-    // these 8 fields MUST be the first 8
-    float4x4 projection_matrix;
-    float4x4 view_matrix;
-    float4x4 view_matrix_inv;
-    float4x4 world_matrix;
-    
-    float4 light_direction = float4(0.0f, 0.0f, -1.0f, 0.0f);
-    float4 light_diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    float4 light_specular = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    float4 light_ambient = float4(0.05f, 0.05f, 0.05f, 1.0f);
-    
-    float time;
-    float3 padding;
+    CommonConstants common;
     
     float4 material_diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
@@ -36,29 +26,22 @@ struct Varyings
     float3x3 tbn            : MATRIX;
 };
 
-struct Fragment
-{
-    float4 colour           : SV_TARGET;
-    float4 normal           : SV_TARGET1;
-    float depth             : SV_DEPTH;
-};
-
 Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 normal : NORMAL, float2 uv : TEXCOORD0, float3 tangent : TANGENT0)
 {
     Varyings output = (Varyings)0;
     
     float4 Pos4 = float4(position, 1.0f);
     output.model_position = position;
-    output.position = mul(Pos4, world_matrix);
+    output.position = mul(Pos4, common.world_matrix);
     output.world_position = output.position;
-    output.position = mul(output.position, view_matrix);
+    output.position = mul(output.position, common.view_matrix);
     output.view_position = output.position;
-    output.position = mul(output.position, projection_matrix);
+    output.position = mul(output.position, common.projection_matrix);
     
     output.colour = colour;
     
-    output.normal = normalize(mul(float4(normalize(normal), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
-    output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), world_matrix).xyz) * float3(-1, 1, 1);
+    output.normal = normalize(mul(float4(normalize(normal), 0.0f), common.world_matrix).xyz) * float3(-1, 1, 1);
+    output.tangent = normalize(mul(float4(normalize(tangent), 0.0f), common.world_matrix).xyz) * float3(-1, 1, 1);
     output.bitangent = normalize(cross(output.normal, output.tangent)) * float3(-1, 1, 1);
     output.tbn = float3x3(output.tangent, output.bitangent, output.normal);
     
@@ -70,7 +53,7 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
 Fragment PS_main(Varyings input)
 {
     // TODO: implement non-directional lights
-    float3 view_dir = normalize(mul(float4(normalize(input.view_position.xyz), 0.0f), view_matrix_inv).xyz);
+    float3 view_dir = normalize(mul(float4(normalize(input.view_position.xyz), 0.0f), common.view_matrix_inv).xyz);
     float3 overall_colour = float3(0.0f, 0.0f, 0.0f);
     
     float3 surface_colour = material_diffuse.rgb * albedo.Sample(bilinear_sampler, input.uv).rgb;
@@ -85,12 +68,12 @@ Fragment PS_main(Varyings input)
     
     //for (uint i = 0; i < 8; i++)
     //{
-        float3 light_dir = normalize(light_direction.xyz);
+        float3 light_dir = normalize(common.lights[0].light_direction.xyz);
     
         float dot_norm = dot(-light_dir, true_normal);
         
-        float3 diffuse_light = saturate(dot_norm) * light_diffuse.rgb * surface_colour;
-        float3 ambient_light = light_ambient.rgb * surface_colour;
+        float3 diffuse_light = saturate(dot_norm) * common.lights[0].colour.rgb * surface_colour;
+        float3 ambient_light = common.light_ambient.rgb * surface_colour;
     
         float3 specular_light = pow
         (
@@ -100,7 +83,7 @@ Fragment PS_main(Varyings input)
                 -light_dir
             )),
             material_diffuse.w
-        ) * light_specular.rgb * surface_colour * (dot_norm > 0.0f);
+        ) * common.lights[0].colour.rgb * surface_colour * (dot_norm > 0.0f);
         
         float3 colour = diffuse_light + ambient_light + specular_light;
         

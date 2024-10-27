@@ -12,7 +12,7 @@
     ],
     "shaders": [
       { 
-        "path": "SimpleShaders.hlsl",
+        "path": "PhysicalShader.hlsl",
         "wireframe": 0,
         "culling": "off"
       }

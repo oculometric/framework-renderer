@@ -1,10 +1,11 @@
 {
-	"shader": "SimpleShaders.hlsl",
+	"shader": "PhysicalShader.hlsl",
 	"textures": [
 		"monitor_t.dds",
 		"monitor_n.dds"
 	],
 	"uniforms": [
-		{ "param": "material_diffuse", "value": [1, 1, 1, 4], "type": "float4" }
+		{ "param": "base_colour", "value": [1, 1, 1, 1], "type": "float4" },
+		{ "param": "roughness_factor", "value": 1, "type": "float" }
 	]
 }

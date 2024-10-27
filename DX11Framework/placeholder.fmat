@@ -1,7 +1,21 @@
 {
-	"shader": "SimpleShaders.hlsl",
+	"shader": "PhysicalShader.hlsl",
 	"textures": [],
 	"uniforms": [
-		{ "param": "material_diffuse", "value": [1, 1, 1, 8], "type": "float4" }
+		{
+			"param": "base_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 0.5,
+			"type": "float"
+		}
 	]
 }

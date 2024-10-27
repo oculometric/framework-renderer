@@ -37,7 +37,7 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     HRESULT hr = S_OK;
 
     FResourceManager::set(new FResourceManager(this));
-    uniform_buffer = new float[4096];
+    uniform_buffer = new float[16384];
 
     hr = createWindowHandle(hInstance, nShowCmd);
     if (FAILED(hr)) return E_FAIL;
@@ -247,7 +247,7 @@ HRESULT FApplication::loadDefaultResources()
     hr = CreateDDSTextureFromFile(device, L"blank.dds", nullptr, &blank_texture);
     if (FAILED(hr)) { return hr; }
 
-    FShader* shader = FResourceManager::get()->loadShader("SimpleShaders.hlsl", false, FCullMode::OFF);
+    FShader* shader = FResourceManager::get()->loadShader("PhysicalShader.hlsl", false, FCullMode::OFF);
     if (shader == nullptr) { return -1; }
 
     // load placeholder material
@@ -445,6 +445,8 @@ bool FApplication::registerShader(FShader* shader, wstring path)
         return false;
     }
 
+    // TODO: improve this to be more comprehensive in searhcing for the right size.
+    // TODO: move the always-present uniforms into a separate uniform buffer
     if (FAILED(shader->reflector->GetConstantBufferByIndex(0)->GetDesc(nullptr)))
     {
         // if failed, use the pixel shader reflection instead
@@ -465,7 +467,7 @@ bool FApplication::registerShader(FShader* shader, wstring path)
     shader->reflector->GetConstantBufferByIndex(0)->GetDesc(&shader_buffer_descriptor);
 
     D3D11_BUFFER_DESC constant_buffer_descriptor = { };
-    constant_buffer_descriptor.ByteWidth = max(shader_buffer_descriptor.Size, (UINT)16);
+    constant_buffer_descriptor.ByteWidth = max(shader_buffer_descriptor.Size, (UINT)sizeof(FCommonConstantData));
     constant_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
     constant_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     constant_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -559,8 +561,8 @@ void FApplication::update()
 void FApplication::draw()
 {    
     // present unbinds render target, so rebind and clear at start of each frame
-    float background_colour[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
-    float zero[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    float background_colour[4] = { 1, 0, 1, 1 };
+    float zero[4] = { 0, 0, 0, 1 };
     ID3D11RenderTargetView* targets[] = { colour_buffer_intermediate_view, normal_buffer_view };
     immediate_context->OMSetRenderTargets(2, targets, depth_buffer_view);
     immediate_context->ClearRenderTargetView(colour_buffer_intermediate_view, background_colour);
@@ -580,6 +582,8 @@ void FApplication::draw()
     // present backbuffer to screen
     swap_chain->Present(0, 0);
 }
+
+// TODO: HERE: colour buffer data seems to end up in the normal buffer now, nothing is written to colour buffer. shader parameter list size is still zero for some fucking reason
 
 void FApplication::drawObject(FObject* object)
 {
@@ -620,19 +624,25 @@ void FApplication::drawObject(FObject* object)
     XMFLOAT4X4 projection_matrix = scene->active_camera->getProjectionMatrix();
     XMFLOAT4X4 view_matrix = scene->active_camera->getTransform();
     XMFLOAT4X4 object_matrix = object->getTransform();
-    ((XMMATRIX*)uniform_buffer)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-    ((XMMATRIX*)uniform_buffer)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
-    ((XMMATRIX*)uniform_buffer)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
-    ((XMMATRIX*)uniform_buffer)[3] = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
-    XMFLOAT4* light_params = (XMFLOAT4*)((uint8_t*)uniform_buffer + (sizeof(XMMATRIX) * 4));
-    light_params[0] = XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f);    // direction
-    light_params[1] = XMFLOAT4(0.8f, 0.7f, 0.6f, 1.0f);     // diffuse
-    light_params[2] = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);     // specular
-    light_params[3] = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);  // ambient
-    light_params[4] = XMFLOAT4(total_time, 0.0f, 0.0f, 0.0f); // time
+    // TODO: move some parts of this so that they're not overwritten for every single object (only the world_matrix should be updated per-object)
+    FCommonConstantData* commons = (FCommonConstantData*)uniform_buffer;
+    commons->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    commons->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
+    commons->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+    commons->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
+    commons->lights[0] = FLightData{ XMFLOAT3(0.8f, 0.7f, 0.6f), 1.0f, XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f), XMFLOAT3(0, 0, 0), 0 };
+    commons->lights[1] = FLightData{ };
+    commons->lights[2] = FLightData{ };
+    commons->lights[3] = FLightData{ };
+    commons->lights[4] = FLightData{ };
+    commons->lights[5] = FLightData{ };
+    commons->lights[6] = FLightData{ };
+    commons->lights[7] = FLightData{ };
+    commons->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
+    commons->time = total_time;
 
     // store the rest of the variables from the material
-    for (size_t i = 8; i < shader_buffer_descriptor.Variables; i++)
+    for (size_t i = 1; i < shader_buffer_descriptor.Variables; i++)
     {
         ID3D11ShaderReflectionVariable* var = shader_reflection->GetVariableByIndex((UINT)i);
         D3D11_SHADER_VARIABLE_DESC var_descriptor = { };
@@ -656,7 +666,7 @@ void FApplication::drawObject(FObject* object)
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     immediate_context->Map(shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
-    memcpy(constant_buffer_resource.pData, uniform_buffer, shader_buffer_descriptor.Size);
+    memcpy(constant_buffer_resource.pData, uniform_buffer, max(shader_buffer_descriptor.Size, (UINT)sizeof(FCommonConstantData)));
     immediate_context->Unmap(shader->uniform_buffer, 0);
 
     for (size_t i = 0; i < MAX_TEXTURES; i++)
@@ -674,7 +684,7 @@ void FApplication::drawObject(FObject* object)
         UINT offset = 0;
         immediate_context->IASetVertexBuffers(0, 1, &mesh_data->vertex_buffer_ptr, &stride, &offset);
         immediate_context->IASetIndexBuffer(mesh_data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
-        active_mesh = mesh_data;;
+        active_mesh = mesh_data;
     }
 
     // draw the object
