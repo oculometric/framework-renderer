@@ -198,9 +198,9 @@ FMeshData* FMesh::loadMesh(string path)
     // transform from Z back Y up space into Z up Y forward space
     for (FVertex& fv : mesh_data->vertices)
     {
-        fv.position = XMFLOAT3(-fv.position.x, -fv.position.z, fv.position.y);
-        fv.normal = XMFLOAT3(-fv.normal.x, -fv.normal.z, fv.normal.y);
-        fv.tangent = XMFLOAT3(-fv.tangent.x, -fv.tangent.z, fv.tangent.y);
+        fv.position = XMFLOAT3(fv.position.x, -fv.position.z, fv.position.y);
+        fv.normal = XMFLOAT3(fv.normal.x, -fv.normal.z, fv.normal.y);
+        fv.tangent = XMFLOAT3(fv.tangent.x, -fv.tangent.z, fv.tangent.y);
     }
 
 	return mesh_data;

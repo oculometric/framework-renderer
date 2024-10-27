@@ -42,10 +42,10 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     
     output.uv = uv * float2(1.0f, -1.0f);
     
-    float3 transformed_normal = normalize(mul(float4(normalize(normal), 0.0f), common.world_matrix).xyz) * float3(-1, 1, 1);
+    float3 transformed_normal = normalize(mul(float4(normalize(normal), 0.0f), common.world_matrix).xyz);
     output.normal = transformed_normal;
-    float3 transformed_tangent = normalize(mul(float4(normalize(tangent), 0.0f), common.world_matrix).xyz) * float3(-1, 1, 1);
-    float3 bitangent = normalize(cross(transformed_normal, transformed_tangent)) * float3(-1, 1, 1);
+    float3 transformed_tangent = normalize(mul(float4(normalize(tangent), 0.0f), common.world_matrix).xyz);
+    float3 bitangent = normalize(cross(transformed_normal, transformed_tangent));
     output.tbn = float3x3(transformed_tangent, bitangent, transformed_normal);
     
     return output;

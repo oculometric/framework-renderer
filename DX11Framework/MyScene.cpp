@@ -30,16 +30,16 @@ void MyScene::update(float delta_time)
 		(
 			(float)((GetAsyncKeyState('D') & 0xF000) - (GetAsyncKeyState('A') & 0xF000)),
 			(float)((GetAsyncKeyState('E') & 0xF000) - (GetAsyncKeyState('Q') & 0xF000)),
-			(float)((GetAsyncKeyState('W') & 0xF000) - (GetAsyncKeyState('S') & 0xF000)),
+			(float)((GetAsyncKeyState('S') & 0xF000) - (GetAsyncKeyState('W') & 0xF000)),
 			0.0f
 		);
 
 		FLOAT speed = GetAsyncKeyState(VK_SHIFT) & 0xF000 ? 8.0f : 3.0f;
 
-		if (GetAsyncKeyState(VK_UP) & 0xF000) active_camera->eulers.x += delta_time * 60.0f;
-		if (GetAsyncKeyState(VK_DOWN) & 0xF000) active_camera->eulers.x -= delta_time * 60.0f;
-		if (GetAsyncKeyState(VK_LEFT) & 0xF000) active_camera->eulers.z -= delta_time * 60.0f;
-		if (GetAsyncKeyState(VK_RIGHT) & 0xF000) active_camera->eulers.z += delta_time * 60.0f;
+		if (GetAsyncKeyState(VK_UP) & 0xF000) active_camera->eulers.x -= delta_time * 60.0f;
+		if (GetAsyncKeyState(VK_DOWN) & 0xF000) active_camera->eulers.x += delta_time * 60.0f;
+		if (GetAsyncKeyState(VK_LEFT) & 0xF000) active_camera->eulers.z += delta_time * 60.0f;
+		if (GetAsyncKeyState(VK_RIGHT) & 0xF000) active_camera->eulers.z -= delta_time * 60.0f;
 
 		XMStoreFloat3
 		(
@@ -52,7 +52,6 @@ void MyScene::update(float delta_time)
 		);
 		active_camera->updateTransform();
 	}
-
 
 	FObject* demo = findObjectWithName<FObject>("backing");
 	if (GetAsyncKeyState('U')) demo->eulers.x += delta_time * 100.0f;
