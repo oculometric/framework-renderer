@@ -5,7 +5,25 @@
 		"monitor_n.dds"
 	],
 	"uniforms": [
-		{ "param": "base_colour", "value": [1, 1, 1, 1], "type": "float4" },
-		{ "param": "roughness_factor", "value": 1, "type": "float" }
+		{
+			"param": "base_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "normal_strength",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		}
 	]
 }
