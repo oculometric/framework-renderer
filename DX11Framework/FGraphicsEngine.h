@@ -87,6 +87,7 @@ private:
 	void unregisterShader(FShader* shader);
 
 	bool frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds);
+	void sortForBatching(vector<FMesh*>& objects);
 
 	inline ID3D11DeviceContext* getContext() { return application->getContext(); }
 	inline ID3D11Device* getDevice() { return application->getDevice(); }

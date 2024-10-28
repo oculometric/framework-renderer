@@ -456,6 +456,34 @@ bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, F
     return false;
 }
 
+void FGraphicsEngine::sortForBatching(vector<FMesh*>& objects)
+{
+    if (objects.size() < 3) return;
+
+    bool switched = true;
+    while (switched)
+    {
+        switched = false;
+        for (int i = 0; i < objects.size() - 1; i++)
+        {
+            FMesh* o1 = objects[i];
+            FMesh* o2 = objects[i + 1];
+            
+            FMaterial* m1 = o1->getMaterial();
+            FShader* s1 = m1 == nullptr ? nullptr : m1->shader;
+            FMaterial* m2 = o2->getMaterial();
+            FShader* s2 = m2 == nullptr ? nullptr : m2->shader;
+
+            if (s1 > s2 || (s1 == s2 && m1 > m2))
+            {
+                objects[i + 1] = o1;
+                objects[i] = o2;
+                switched = true;
+            }
+        }
+    }
+}
+
 FGraphicsEngine::~FGraphicsEngine()
 {
     delete FResourceManager::get();
@@ -523,18 +551,24 @@ void FGraphicsEngine::draw()
         common_buffer_data->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f); // TODO: ambient light, world config
         common_buffer_data->time = getTime();
 
+        // ensure the common constant buffer is bound
         getContext()->VSSetConstantBuffers(1, 1, &common_buffer);
         getContext()->PSSetConstantBuffers(1, 1, &common_buffer);
 
-        for (FObject* object : getScene()->all_objects)
-        {
-            if (object != nullptr && object->getType() == FObjectType::MESH)
-            {
-                FMesh* mesh_object = (FMesh*)object;
-                if (frustrumCull(projection_matrix, view_matrix_inv, mesh_object->getWorldSpaceBounds()))
-                    drawObject(mesh_object);
-            }
-        }
+        // extract all the objects we actually care about (no point sorting things we're going to discard)
+        vector<FMesh*> batch;
+        batch.reserve(getScene()->all_objects.size());
+        for (FObject* obj : getScene()->all_objects)
+            if (obj->getType() == FObjectType::MESH)
+                if (frustrumCull(projection_matrix, view_matrix_inv, ((FMesh*)obj)->getWorldSpaceBounds()))
+                    batch.push_back((FMesh*)obj);
+
+        // sort the objects for batching, so we have fewer context/state switches
+        sortForBatching(batch);
+
+        // draw the objects
+        for (FMesh* mo : batch)
+            drawObject(mo);
     }
 
     performPostprocessing();
