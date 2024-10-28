@@ -167,6 +167,7 @@
     <ClInclude Include="FResourceManager.h" />
     <ClInclude Include="FTexture.h" />
     <ClInclude Include="FJsonParser.h" />
+    <ClInclude Include="Gizmo.h" />
     <ClInclude Include="MyScene.h" />
     <ClInclude Include="PlanetScene.h" />
   </ItemGroup>
@@ -205,6 +206,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Gizmo.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

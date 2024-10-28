@@ -4,6 +4,7 @@
 #include "FResourceManager.h"
 #include "FJsonParser.h"
 #include "FDebug.h"
+#include "Gizmo.h"
 
 using namespace std;
 
@@ -124,9 +125,6 @@ HRESULT FGraphicsEngine::initPipelineVariables()
 {
     HRESULT hr = S_OK;
 
-    // set input assembler
-    getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
     // create viewport
     viewport = { 0.0f, 0.0f, getWidth(), getHeight(), 0.0f, 1.0f};
     getContext()->RSSetViewports(1, &viewport);
@@ -143,6 +141,16 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     if (FAILED(hr)) { return hr; }
 
     getContext()->PSSetSamplers(0, 1, &bilinear_sampler_state);
+
+    // create depth stencil states
+    D3D11_DEPTH_STENCIL_DESC ds_desc = { };
+    ds_desc.DepthEnable = true;
+    ds_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    ds_desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+    ID3D11DepthStencilState* depth_stencil_state;
+    getDevice()->CreateDepthStencilState(&ds_desc, &depth_stencil_state);
+    getContext()->OMSetDepthStencilState(depth_stencil_state, 1);
 
     // create common constant buffer
     D3D11_BUFFER_DESC common_buffer_descriptor = { };
@@ -219,6 +227,47 @@ HRESULT FGraphicsEngine::loadDefaultResources()
 
     // load skybox
     hr = CreateDDSTextureFromFile(getDevice(), L"skybox.dds", nullptr, &skybox_texture);
+
+    // load gizmo mesh
+    vertex_buffer_descriptor = { };
+    vertex_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(FVertex) * gizmo_verts.size());
+    vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vertex_subresource_data = { gizmo_verts.data() };
+
+    hr = getDevice()->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &gizmo_vertex_buffer);
+
+    index_buffer_descriptor = { };
+    index_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(uint16_t) * gizmo_inds.size());
+    index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    index_subresource_data = { gizmo_inds.data() };
+
+    hr = getDevice()->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &gizmo_index_buffer);
+
+    if (FAILED(hr)) return hr;
+
+    vertex_buffer_descriptor = { };
+    vertex_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(FVertex) * box_verts.size());
+    vertex_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    vertex_buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vertex_subresource_data = { box_verts.data() };
+
+    hr = getDevice()->CreateBuffer(&vertex_buffer_descriptor, &vertex_subresource_data, &box_vertex_buffer);
+
+    index_buffer_descriptor = { };
+    index_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(uint16_t) * box_inds.size());
+    index_buffer_descriptor.Usage = D3D11_USAGE_IMMUTABLE;
+    index_buffer_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    index_subresource_data = { box_inds.data() };
+
+    hr = getDevice()->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &box_index_buffer);
+
+    if (FAILED(hr)) return hr;
+
+    // load gizmo shader
+    gizmo_shader = FResourceManager::get()->loadShader("Gizmo.hlsl", true, FCullMode::OFF);
+    if (gizmo_shader == nullptr) return E_FAIL;
 
     return S_OK;
 }
@@ -525,6 +574,7 @@ void FGraphicsEngine::draw()
     getContext()->ClearRenderTargetView(colour_buffer_intermediate_view, clear);
     getContext()->ClearRenderTargetView(normal_buffer_view, zero);
     getContext()->ClearDepthStencilView(depth_buffer_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     if (getScene() && getScene()->active_camera)
     {
@@ -568,10 +618,14 @@ void FGraphicsEngine::draw()
 
         // draw the objects
         for (FMesh* mo : batch)
+        {
             drawObject(mo);
+            active_object = mo;
+        }
     }
 
     performPostprocessing();
+    drawGizmos();
 
     // present backbuffer to screen
     swap_chain->Present(0, 0);
@@ -727,4 +781,59 @@ void FGraphicsEngine::performPostprocessing()
     getContext()->PSSetShaderResources(0, 1, &tmp);
     getContext()->PSSetShaderResources(1, 1, &tmp);
     getContext()->PSSetShaderResources(2, 1, &tmp);
+}
+
+void FGraphicsEngine::drawGizmos()
+{
+    // switch to gizmo draw mode
+    ID3D11RenderTargetView* targets[] = { colour_buffer_view, nullptr };
+    getContext()->OMSetRenderTargets(2, targets, depth_buffer_view);
+    getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+    getContext()->IASetInputLayout(gizmo_shader->input_layout);
+    getContext()->VSSetShader(gizmo_shader->vertex_shader_pointer, nullptr, 0);
+    getContext()->PSSetShader(gizmo_shader->pixel_shader_pointer, nullptr, 0);
+    getContext()->RSSetState(gizmo_shader->rasterizer);
+
+    // draw a set of axes at each object origin
+    UINT stride = { sizeof(FVertex) };
+    UINT offset = 0;
+    getContext()->IASetVertexBuffers(0, 1, &gizmo_vertex_buffer, &stride, &offset);
+    getContext()->IASetIndexBuffer(gizmo_index_buffer, DXGI_FORMAT_R16_UINT, 0);
+
+    for (FObject* object : getScene()->all_objects)
+    {
+        if (object == getScene()->active_camera) continue;
+        XMFLOAT4X4 object_matrix = object->getTransform();
+        common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
+
+        D3D11_MAPPED_SUBRESOURCE common_buffer_resource;
+        getContext()->Map(common_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &common_buffer_resource);
+        memcpy(common_buffer_resource.pData, (uint8_t*)common_buffer_data, sizeof(FCommonConstantData));
+        getContext()->Unmap(common_buffer, 0);
+
+        getContext()->DrawIndexed(static_cast<UINT>(gizmo_inds.size()), 0, 0);
+    }
+
+    if (active_object == nullptr) return;
+    if (active_object->getType() != FObjectType::MESH) return;
+    FMesh* mesh = (FMesh*)active_object;
+
+    // draw a bounding box for the selected object
+    getContext()->IASetVertexBuffers(0, 1, &box_vertex_buffer, &stride, &offset);
+    getContext()->IASetIndexBuffer(box_index_buffer, DXGI_FORMAT_R16_UINT, 0);
+
+    FBoundingBox bounds = mesh->getWorldSpaceBounds();
+    XMVECTOR max_c = XMLoadFloat3(&bounds.max_corner);
+    XMVECTOR min_c = XMLoadFloat3(&bounds.min_corner);
+
+    XMMATRIX world_matrix = XMMatrixIdentity() * XMMatrixScalingFromVector((max_c - min_c) / 2) * XMMatrixTranslationFromVector((max_c + min_c) / 2);
+    common_buffer_data->world_matrix = XMMatrixTranspose(world_matrix);
+
+    D3D11_MAPPED_SUBRESOURCE common_buffer_resource;
+    getContext()->Map(common_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &common_buffer_resource);
+    memcpy(common_buffer_resource.pData, (uint8_t*)common_buffer_data, sizeof(FCommonConstantData));
+    getContext()->Unmap(common_buffer, 0);
+
+    getContext()->DrawIndexed(static_cast<UINT>(box_inds.size()), 0, 0);
 }

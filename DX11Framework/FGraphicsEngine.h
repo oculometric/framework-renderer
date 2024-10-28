@@ -32,39 +32,48 @@ class FGraphicsEngine
 	friend class FResourceManager;
 	friend class FApplication;
 private:
-	FApplication* application = nullptr;
+	FApplication* application								= nullptr;
 
 	D3D11_VIEWPORT viewport;
-	IDXGISwapChain1* swap_chain = nullptr;
+	IDXGISwapChain1* swap_chain								= nullptr;
 
-	ID3D11SamplerState* bilinear_sampler_state = nullptr;
-	ID3D11ShaderResourceView* blank_texture = nullptr;
+	ID3D11SamplerState* bilinear_sampler_state				= nullptr;
+	ID3D11ShaderResourceView* blank_texture					= nullptr;
 
-	ID3D11Texture2D* colour_buffer = nullptr;
-	ID3D11Texture2D* colour_buffer_intermediate = nullptr;
-	ID3D11RenderTargetView* colour_buffer_view = nullptr;
+	ID3D11Texture2D* colour_buffer							= nullptr;
+	ID3D11Texture2D* colour_buffer_intermediate				= nullptr;
+	ID3D11RenderTargetView* colour_buffer_view				= nullptr;
 	ID3D11RenderTargetView* colour_buffer_intermediate_view = nullptr;
-	ID3D11ShaderResourceView* colour_buffer_resource = nullptr;
+	ID3D11ShaderResourceView* colour_buffer_resource		= nullptr;
 
-	ID3D11Texture2D* depth_buffer = nullptr;
-	ID3D11DepthStencilView* depth_buffer_view = nullptr;
-	ID3D11ShaderResourceView* depth_buffer_resource = nullptr;
+	ID3D11Texture2D* depth_buffer							= nullptr;
+	ID3D11DepthStencilView* depth_buffer_view				= nullptr;
+	ID3D11ShaderResourceView* depth_buffer_resource			= nullptr;
 
-	ID3D11Texture2D* normal_buffer = nullptr;
-	ID3D11RenderTargetView* normal_buffer_view = nullptr;
-	ID3D11ShaderResourceView* normal_buffer_resource = nullptr;
+	ID3D11Texture2D* normal_buffer							= nullptr;
+	ID3D11RenderTargetView* normal_buffer_view				= nullptr;
+	ID3D11ShaderResourceView* normal_buffer_resource		= nullptr;
 
-	FShader* postprocess_shader = nullptr;
-	ID3D11Buffer* quad_vertex_buffer = nullptr;
-	ID3D11Buffer* quad_index_buffer = nullptr;
-	ID3D11ShaderResourceView* skybox_texture = nullptr;
+	FShader* postprocess_shader								= nullptr;
+	ID3D11Buffer* quad_vertex_buffer						= nullptr;
+	ID3D11Buffer* quad_index_buffer							= nullptr;
+	ID3D11ShaderResourceView* skybox_texture				= nullptr;
 
-	FMaterial* placeholder_material = nullptr;
-	FShader* active_shader = nullptr;
-	FMeshData* active_mesh = nullptr;
-	void* uniform_buffer_data = nullptr;
-	FCommonConstantData* common_buffer_data = nullptr;
-	ID3D11Buffer* common_buffer = nullptr;
+	FShader* gizmo_shader									= nullptr;
+	ID3D11Buffer* gizmo_vertex_buffer						= nullptr;
+	ID3D11Buffer* gizmo_index_buffer						= nullptr;
+
+	FShader* box_shader										= nullptr;
+	ID3D11Buffer* box_vertex_buffer							= nullptr;
+	ID3D11Buffer* box_index_buffer							= nullptr;
+
+	FMaterial* placeholder_material							= nullptr;
+	FShader* active_shader									= nullptr;
+	FMeshData* active_mesh									= nullptr;
+	FObject* active_object									= nullptr;
+	void* uniform_buffer_data								= nullptr;
+	FCommonConstantData* common_buffer_data					= nullptr;
+	ID3D11Buffer* common_buffer								= nullptr;
 
 private:
 	FGraphicsEngine(FApplication* owner);
@@ -76,6 +85,7 @@ private:
 
 	void drawObject(FMesh* object);
 	void performPostprocessing();
+	void drawGizmos();
 
 	bool registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);
