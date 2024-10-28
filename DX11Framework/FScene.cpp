@@ -78,7 +78,6 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		else if (o.data_name == "point") light->type = FLight::FLightType::POINT;
 
 		obj = light;
-		all_lights.push_back(light);
 		break;
 	}
 	default:

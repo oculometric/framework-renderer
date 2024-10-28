@@ -37,11 +37,22 @@
       "children": [
         {
           "class": "mesh",
-          "name": "b",
+          "name": "sphere",
           "data": "sphere.obj",
           "position": [ 4.5, 0, 0 ],
           "rotation": [ 0, 0, 45.0 ],
-          "scale": [ 0.3, 0.3, 0.3 ]
+          "scale": [ 0.3, 0.3, 0.3 ],
+          "children": [
+            {
+              "class": "light",
+              "name": "sphere_spot",
+              "type": "directional",
+              "colour": [ 1, 0, 0 ],
+              "strength": 0.5,
+              "position": [ 1, 0, 0 ],
+              "rotation": [ 0, -90, 0 ]
+            }
+          ]
         }
       ]
     },

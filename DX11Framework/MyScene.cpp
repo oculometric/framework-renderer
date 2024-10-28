@@ -10,14 +10,14 @@ void MyScene::start()
 {
 	// 99% of the initialisation is now done from the config file! see MyScene.json
 	a = findObjectWithName<FMesh>("a");
-	b = findObjectWithName<FMesh>("b");
+	b = findObjectWithName<FMesh>("sphere");
 	c = findObjectWithName<FMesh>("c");
 }
 
 void MyScene::update(float delta_time)
 {
 	b->eulers.z -= 180.0f * delta_time;
-	b->eulers.y += 36.0f * delta_time;
+	//b->eulers.y += 36.0f * delta_time;
 	c->eulers.x += 24.0f * delta_time;
 	c->eulers.y += 36.0f * delta_time;
 	c->eulers.z += 12.0f * delta_time;
