@@ -67,6 +67,14 @@
       "name": "c",
       "data": "teapot.obj",
       "position": [ 0, 0, 2.0 ]
+    },
+    {
+      "class": "light",
+      "name": "sun",
+      "type": "directional",
+      "colour": [ 1, 0.9, 0.85 ],
+      "strength": 1,
+      "rotation": [ 10, 25, 0 ]
     }
   ]
 }

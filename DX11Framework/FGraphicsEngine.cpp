@@ -500,24 +500,27 @@ void FGraphicsEngine::draw()
 
     if (getScene() && getScene()->active_camera)
     {
+        // write out common constant buffer variables. none of these change per-object
+        
+        // store transformation data
         getScene()->active_camera->aspect_ratio = getAspectRatio();
         getScene()->active_camera->updateProjectionMatrix();
-
-        // write out common constant buffer variables. none of these change per-object
         XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
         XMFLOAT4X4 view_matrix_inv = getScene()->active_camera->getTransform();
         common_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
         common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
         common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix_inv));
-        common_buffer_data->lights[0] = FLightData{ XMFLOAT3(0.8f, 0.7f, 0.6f), 1.0f, XMFLOAT4(0.3f, 0.4f, -1.0f, 0.0f), XMFLOAT3(0, 0, 0), 0 };
-        common_buffer_data->lights[1] = FLightData{ };
-        common_buffer_data->lights[2] = FLightData{ };
-        common_buffer_data->lights[3] = FLightData{ };
-        common_buffer_data->lights[4] = FLightData{ };
-        common_buffer_data->lights[5] = FLightData{ };
-        common_buffer_data->lights[6] = FLightData{ };
-        common_buffer_data->lights[7] = FLightData{ };
-        common_buffer_data->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f);
+
+        // gather lights
+        int i = 0;
+        for (FLight* light : getScene()->all_lights)
+        {
+            light->convertToData(common_buffer_data->lights + i);
+            i++;
+            if (i >= NUM_LIGHTS) break;
+        }
+        for (i = i; i < NUM_LIGHTS; i++) common_buffer_data->lights[i] = FLightData{ };
+        common_buffer_data->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f); // TODO: ambient light, world config
         common_buffer_data->time = getTime();
 
         getContext()->VSSetConstantBuffers(1, 1, &common_buffer);

@@ -8,21 +8,9 @@
 #include "FScene.h"
 #include "FMaterial.h"
 #include "FMesh.h"
+#include "FLight.h"
 
 using namespace DirectX;
-
-#define NUM_LIGHTS 8
-// this mirrors the Light struct defined in Light.hlsl
-struct FLightData
-{
-	XMFLOAT3 colour;            // colour of the light
-	FLOAT strength;             // brightness multiplier
-
-	XMFLOAT4 light_direction;   // direction the light is pointing in. W component being 1 indiciates that the light is positional, 0 indicates directional
-
-	XMFLOAT3 light_position;    // position of the light, only relevant for positional lights
-	FLOAT angle;				// angle of the light in sin(degrees). angle = 0 will disable the light, angle = 1 will illuminate in a hemisphere, angle = -1 makes it a point light (as opposed to a spot light)
-};
 
 // this mirrors the CommonConstants struct defined in Common.hlsl
 struct FCommonConstantData

@@ -1,4 +1,4 @@
-#include "FCamera.h"
+#include "FObject.h"
 
 void FCamera::lookAt(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up)
 {

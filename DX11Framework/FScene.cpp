@@ -2,7 +2,6 @@
 
 #include "FJsonParser.h"
 #include "FMesh.h"
-#include "FCamera.h"
 #include "FResourceManager.h"
 
 FScene::FScene(FApplication* application, string scene_file)
@@ -29,6 +28,8 @@ void FScene::addObject(FObject* o, FObject* parent)
 		parent->addChild(o);
 		o->updateTransform();
 	}
+
+	if (o->getType() == FObjectType::LIGHT) all_lights.push_back((FLight*)o);
 }
 
 void FScene::finalizePreload()
@@ -64,6 +65,20 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		cam->updateProjectionMatrix();
 		obj = cam;
 		active_camera = cam;
+		break;
+	}
+	case FObjectType::LIGHT:
+	{
+		FLight* light = new FLight();
+		light->angle = o.angle;
+		light->strength = o.strength;
+		light->colour = o.colour;
+		if (o.data_name == "directional") light->type = FLight::FLightType::DIRECTIONAL;
+		else if (o.data_name == "spot") light->type = FLight::FLightType::SPOT;
+		else if (o.data_name == "point") light->type = FLight::FLightType::POINT;
+
+		obj = light;
+		all_lights.push_back(light);
 		break;
 	}
 	default:
@@ -138,13 +153,21 @@ bool operator>>(const FJsonElement& a, FObjectPreload& other)
 	else if (object_class == "camera")
 	{
 		other.object_type = FObjectType::CAMERA;
-		if (obj->has("aspect_ratio", JFLOAT)) other.float1;
-		if (obj->has("field_of_view", JFLOAT)) other.float2;
-		if (obj->has("near_clip", JFLOAT)) other.float3;
-		if (obj->has("far_clip", JFLOAT)) other.float4;
+		if (obj->has("aspect_ratio", JFLOAT)) other.float1 = (*obj)["aspect_ratio"].f_val;
+		if (obj->has("field_of_view", JFLOAT)) other.float2 = (*obj)["field_of_view"].f_val;
+		if (obj->has("near_clip", JFLOAT)) other.float3 = (*obj)["near_clip"].f_val;
+		if (obj->has("far_clip", JFLOAT)) other.float4 = (*obj)["far_clip"].f_val;
 	}
 	else if (object_class == "empty")
 		other.object_type = FObjectType::EMPTY;
+	else if (object_class == "light")
+	{
+		other.object_type = FObjectType::LIGHT;
+		if (obj->has("colour", JARRAY)) (*obj)["colour"] >> other.colour;
+		if (obj->has("strength", JFLOAT)) other.strength = (*obj)["strength"].f_val;
+		if (obj->has("angle", JFLOAT)) other.angle = (*obj)["angle"].f_val;
+		if (obj->has("type", JSTRING)) other.data_name = (*obj)["type"].s_val;
+	}
 	else
 		return false;
 

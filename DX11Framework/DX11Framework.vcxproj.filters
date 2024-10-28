@@ -42,9 +42,6 @@
     <ClCompile Include="MyScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FCamera.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="FObject.h">
       <Filter>Header Files\Engine</Filter>
     </ClCompile>
@@ -87,6 +84,9 @@
     <ClCompile Include="FDebug.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="FLight.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyScene.h">
@@ -117,6 +117,9 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="FDebug.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FLight.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>

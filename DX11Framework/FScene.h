@@ -3,9 +3,10 @@
 #include <DirectXMath.h>
 #include <string>
 #include <unordered_set>
+#include <array>
 
 #include "FObject.h"
-#include "FCamera.h"
+#include "FLight.h"
 
 class FApplication;
 
@@ -25,6 +26,9 @@ struct FObjectPreload
 	float float2 = 0;
 	float float3 = 0;
 	float float4 = 0;
+	XMFLOAT3 colour = XMFLOAT3(0,0,0);
+	float strength = 1;
+	float angle = 45;
 };
 
 class FScene
@@ -37,6 +41,8 @@ public:
 
 protected:
 	unordered_set<FObject*> all_objects;
+	vector<FLight*> all_lights;
+
 	FObject root;
 	FApplication* owner = nullptr;
 

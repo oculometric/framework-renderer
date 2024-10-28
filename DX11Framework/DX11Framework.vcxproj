@@ -134,9 +134,9 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="FApplication.cpp" />
     <ClCompile Include="FCamera.cpp" />
-    <ClCompile Include="FCamera.h" />
     <ClCompile Include="FDebug.cpp" />
     <ClCompile Include="FGraphicsEngine.cpp" />
+    <ClCompile Include="FLight.cpp" />
     <ClCompile Include="FMaterial.cpp" />
     <ClCompile Include="FMesh.cpp" />
     <ClCompile Include="FObject.cpp" />
@@ -161,6 +161,7 @@
     <ClInclude Include="FApplication.h" />
     <ClInclude Include="FDebug.h" />
     <ClInclude Include="FGraphicsEngine.h" />
+    <ClInclude Include="FLight.h" />
     <ClInclude Include="FMaterial.h" />
     <ClInclude Include="FMesh.h" />
     <ClInclude Include="FResourceManager.h" />
