@@ -87,6 +87,9 @@
     <ClCompile Include="FLight.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="FTransform.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyScene.h">
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="Gizmo.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FTransform.h">
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -618,10 +618,7 @@ void FGraphicsEngine::draw()
 
         // draw the objects
         for (FMesh* mo : batch)
-        {
             drawObject(mo);
-            active_object = mo;
-        }
     }
 
     performPostprocessing();
@@ -817,9 +814,9 @@ void FGraphicsEngine::drawGizmos()
         getContext()->DrawIndexed(static_cast<UINT>(gizmo_inds.size()), 0, 0);
     }
 
-    if (active_object == nullptr) return;
-    if (active_object->getType() != FObjectType::MESH) return;
-    FMesh* mesh = (FMesh*)active_object;
+    if (getScene()->active_object == nullptr) return;
+    if (getScene()->active_object->getType() != FObjectType::MESH) return;
+    FMesh* mesh = (FMesh*)getScene()->active_object;
 
     // draw a bounding box for the selected object
     getContext()->IASetVertexBuffers(0, 1, &box_vertex_buffer, &stride, &offset);

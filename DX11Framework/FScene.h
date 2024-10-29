@@ -37,6 +37,7 @@ class FScene
 
 public:
 	FCamera* active_camera = nullptr;
+	FObject* active_object = nullptr;
 	string name = "Scene";
 
 protected:

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -145,6 +145,7 @@
     <ClCompile Include="FScene.cpp" />
     <ClCompile Include="FScene.h" />
     <ClCompile Include="FJsonParser.cpp" />
+    <ClCompile Include="FTransform.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MyScene.cpp" />
     <ClCompile Include="PlanetScene.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="FResourceManager.h" />
     <ClInclude Include="FTexture.h" />
     <ClInclude Include="FJsonParser.h" />
+    <ClInclude Include="FTransform.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="MyScene.h" />
     <ClInclude Include="PlanetScene.h" />

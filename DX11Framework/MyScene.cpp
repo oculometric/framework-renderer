@@ -90,10 +90,12 @@ void MyScene::update(float delta_time)
 				)
 			)
 		);
-		FDebug::dialog(string(to_string(world_direction.x) + ", " + to_string(world_direction.y) + ", " + to_string(world_direction.z)));
 
 		float inv_direction[3] = { 1.0f / world_direction.x, 1.0f / world_direction.y, 1.0f / world_direction.z };
-		float origin[3] = { view._41, view._42, view._43 }; // TODO: here
+		float origin[3] = { view._41, view._42, view._43 };
+
+		FObject* closest = nullptr;
+		float dist = INFINITY;
 
 		for (FObject* obj : all_objects)
 		{
@@ -101,13 +103,33 @@ void MyScene::update(float delta_time)
 			FMesh* m = (FMesh*)obj;
 			FBoundingBox b = m->getWorldSpaceBounds();
 
+			// based closely on https://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
 			float mins[3] = { b.min_corner.x, b.min_corner.y, b.min_corner.z };
 			float maxs[3] = { b.max_corner.x, b.max_corner.y, b.max_corner.z };
 
+			float tmin = 0;
+			float tmax = 1000;
+			bool failed = false;
+
 			for (int i = 0; i < 3; i++)
 			{
-				float t0 = mins[i] - 
+				float t0 = (mins[i] - origin[i]) * inv_direction[i];
+				float t1 = (maxs[i] - origin[i]) * inv_direction[i];
+				if (inv_direction[i] < 0)
+					swap(t0, t1);
+				tmin = max(t0, tmin);
+				tmax = min(t1, tmax);
+
+				if (tmax < tmin) { failed = true; break; }
+			}
+
+			if (!failed && tmin < dist)
+			{
+				closest = obj;
+				dist = tmin;
 			}
 		}
+
+		active_object = closest;
 	}
 }
