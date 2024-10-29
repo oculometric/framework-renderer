@@ -201,45 +201,6 @@ bool operator>>(const FJsonElement& a, FScene& other)
 	if (scene_obj->has("assets", JOBJECT))
 	{
 		FJsonObject* asset_block = (*scene_obj)["assets"].o_val;
-		if (asset_block->has("meshes", JARRAY))
-		{
-			vector<FJsonElement> mesh_array = (*asset_block)["meshes"].a_val;
-			for (FJsonElement mesh : mesh_array)
-			{
-				if (mesh.type == JOBJECT && mesh.o_val != nullptr)
-					if (mesh.o_val->has("path", JSTRING)) rm->loadMesh((*mesh.o_val)["path"].s_val);
-			}
-		}
-		//if (asset_block->has("textures", JARRAY))
-		//{
-		//	vector<FJsonElement> texture_array = (*asset_block)["textures"].a_val;
-		//	for (FJsonElement texture : texture_array)
-		//	{
-		//		if (texture.type == JOBJECT && texture.o_val != nullptr)
-		//			if (texture.o_val->has("path", JSTRING)) rm->loadTexture((*texture.o_val)["path"].s_val);
-		//	}
-		//}
-		/*if (asset_block->has("shaders", JARRAY))
-		{
-			vector<FJsonElement> shader_array = (*asset_block)["shaders"].a_val;
-			for (FJsonElement shader : shader_array)
-			{
-				if (shader.type == JOBJECT && shader.o_val != nullptr)
-				{
-					FJsonObject* shader_obj = shader.o_val;
-					bool wireframe = false; if (shader_obj->has("wireframe", JFLOAT)) wireframe = (*shader_obj)["wireframe"].f_val > 0;
-					FCullMode culling = FCullMode::BACK;
-					if (shader_obj->has("culling", JSTRING))
-					{
-						string cull = (*shader_obj)["culling"].s_val;
-						if (cull == "off") culling = FCullMode::OFF;
-						if (cull == "front") culling = FCullMode::FRONT;
-					}
-					if (shader_obj->has("path", JSTRING))
-						rm->loadShader((*shader_obj)["path"].s_val, wireframe, culling);
-				}
-			}
-		}*/
 		if (asset_block->has("materials", JARRAY))
 		{
 			vector<FJsonElement> material_array = (*asset_block)["materials"].a_val;
@@ -271,6 +232,10 @@ bool operator>>(const FJsonElement& a, FScene& other)
 			obj >> o;
 			other.queueForPreload(o);
 		}
+	}
+	if (scene_obj->has("ambient_light", JARRAY))
+	{
+		(*scene_obj)["ambient_light"] >> other.ambient_light;
 	}
 
 	return true;

@@ -1,15 +1,6 @@
 {
   "name": "MyScene but from JSON",
   "assets": {
-    "meshes": [
-      { "path": "suzanne.obj" },
-      { "path": "teapot.obj" },
-      { "path": "sphere.obj" },
-      { "path": "cornell.obj" },
-      { "path": "uvtest.obj" },
-      { "path": "monitor.obj" },
-      { "path": "uvcube.obj" }
-    ],
     "materials": [
       { "path": "monitor.fmat" },
       { "path": "BlueBlend.fmat" }
@@ -78,5 +69,6 @@
       "strength": 1,
       "rotation": [ 10, 25, 0 ]
     }
-  ]
+  ],
+  "ambient_light": [ 0.05, 0.04, 0.02 ]
 }

@@ -39,6 +39,7 @@ public:
 	FCamera* active_camera = nullptr;
 	FObject* active_object = nullptr;
 	string name = "Scene";
+	XMFLOAT3 ambient_light = XMFLOAT3(0, 0, 0);
 
 protected:
 	unordered_set<FObject*> all_objects;

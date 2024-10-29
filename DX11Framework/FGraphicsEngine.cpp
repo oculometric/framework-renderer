@@ -335,8 +335,7 @@ FTexture* FGraphicsEngine::registerTexture(wstring path)
 
     HRESULT hr = S_OK;
 
-    DDS_ALPHA_MODE mode = DDS_ALPHA_MODE_STRAIGHT;
-    hr = CreateDDSTextureFromFile(getDevice(), path.c_str(), nullptr, &tex->buffer_ptr, 0, &mode);
+    hr = CreateDDSTextureFromFile(getDevice(), path.c_str(), nullptr, &tex->buffer_ptr);
     if (FAILED(hr)) FDebug::dialog("failed to load texture!");
 
     return tex;
@@ -634,7 +633,7 @@ void FGraphicsEngine::draw()
             if (i >= NUM_LIGHTS) break;
         }
         for (i = i; i < NUM_LIGHTS; i++) common_buffer_data->lights[i] = FLightData{ };
-        common_buffer_data->light_ambient = XMFLOAT4(0.05f, 0.04f, 0.02f, 1.0f); // TODO: ambient light, world config
+        common_buffer_data->light_ambient = XMFLOAT4(getScene()->ambient_light.x, getScene()->ambient_light.y, getScene()->ambient_light.z, 1); // TODO: ambient light, world config
         common_buffer_data->time = getTime();
 
         // ensure the common constant buffer is bound
