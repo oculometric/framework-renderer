@@ -126,7 +126,7 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     HRESULT hr = S_OK;
 
     // create viewport
-    viewport = { 0.0f, 0.0f, getWidth(), getHeight(), 0.0f, 1.0f};
+    viewport = { 0.0f, 0.0f, getWidth(), getHeight(), 0.0f, 1.0f };
     getContext()->RSSetViewports(1, &viewport);
 
     // create texture sampler
@@ -292,6 +292,32 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     if (gizmo_shader == nullptr) return E_FAIL;
 
     return S_OK;
+}
+
+void FGraphicsEngine::resizeRenderTargets()
+{
+    if (colour_buffer_view) colour_buffer_view->Release();
+    if (colour_buffer_resource) colour_buffer_resource->Release();
+    if (colour_buffer) colour_buffer->Release();
+    if (colour_buffer_intermediate_view) colour_buffer_intermediate_view->Release();
+    if (colour_buffer_intermediate) colour_buffer_intermediate->Release();
+
+    if (normal_buffer_view) normal_buffer_view->Release();
+    if (normal_buffer_resource) normal_buffer_resource->Release();
+    if (normal_buffer) normal_buffer->Release();
+
+    if (depth_buffer_view) depth_buffer_view->Release();
+    if (depth_buffer_resource) depth_buffer_resource->Release();
+    if (depth_buffer) depth_buffer->Release();
+
+    if (swap_chain) swap_chain->Release();
+
+    createSwapChainAndFrameBuffer();
+
+    viewport = { 0.0f, 0.0f, getWidth(), getHeight(), 0.0f, 1.0f };
+    getContext()->RSSetViewports(1, &viewport);
+
+    application->needs_viewport_resize = false;
 }
 
 bool FGraphicsEngine::registerMesh(FMeshData* mesh_data)
@@ -600,6 +626,9 @@ FGraphicsEngine::~FGraphicsEngine()
 
 void FGraphicsEngine::draw()
 {
+    if (application->needs_viewport_resize)
+        resizeRenderTargets();
+
     // present unbinds render target, so rebind and clear at start of each frame
     float clear[4] = { 0, 0, 0, 1 };
     float zero[4] = { 0, 0, 0, 1 };
@@ -623,6 +652,8 @@ void FGraphicsEngine::draw()
         common_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
         common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
         common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix_inv));
+        
+        common_buffer_data->screen_size = XMFLOAT2(getWidth(), getHeight());
 
         // gather lights
         int i = 0;
@@ -783,6 +814,7 @@ void FGraphicsEngine::performPostprocessing()
     ((XMMATRIX*)uniform_buffer_data)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
     ((XMMATRIX*)uniform_buffer_data)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
     ((XMMATRIX*)uniform_buffer_data)[3] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&projection_matrix)));
+    ((XMFLOAT2*)(((XMMATRIX*)uniform_buffer_data) + 4))[0] = XMFLOAT2(getWidth(), getHeight());
 
     ID3D11ShaderReflectionConstantBuffer* shader_reflection = postprocess_shader->reflector->GetConstantBufferByIndex(0);
     D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };

@@ -23,7 +23,8 @@ struct CommonConstants
     Light lights[NUM_LIGHTS];   // array of lights affecting this object
     
     float time;                 // current world time in seconds
-    float3 _;                   // padding
+    float2 screen_size;         // size of screen in pixels
+    float _;                    // padding
 };
 
 #define COMMON_CONSTANT_BUFFER cbuffer CommonConstantBuffer : register(b1) { CommonConstants common; }

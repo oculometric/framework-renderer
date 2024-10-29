@@ -12,8 +12,8 @@ class FGraphicsEngine;
 class FApplication
 {
 private:
-	int window_width = 1280;
-	int window_height = 960;
+	int window_width = 640;
+	int window_height = 480;
 
 	ID3D11DeviceContext* immediate_context			= nullptr;
 	ID3D11Device* device							= nullptr;
@@ -28,6 +28,7 @@ private:
 
 public:
 	FScene* scene = nullptr;
+	bool needs_viewport_resize = false;
 
 public:
 	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);
@@ -38,6 +39,7 @@ public:
 	inline ID3D11Device* getDevice() { return device; }
 	inline IDXGIFactory2* getFactory() { return dxgi_factory; }
 	inline float getTime() { return total_time; }
+	void updateWindowSize();
 	inline float getWidth() { return (float)window_width; }
 	inline float getHeight() { return (float)window_height; }
 	inline HWND getWindow() { return window_handle; }

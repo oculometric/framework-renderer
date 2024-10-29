@@ -10,6 +10,8 @@
 #include "FResourceManager.h"
 #include "FDebug.h"
 
+FApplication* application = nullptr;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -24,6 +26,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_DESTROY:
         PostQuitMessage(0);
+        break;
+    case WM_SIZE:
+        if (application == nullptr) break;
+        application->updateWindowSize();
         break;
 
     default:
@@ -50,6 +56,9 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
 
     engine->initialise();
 
+    application = this;
+    updateWindowSize();
+
     return hr;
 }
 
@@ -73,7 +82,7 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 
     RECT rc = { 0,0, window_width, window_height };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    window_handle = CreateWindow(window_name, window_name, WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, rc.right-rc.left, rc.bottom-rc.top, nullptr, nullptr, hInstance, nullptr);
+    window_handle = CreateWindow(window_name, window_name, WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_THICKFRAME, CW_USEDEFAULT, CW_USEDEFAULT, rc.right-rc.left, rc.bottom-rc.top, nullptr, nullptr, hInstance, nullptr);
     
     return S_OK;
 }
@@ -116,6 +125,18 @@ HRESULT FApplication::createD3DDevice()
     dxgi_adapter->Release();
 
     return S_OK;
+}
+
+void FApplication::updateWindowSize()
+{
+    RECT r;
+    GetClientRect(window_handle, &r);
+    float new_width = r.right - r.left;
+    float new_height = r.bottom - r.top;
+    if (new_width != window_width || new_height != window_height)
+        needs_viewport_resize = true;
+    window_width = new_width;
+    window_height = new_height;
 }
 
 void FApplication::update()

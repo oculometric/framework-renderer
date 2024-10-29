@@ -4,6 +4,7 @@ cbuffer ConstantBuffer : register(b0)
     float4x4 view_matrix;
     float4x4 view_matrix_inv;
     float4x4 projection_matrix_inv;
+    float2 screen_size;
 }
 
 Texture2D screen : register(t0);
@@ -53,7 +54,7 @@ float4 PS_main(Varyings input) : SV_TARGET
 {
     float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
     
-    float2 pixels = float2(1280, 960) / 1.0f;
+    float2 pixels = screen_size / 1.0f;
     
     float2 pixelated_uv = (floor(screen_uv * pixels) + 0.5f) / pixels;
     

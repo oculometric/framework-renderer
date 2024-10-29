@@ -24,6 +24,7 @@ struct FCommonConstantData
 	FLightData lights[NUM_LIGHTS];   // array of lights affecting this object
 
 	FLOAT time;                 // current world time in seconds
+	XMFLOAT2 screen_size;		// size of screen in pixels
 	XMFLOAT3 _;                 // padding
 };
 
@@ -84,6 +85,8 @@ private:
 	HRESULT createSwapChainAndFrameBuffer();
 	HRESULT initPipelineVariables();
 	HRESULT loadDefaultResources();
+
+	void resizeRenderTargets();
 
 	void drawObject(FMesh* object);
 	void performPostprocessing();
