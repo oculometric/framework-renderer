@@ -48,7 +48,7 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     swap_chain_descriptor.Scaling = DXGI_SCALING_STRETCH;
     swap_chain_descriptor.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
     swap_chain_descriptor.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-    swap_chain_descriptor.Flags = 0;
+    swap_chain_descriptor.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
     hr = getFactory()->CreateSwapChainForHwnd(getDevice(), getWindow(), &swap_chain_descriptor, nullptr, nullptr, &swap_chain);
     if (FAILED(hr)) return hr;
@@ -714,7 +714,7 @@ void FGraphicsEngine::draw()
     drawGizmos();
 
     // present backbuffer to screen
-    swap_chain->Present(0, 0);
+    swap_chain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
 }
 
 void FGraphicsEngine::drawObject(FMesh* object)

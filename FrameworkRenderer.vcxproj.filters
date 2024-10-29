@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{14b5ee7b-580f-4b45-a250-39703008f775}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{bc00e710-1547-462b-8ac8-c89d9b8f30fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers">
       <UniqueIdentifier>{66368bdd-80e0-4cfb-bf11-a28e9e4fa5c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Shaders">
+    <Filter Include="Source">
+      <UniqueIdentifier>{14b5ee7b-580f-4b45-a250-39703008f775}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{bc00e710-1547-462b-8ac8-c89d9b8f30fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{3325af07-433f-4d07-8a78-4e1839d6e621}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Meshes">
+    <Filter Include="Resources\Meshes">
       <UniqueIdentifier>{0093b8a9-6111-49f3-82f8-6e48ef0c9dae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Textures">
+    <Filter Include="Resources\Textures">
       <UniqueIdentifier>{7550ec67-fb5a-40cb-8d23-7851b146eeba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -72,137 +72,137 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\monitor_t.jpg">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\monitor_t.dds">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\monitor_n.jpg">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\skybox.dds">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\blue_corner_gradient.png">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\blend_t.dds">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="res\blank.dds">
-      <Filter>Source\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BlueBlend.fmat">
-      <Filter>Source</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="res\monitor.fmat">
-      <Filter>Source</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="res\MyScene.fscn">
-      <Filter>Source</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="res\placeholder.fmat">
-      <Filter>Source</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="res\PlanetScene.fscn">
-      <Filter>Source</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="res\Common.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\Dither.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\Gizmo.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\Light.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\PBR.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\PhysicalShader.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\Postprocess.hlsl">
-      <Filter>Source\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\cornell.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\monitor.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\planet.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\sphere.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\suzanne.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\teapot.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\uvcube.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
     <None Include="res\uvtest.obj">
-      <Filter>Source\Meshes</Filter>
+      <Filter>Resources\Meshes</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FApplication.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FCamera.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FDebug.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FGraphicsEngine.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FJsonParser.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FLight.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FMaterial.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FMesh.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FResourceManager.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FScene.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FTransform.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Main.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\MyScene.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\PlanetScene.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
