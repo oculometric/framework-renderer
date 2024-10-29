@@ -27,7 +27,7 @@ public:
 	inline XMFLOAT4X4 getTransform() const { return local_to_world; }
 	XMFLOAT4X4 getLocalTransform() const { return local_to_parent; }
 
-	inline XMFLOAT3 getPosition() const { return XMFLOAT3(local_to_world._41, local_to_world._42, local_to_world._43); }
+	inline XMFLOAT3 getPosition() const;
 	void setPosition(XMFLOAT3 p);
 	XMFLOAT3 getLocalPosition() const { return local_position; }
 	inline void setLocalPosition(XMFLOAT3 p) { local_position = p; updateLocalFromParams(); updateWorldFromLocal(); }
@@ -43,13 +43,14 @@ public:
 	void setLocalEuler(XMFLOAT3 e);
 
 	XMFLOAT3 getScale() const;
-	void setScale(XMFLOAT3 s);
 	XMFLOAT3 getLocalScale() const { return local_scale; }
 	void setLocalScale(XMFLOAT3 s) { local_scale = s; updateLocalFromParams(); updateWorldFromLocal(); }
 
 	void translate(XMFLOAT3 v);
-	void rotate(XMFLOAT3 axis, float angle);
-	void scale(XMFLOAT3 s);
+	void rotate(XMFLOAT3 axis, float angle, XMFLOAT3 about);
+	void scale(XMFLOAT3 s, XMFLOAT3 about);
+	void faceForward(XMFLOAT3 forward, XMFLOAT3 up);
+	void lookAt(XMFLOAT3 target, XMFLOAT3 eye, XMFLOAT3 up);
 	void reset();
 
 	XMFLOAT3 getRight() const { return XMFLOAT3(local_to_world._11, local_to_world._12, local_to_world._13); }

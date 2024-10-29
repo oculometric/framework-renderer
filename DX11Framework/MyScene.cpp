@@ -18,7 +18,6 @@ void MyScene::start()
 void MyScene::update(float delta_time)
 {
 	b->eulers.z -= 180.0f * delta_time;
-	//b->eulers.y += 36.0f * delta_time;
 	c->eulers.x += 24.0f * delta_time;
 	c->eulers.y += 36.0f * delta_time;
 	c->eulers.z += 12.0f * delta_time;
