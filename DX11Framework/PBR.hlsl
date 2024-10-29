@@ -39,8 +39,6 @@ struct PBRTextures
     SamplerState texture_sampler;
 };
 
-// TODO: dithered alpha blending
-
 void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants constants, PBRVaryings varyings, out float4 colour, out float3 normal, out float depth)
 {
     // calculate direciton from the camera to the target fragment

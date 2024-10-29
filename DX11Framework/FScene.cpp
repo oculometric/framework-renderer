@@ -210,16 +210,16 @@ bool operator>>(const FJsonElement& a, FScene& other)
 					if (mesh.o_val->has("path", JSTRING)) rm->loadMesh((*mesh.o_val)["path"].s_val);
 			}
 		}
-		if (asset_block->has("textures", JARRAY))
-		{
-			vector<FJsonElement> texture_array = (*asset_block)["textures"].a_val;
-			for (FJsonElement texture : texture_array)
-			{
-				if (texture.type == JOBJECT && texture.o_val != nullptr)
-					if (texture.o_val->has("path", JSTRING)) rm->loadTexture((*texture.o_val)["path"].s_val);
-			}
-		}
-		if (asset_block->has("shaders", JARRAY))
+		//if (asset_block->has("textures", JARRAY))
+		//{
+		//	vector<FJsonElement> texture_array = (*asset_block)["textures"].a_val;
+		//	for (FJsonElement texture : texture_array)
+		//	{
+		//		if (texture.type == JOBJECT && texture.o_val != nullptr)
+		//			if (texture.o_val->has("path", JSTRING)) rm->loadTexture((*texture.o_val)["path"].s_val);
+		//	}
+		//}
+		/*if (asset_block->has("shaders", JARRAY))
 		{
 			vector<FJsonElement> shader_array = (*asset_block)["shaders"].a_val;
 			for (FJsonElement shader : shader_array)
@@ -239,7 +239,7 @@ bool operator>>(const FJsonElement& a, FScene& other)
 						rm->loadShader((*shader_obj)["path"].s_val, wireframe, culling);
 				}
 			}
-		}
+		}*/
 		if (asset_block->has("materials", JARRAY))
 		{
 			vector<FJsonElement> material_array = (*asset_block)["materials"].a_val;

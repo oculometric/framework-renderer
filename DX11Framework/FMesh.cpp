@@ -132,10 +132,11 @@ FMeshData* FMesh::loadMesh(string path)
             tmp_fc.push_back(splitOBJFaceCorner(tmps));
             file >> tmps;
             tmp_fc.push_back(splitOBJFaceCorner(tmps));
+
+            swap(tmp_fc[tmp_fc.size() - 1], tmp_fc[tmp_fc.size() - 3]);
         }
         file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
-
 
     // for each coordinate, stores a list of all the times it has been used by a face corner, and what the normal/uv index was for that face corner
     // this allows us to tell when we should split a vertex (i.e. if it has already been used by another face corner but which had a different normal and/or a different uv)

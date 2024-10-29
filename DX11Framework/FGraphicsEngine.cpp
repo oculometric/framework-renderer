@@ -189,7 +189,7 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     hr = CreateDDSTextureFromFile(getDevice(), L"blank.dds", nullptr, &blank_texture);
     if (FAILED(hr)) { return hr; }
 
-    FShader* shader = FResourceManager::get()->loadShader("PhysicalShader.hlsl", false, FCullMode::OFF);
+    FShader* shader = FResourceManager::get()->loadShader("PhysicalShader.hlsl", false, FCullMode::BACK);
     if (shader == nullptr) { return -1; }
 
     // load placeholder material
@@ -216,8 +216,8 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     };
     uint16_t quad_indices[] =
     {
-        0, 1, 2,
-        0, 2, 3
+        2, 1, 0,
+        3, 2, 0
     };
     D3D11_BUFFER_DESC vertex_buffer_descriptor = { };
     vertex_buffer_descriptor.ByteWidth = static_cast<UINT>(sizeof(FVertex) * 4);
@@ -337,7 +337,10 @@ FTexture* FGraphicsEngine::registerTexture(wstring path)
 
     HRESULT hr = S_OK;
 
-    hr = CreateDDSTextureFromFile(getDevice(), path.c_str(), nullptr, &tex->buffer_ptr);
+    DDS_ALPHA_MODE mode = DDS_ALPHA_MODE_STRAIGHT;
+    hr = CreateDDSTextureFromFile(getDevice(), path.c_str(), nullptr, &tex->buffer_ptr, 0, &mode);
+    if (FAILED(hr)) FDebug::dialog("failed to load texture!");
+
     return tex;
 }
 

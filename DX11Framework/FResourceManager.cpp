@@ -109,9 +109,7 @@ FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 		return (FMaterial*)(registry[descriptor]);
 
 	FShader* shader = nullptr;
-	FResource shader_descriptor{ mp.shader, FResourceType::SHADER };
-	if (registry.count(shader_descriptor) > 0)
-		shader = (FShader*)registry[shader_descriptor];
+	shader = loadShader(mp.shader, false, FCullMode::BACK);
 	if (shader == nullptr) return nullptr;
 
 	FMaterial* res = new FMaterial();
@@ -122,9 +120,7 @@ FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 	{
 		if (tex_name.empty()) { i++; continue; }
 
-		FResource texture_descriptor{ tex_name, FResourceType::TEXTURE };
-		if (registry.count(texture_descriptor) > 0)
-			res->assignTexture((FTexture*)registry[texture_descriptor], i);
+		res->assignTexture(loadTexture(tex_name), i);
 		i++;
 	}
 
