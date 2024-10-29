@@ -5,6 +5,7 @@
 
 #include "FResourceManager.h"
 #include "FApplication.h"
+#include "FDebug.h"
 
 void MyScene::start()
 {
@@ -61,4 +62,52 @@ void MyScene::update(float delta_time)
 	if (GetAsyncKeyState('B')) demo->eulers.z += delta_time * 100.0f;
 	if (GetAsyncKeyState('N')) demo->eulers.z -= delta_time * 100.0f;
 	demo->updateTransform();
+
+	if (GetAsyncKeyState(VK_LBUTTON) & 0xF000)
+	{
+		POINT p;
+		GetCursorPos(&p);
+		RECT r;
+		GetWindowRect(owner->getWindow(), &r);
+		XMFLOAT2 screen_pos = XMFLOAT2((float)(p.x - r.left) / (float)(r.right - r.left), (float)(p.y - r.top) / (float)(r.bottom - r.top));
+		XMFLOAT4 clip_pos = XMFLOAT4(screen_pos.x * 2.0f - 1.0f, (screen_pos.y * 2.0f - 1.0f) * -1.0f, 0, 1);
+		XMFLOAT4X4 proj = active_camera->getProjectionMatrix();
+		XMFLOAT4X4 view = active_camera->getTransform();
+		XMFLOAT3 world_direction;
+		XMStoreFloat3
+		(
+			&world_direction,
+			XMVector3Normalize
+			(
+				XMVector4Transform
+				(
+					XMVector4Transform
+					(
+						XMLoadFloat4(&clip_pos),
+						XMMatrixInverse(nullptr, XMLoadFloat4x4(&proj))
+					) * XMVectorSet(1, 1, 1, 0),
+					XMLoadFloat4x4(&view)
+				)
+			)
+		);
+		FDebug::dialog(string(to_string(world_direction.x) + ", " + to_string(world_direction.y) + ", " + to_string(world_direction.z)));
+
+		float inv_direction[3] = { 1.0f / world_direction.x, 1.0f / world_direction.y, 1.0f / world_direction.z };
+		float origin[3] = { view._41, view._42, view._43 }; // TODO: here
+
+		for (FObject* obj : all_objects)
+		{
+			if (obj->getType() != FObjectType::MESH) continue;
+			FMesh* m = (FMesh*)obj;
+			FBoundingBox b = m->getWorldSpaceBounds();
+
+			float mins[3] = { b.min_corner.x, b.min_corner.y, b.min_corner.z };
+			float maxs[3] = { b.max_corner.x, b.max_corner.y, b.max_corner.z };
+
+			for (int i = 0; i < 3; i++)
+			{
+				float t0 = mins[i] - 
+			}
+		}
+	}
 }

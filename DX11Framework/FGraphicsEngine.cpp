@@ -625,6 +625,7 @@ void FGraphicsEngine::draw()
     }
 
     performPostprocessing();
+
     drawGizmos();
 
     // present backbuffer to screen
@@ -727,6 +728,7 @@ void FGraphicsEngine::performPostprocessing()
 {
     ID3D11RenderTargetView* targets[] = { colour_buffer_view, nullptr };
     getContext()->OMSetRenderTargets(2, targets, nullptr);
+    getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // load input layout and shader
     getContext()->IASetInputLayout(postprocess_shader->input_layout);

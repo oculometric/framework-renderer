@@ -21,7 +21,7 @@ struct Varyings
 Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 normal : NORMAL, float2 uv : TEXCOORD0, float3 tangent : TANGENT0)
 {
     Varyings output = (Varyings)0;
-    output.position = float4(position, 1.0f);
+    output.position = float4(position.xy, 0, 1);
     output.uv = uv;
     
     return output;
