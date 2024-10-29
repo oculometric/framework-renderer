@@ -145,8 +145,6 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     ds_desc.DepthEnable = true;
     ds_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     ds_desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-
-    ID3D11DepthStencilState* depth_stencil_state;
     getDevice()->CreateDepthStencilState(&ds_desc, &depth_stencil_state);
     getContext()->OMSetDepthStencilState(depth_stencil_state, 1);
 
@@ -348,7 +346,7 @@ void FGraphicsEngine::unregisterTexture(FTexture* texture)
 {
     if (texture == nullptr) return;
 
-    if (texture->buffer_ptr) { texture->buffer_ptr->Release(); texture->buffer_ptr = nullptr; }
+    if (texture->buffer_ptr) texture->buffer_ptr->Release();
 }
 
 bool FGraphicsEngine::registerShader(FShader* shader, wstring path)
@@ -566,13 +564,15 @@ FGraphicsEngine::~FGraphicsEngine()
 
     if (bilinear_sampler_state) bilinear_sampler_state->Release();
     if (blank_texture) blank_texture->Release();
+    if (blank_texture) alpha_blend_state->Release();
     if (common_buffer) common_buffer->Release();
+    if (depth_stencil_state) depth_stencil_state->Release();
 
+    if (colour_buffer_intermediate_view) colour_buffer_intermediate_view->Release();
+    if (colour_buffer_intermediate) colour_buffer_intermediate->Release();
     if (colour_buffer_resource) colour_buffer_resource->Release();
     if (colour_buffer_view) colour_buffer_view->Release();
-    if (colour_buffer_intermediate_view) colour_buffer_intermediate_view->Release();
     if (colour_buffer) colour_buffer->Release();
-    if (colour_buffer_intermediate) colour_buffer_intermediate->Release();
 
     if (depth_buffer_resource) depth_buffer_resource->Release();
     if (depth_buffer_view) depth_buffer_view->Release();
@@ -584,6 +584,14 @@ FGraphicsEngine::~FGraphicsEngine()
 
     if (quad_index_buffer) quad_index_buffer->Release();
     if (quad_vertex_buffer) quad_vertex_buffer->Release();
+    if (postprocess_sampler_state) postprocess_sampler_state->Release();
+    if (skybox_texture) skybox_texture->Release();
+
+    if (gizmo_vertex_buffer) gizmo_vertex_buffer->Release();
+    if (gizmo_index_buffer) gizmo_index_buffer->Release();
+
+    if (box_vertex_buffer) box_vertex_buffer->Release();
+    if (box_index_buffer) box_index_buffer->Release();
 
     if (swap_chain) swap_chain->Release();
 

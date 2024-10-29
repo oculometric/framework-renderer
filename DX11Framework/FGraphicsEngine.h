@@ -40,6 +40,7 @@ private:
 	ID3D11SamplerState* bilinear_sampler_state				= nullptr;
 	ID3D11BlendState* alpha_blend_state						= nullptr;
 	ID3D11ShaderResourceView* blank_texture					= nullptr;
+	ID3D11DepthStencilState* depth_stencil_state			= nullptr;
 
 	ID3D11Texture2D* colour_buffer							= nullptr;
 	ID3D11Texture2D* colour_buffer_intermediate				= nullptr;
