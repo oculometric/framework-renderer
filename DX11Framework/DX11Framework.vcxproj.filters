@@ -190,5 +190,8 @@
     <None Include="Gizmo.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Dither.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

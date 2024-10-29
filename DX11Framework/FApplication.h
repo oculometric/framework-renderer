@@ -13,7 +13,7 @@ class FApplication
 {
 private:
 	int window_width = 1280;
-	int window_height = 768;
+	int window_height = 960;
 
 	ID3D11DeviceContext* immediate_context			= nullptr;
 	ID3D11Device* device							= nullptr;

@@ -71,7 +71,7 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 
     RegisterClassW(&wnd_class);
 
-    RECT rc = { 0,0,window_width, window_height };
+    RECT rc = { 0,0, window_width, window_height };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     window_handle = CreateWindow(window_name, window_name, WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, rc.right-rc.left, rc.bottom-rc.top, nullptr, nullptr, hInstance, nullptr);
     

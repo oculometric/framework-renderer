@@ -11,7 +11,7 @@
       { "path": "uvcube.obj" }
     ],
     "shaders": [
-      { 
+      {
         "path": "PhysicalShader.hlsl",
         "wireframe": 0,
         "culling": "off"
@@ -22,7 +22,8 @@
       { "path": "monitor_n.dds" }
     ],
     "materials": [
-      { "path": "monitor.fmat" }
+      { "path": "monitor.fmat" },
+      { "path": "BlueBlend.fmat" }
     ]
   },
   "objects": [
@@ -59,7 +60,8 @@
     {
       "class": "mesh",
       "name": "backing",
-      "data": "uvcube.obj"
+      "data": "uvcube.obj",
+      "material": "BlueBlend.fmat"
     },
     {
       "class": "mesh",

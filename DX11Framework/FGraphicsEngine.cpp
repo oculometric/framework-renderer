@@ -150,6 +150,21 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     getDevice()->CreateDepthStencilState(&ds_desc, &depth_stencil_state);
     getContext()->OMSetDepthStencilState(depth_stencil_state, 1);
 
+    // create blend state
+    D3D11_BLEND_DESC blend_descriptor = { };
+    blend_descriptor.RenderTarget[0].BlendEnable = true;
+    blend_descriptor.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blend_descriptor.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blend_descriptor.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blend_descriptor.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blend_descriptor.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blend_descriptor.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blend_descriptor.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    hr = getDevice()->CreateBlendState(&blend_descriptor, &alpha_blend_state);
+    if (FAILED(hr)) return hr;
+
+    getContext()->OMSetBlendState(alpha_blend_state, nullptr, UINT_MAX);
+
     // create common constant buffer
     D3D11_BUFFER_DESC common_buffer_descriptor = { };
     common_buffer_descriptor.ByteWidth = sizeof(FCommonConstantData);

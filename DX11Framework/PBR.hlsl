@@ -3,6 +3,7 @@
 
 #include "Light.hlsl"
 #include "Common.hlsl"
+#include "Dither.hlsl"
 
 struct PBRSurface
 {
@@ -45,8 +46,20 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     // calculate direciton from the camera to the target fragment
     float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 1), constants.view_matrix_inv).xyz);
     
+    depth = 1.0f - (1.0f / (varyings.position.w + 1.0f));
+    
+    // colour from the texture
+    float4 texture_colour = textures.albedo.Sample(textures.texture_sampler, varyings.uv);
     // surface colour is the product of albedo (!!!) texture colour and base colour
-    float3 surface_colour = textures.albedo.Sample(textures.texture_sampler, varyings.uv).rgb * surface.base_colour.rgb;
+    float3 surface_colour = texture_colour.rgb * surface.base_colour.rgb;
+    // test alpha
+    int2 coord = int2(varyings.position.xy);
+    if (!dither_4x4(texture_colour.a, coord))
+    {
+        colour = float4(0,0,0,0);
+        normal = float3(0,0,0);
+        return;
+    }
     // normal from the texture. possibly this is just blank
     float3 texture_normal = (textures.normal.Sample(textures.texture_sampler, varyings.uv).xyz * 2.0f) - 1.0f;
     // actual normal we're going to use for lighting
@@ -93,7 +106,6 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     
     colour = float4(overall_colour, 1);
     normal = surface_normal;
-    depth = 1.0f - (1.0f / (varyings.position.w + 1.0f));
 }
 
 #endif

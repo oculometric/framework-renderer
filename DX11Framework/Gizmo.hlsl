@@ -29,11 +29,17 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     return output;
 }
 
-Fragment PS_main(Varyings input)
+struct ColourAndDepth
 {
-    Fragment frag = (Fragment)0;
-    frag.colour = input.colour;
-    frag.depth = 1.0f - (1.0f / (input.position.w + 1.0f));
+    float4 colour   : SV_TARGET0;
+    float depth     : SV_DEPTH;
+};
+
+ColourAndDepth PS_main(Varyings input)
+{
+    ColourAndDepth cad = (ColourAndDepth)0;
+    cad.colour = input.colour;
+    cad.depth = 1.0f - (1.0f / (input.position.w + 1.0f));
     
-    return frag;
+    return cad;
 }
