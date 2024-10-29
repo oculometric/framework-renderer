@@ -18,15 +18,13 @@ void FScene::addObject(FObject* o, FObject* parent)
 	if (parent == nullptr)
 	{
 		all_objects.insert(o);
-		root.addChild(o);
-		o->updateTransform();
+		root.transform.addChild(&(o->transform));
 	}
 	else
 	{
 		if (all_objects.count(parent) == 0) return;
 		all_objects.insert(o);
-		parent->addChild(o);
-		o->updateTransform();
+		parent->transform.addChild(&(o->transform));
 	}
 
 	if (o->getType() == FObjectType::LIGHT) all_lights.push_back((FLight*)o);
@@ -85,17 +83,12 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		break;
 	}
 	obj->name = o.name;
-	obj->position = o.position;
-	obj->eulers = o.rotation;
-	obj->scale = o.scale;
+	obj->transform = FTransform(o.position, o.rotation, o.scale);
 
 	addObject(obj, parent);
 	
 	for (FObjectPreload c : o.children)
 		finalizeObject(c, obj);
-	
-	if (parent == nullptr)
-		obj->updateTransform();
 }
 
 bool operator>>(const FJsonElement& a, XMFLOAT3& other)

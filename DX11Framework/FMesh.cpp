@@ -246,7 +246,8 @@ FBoundingBox FMesh::getWorldSpaceBounds()
     };
 
     FBoundingBox world_bounds = FBoundingBox{ };
-    XMMATRIX world_matrix = XMLoadFloat4x4(&world_transform);
+    XMFLOAT4X4 world = transform.getTransform();
+    XMMATRIX world_matrix = XMLoadFloat4x4(&world);
     bool is_first = true;
     for (XMFLOAT4 v : corners)
     {

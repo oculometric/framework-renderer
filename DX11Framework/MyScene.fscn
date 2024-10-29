@@ -53,7 +53,7 @@
       "class": "camera",
       "name": "camera",
       "position": [ 0, 0, 5.0 ],
-      "rotation": [ -90, 0, 0 ]
+      "rotation": [ 90, 0, 0 ]
     },
     {
       "class": "mesh",

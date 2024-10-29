@@ -648,7 +648,7 @@ void FGraphicsEngine::draw()
         getScene()->active_camera->aspect_ratio = getAspectRatio();
         getScene()->active_camera->updateProjectionMatrix();
         XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
-        XMFLOAT4X4 view_matrix_inv = getScene()->active_camera->getTransform();
+        XMFLOAT4X4 view_matrix_inv = getScene()->active_camera->transform.getTransform();
         common_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
         common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
         common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix_inv));
@@ -725,7 +725,7 @@ void FGraphicsEngine::drawObject(FMesh* object)
     }
 
     // store data to the constant buffer that is shared between all shaders
-    XMFLOAT4X4 object_matrix = object->getTransform();
+    XMFLOAT4X4 object_matrix = object->transform.getTransform();
     common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
 
     D3D11_MAPPED_SUBRESOURCE common_buffer_resource;
@@ -809,7 +809,7 @@ void FGraphicsEngine::performPostprocessing()
 
     // update uniform buffer contents
     XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
-    XMFLOAT4X4 view_matrix = getScene()->active_camera->getTransform();
+    XMFLOAT4X4 view_matrix = getScene()->active_camera->transform.getTransform();
     ((XMMATRIX*)uniform_buffer_data)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
     ((XMMATRIX*)uniform_buffer_data)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
     ((XMMATRIX*)uniform_buffer_data)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
@@ -871,7 +871,7 @@ void FGraphicsEngine::drawGizmos()
     for (FObject* object : getScene()->all_objects)
     {
         if (object == getScene()->active_camera) continue;
-        XMFLOAT4X4 object_matrix = object->getTransform();
+        XMFLOAT4X4 object_matrix = object->transform.getTransform();
         common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
 
         D3D11_MAPPED_SUBRESOURCE common_buffer_resource;

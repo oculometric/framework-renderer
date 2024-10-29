@@ -131,8 +131,8 @@ void FApplication::updateWindowSize()
 {
     RECT r;
     GetClientRect(window_handle, &r);
-    float new_width = r.right - r.left;
-    float new_height = r.bottom - r.top;
+    int new_width = (int)(r.right - r.left);
+    int new_height = (int)(r.bottom - r.top);
     if (new_width != window_width || new_height != window_height)
         needs_viewport_resize = true;
     window_width = new_width;
