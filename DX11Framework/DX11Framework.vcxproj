@@ -151,6 +151,7 @@
     <ClCompile Include="PlanetScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BlueBlend.fmat" />
     <None Include="Light.hlsl" />
     <None Include="monitor.fmat" />
     <None Include="MyScene.fscn" />

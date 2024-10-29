@@ -193,5 +193,8 @@
     <None Include="Dither.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="BlueBlend.fmat">
+      <Filter>Resource Files\Materials</Filter>
+    </None>
   </ItemGroup>
 </Project>
