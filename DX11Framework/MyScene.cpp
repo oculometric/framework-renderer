@@ -101,11 +101,11 @@ void MyScene::update(float delta_time)
 		{
 			if (obj->getType() != FObjectType::MESH) continue;
 			FMesh* m = (FMesh*)obj;
-			FBoundingBox b = m->getWorldSpaceBounds();
+			FBoundingBox box = m->getWorldSpaceBounds();
 
 			// based closely on https://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
-			float mins[3] = { b.min_corner.x, b.min_corner.y, b.min_corner.z };
-			float maxs[3] = { b.max_corner.x, b.max_corner.y, b.max_corner.z };
+			float mins[3] = { box.min_corner.x, box.min_corner.y, box.min_corner.z };
+			float maxs[3] = { box.max_corner.x, box.max_corner.y, box.max_corner.z };
 
 			float tmin = 0;
 			float tmax = 1000;

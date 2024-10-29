@@ -140,8 +140,6 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     hr = getDevice()->CreateSamplerState(&sampler_desc, &bilinear_sampler_state);
     if (FAILED(hr)) { return hr; }
 
-    getContext()->PSSetSamplers(0, 1, &bilinear_sampler_state);
-
     // create depth stencil states
     D3D11_DEPTH_STENCIL_DESC ds_desc = { };
     ds_desc.DepthEnable = true;
@@ -224,6 +222,17 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     hr = getDevice()->CreateBuffer(&index_buffer_descriptor, &index_subresource_data, &quad_index_buffer);
 
     if (FAILED(hr)) return hr;
+
+    // create post process sampler
+    D3D11_SAMPLER_DESC sampler_desc = { };
+    sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+    sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+    sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+    sampler_desc.MaxLOD = 1;
+    sampler_desc.MinLOD = 0;
+    hr = getDevice()->CreateSamplerState(&sampler_desc, &postprocess_sampler_state);
+    if (FAILED(hr)) { return hr; }
 
     // load skybox
     hr = CreateDDSTextureFromFile(getDevice(), L"skybox.dds", nullptr, &skybox_texture);
@@ -575,6 +584,7 @@ void FGraphicsEngine::draw()
     getContext()->ClearRenderTargetView(normal_buffer_view, zero);
     getContext()->ClearDepthStencilView(depth_buffer_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    getContext()->PSSetSamplers(0, 1, &bilinear_sampler_state);
 
     if (getScene() && getScene()->active_camera)
     {
@@ -726,6 +736,7 @@ void FGraphicsEngine::performPostprocessing()
     ID3D11RenderTargetView* targets[] = { colour_buffer_view, nullptr };
     getContext()->OMSetRenderTargets(2, targets, nullptr);
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    getContext()->PSSetSamplers(0, 1, &postprocess_sampler_state);
 
     // load input layout and shader
     getContext()->IASetInputLayout(postprocess_shader->input_layout);

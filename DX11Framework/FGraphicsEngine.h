@@ -57,6 +57,7 @@ private:
 	FShader* postprocess_shader								= nullptr;
 	ID3D11Buffer* quad_vertex_buffer						= nullptr;
 	ID3D11Buffer* quad_index_buffer							= nullptr;
+	ID3D11SamplerState* postprocess_sampler_state			= nullptr;
 	ID3D11ShaderResourceView* skybox_texture				= nullptr;
 
 	FShader* gizmo_shader									= nullptr;

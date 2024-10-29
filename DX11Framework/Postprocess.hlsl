@@ -55,7 +55,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     
     float2 pixels = float2(1280, 960) / 3.0f;
     
-    float2 pixelated_uv = ceil(screen_uv * pixels) / pixels;
+    float2 pixelated_uv = (floor(screen_uv * pixels) + 0.5f) / pixels;
     
     float4 clip_dir = normalize(float4(input.uv, 1, 1));
     float3 direction = mul(mul(clip_dir, projection_matrix_inv) * float4(1, 1, 1, 0), view_matrix_inv).xyz * float3(-1, 1, 1);
