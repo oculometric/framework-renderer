@@ -1,0 +1,74 @@
+{
+  "name": "MyScene but from JSON",
+  "assets": {
+    "materials": [
+      { "path": "res/monitor.fmat" },
+      { "path": "res/BlueBlend.fmat" }
+    ]
+  },
+  "objects": [
+    {
+      "class": "mesh",
+      "name": "a",
+      "data": "res/monitor.obj",
+      "material": "res/monitor.fmat",
+      "position": [ 0, 0, 1 ],
+      "rotation": [ 0, 0, 0 ],
+      "scale": [ 1, 1, 1 ],
+      "children": [
+        {
+          "class": "mesh",
+          "name": "sphere",
+          "data": "res/sphere.obj",
+          "position": [ 4.5, 0, 0 ],
+          "rotation": [ 0, 0, 45.0 ],
+          "scale": [ 0.3, 0.3, 0.3 ],
+          "children": [
+            {
+              "class": "light",
+              "name": "sphere_spot",
+              "type": "directional",
+              "colour": [ 1, 0, 0 ],
+              "strength": 0.5,
+              "position": [ 1, 0, 0 ],
+              "rotation": [ 0, -90, 0 ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class": "mesh",
+      "name": "backing",
+      "data": "res/uvcube.obj",
+      "material": "BlueBlend.fmat"
+    },
+    {
+      "class": "mesh",
+      "name": "box",
+      "data": "res/cornell.obj",
+      "position": [ 0, 0, 6.0 ]
+    },
+    {
+      "class": "camera",
+      "name": "camera",
+      "position": [ 0, 0, 5.0 ],
+      "rotation": [ 90, 0, 0 ]
+    },
+    {
+      "class": "mesh",
+      "name": "c",
+      "data": "res/teapot.obj",
+      "position": [ 0, 0, 2.0 ]
+    },
+    {
+      "class": "light",
+      "name": "sun",
+      "type": "directional",
+      "colour": [ 1, 0.9, 0.85 ],
+      "strength": 1,
+      "rotation": [ 10, 25, 0 ]
+    }
+  ],
+  "ambient_light": [ 0.05, 0.04, 0.02 ]
+}

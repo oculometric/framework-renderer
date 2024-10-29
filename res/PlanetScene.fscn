@@ -1,0 +1,24 @@
+{
+	"name": "RCS-15c 'Dali'",
+	"assets": {
+	},
+	"objects": [
+		{
+			"class": "empty",
+			"name": "ship_root",
+			"children": [
+				{
+					"class": "camera",
+					"name": "ship_cam"
+				}
+			],
+			"position": [ 0, 0, 100 ],
+			"rotation": [ 0, 0, 180 ]
+		},
+		{
+			"class": "mesh",
+			"name": "planet",
+			"data": "res/planet.obj"
+		}
+	]
+}

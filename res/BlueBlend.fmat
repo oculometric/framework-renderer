@@ -1,0 +1,28 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+		"res/blend_t.dds"
+	],
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "normal_strength",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		}
+	]
+}
