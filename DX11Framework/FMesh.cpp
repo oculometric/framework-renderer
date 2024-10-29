@@ -135,7 +135,7 @@ FMeshData* FMesh::loadMesh(string path)
 
             swap(tmp_fc[tmp_fc.size() - 1], tmp_fc[tmp_fc.size() - 3]);
         }
-        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        file.ignore(MAXLONGLONG, '\n');
     }
 
     // for each coordinate, stores a list of all the times it has been used by a face corner, and what the normal/uv index was for that face corner

@@ -1,3 +1,5 @@
+#pragma comment(lib, "dxguid.lib")
+
 #include "FGraphicsEngine.h"
 
 #include "DDSTextureLoader.h"
@@ -5,6 +7,7 @@
 #include "FJsonParser.h"
 #include "FDebug.h"
 #include "Gizmo.h"
+
 
 using namespace std;
 
