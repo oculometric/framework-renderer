@@ -41,7 +41,7 @@
       "class": "mesh",
       "name": "backing",
       "data": "res/uvcube.obj",
-      "material": "BlueBlend.fmat"
+      "material": "res/BlueBlend.fmat"
     },
     {
       "class": "mesh",
