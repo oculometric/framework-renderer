@@ -9,16 +9,25 @@
 			"children": [
 				{
 					"class": "camera",
-					"name": "ship_cam"
+					"name": "ship_cam",
+					"field_of_view": 110,
+					"position": [ 0, 0, 2 ],
+					"far_clip": 100
 				}
 			],
 			"position": [ 0, 0, 100 ],
-			"rotation": [ 0, 0, 180 ]
+			"rotation": [ 0, 0, 0 ]
 		},
 		{
 			"class": "mesh",
 			"name": "planet",
 			"data": "res/planet.obj"
+		},
+		{
+			"class": "mesh",
+			"name": "cornell",
+			"data": "res/cornell.obj",
+			"position": [ 0, 0, 1 ]
 		}
 	]
 }

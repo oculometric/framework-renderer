@@ -48,7 +48,6 @@ class FMesh : public FObject
 private:
 	FMeshData* mesh_data = nullptr;
 	FMaterial* material  = nullptr;
-	FBoundingBox world_space_bounds;
 
 public:
 	inline FObjectType getType() { return FObjectType::MESH; }

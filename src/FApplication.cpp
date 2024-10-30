@@ -60,6 +60,8 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     application = this;
     updateWindowSize();
 
+    time_keeper = chrono::high_resolution_clock::now();
+
     return hr;
 }
 

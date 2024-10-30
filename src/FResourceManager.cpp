@@ -4,6 +4,7 @@
 
 #include "FMesh.h"
 #include "FGraphicsEngine.h"
+#include "FDebug.h"
 
 static FResourceManager* resource_manager;
 
@@ -29,6 +30,10 @@ FTexture* FResourceManager::loadTexture(string path)
 	MultiByteToWideChar(CP_UTF8, 0, &path[0], (int)path.size(), &wstr[0], wlen);
 	for (int i = 0; i < wstr.size(); i++) if (wstr[i] == '/') wstr[i] = '\\';
 	FTexture* res = application->registerTexture(wstr);
+	if (res == nullptr)
+	{
+		FDebug::dialog("unable to load texture: " + path);
+	}
 	registry.insert_or_assign(descriptor, (void*)res);
 
 	return res;
@@ -56,6 +61,7 @@ FMeshData* FResourceManager::loadMesh(string path)
 		registry.insert_or_assign(descriptor, (void*)res);
 	else
 	{
+		FDebug::dialog("unable to load mesh: " + path);
 		delete res;
 		return nullptr;
 	}
@@ -90,6 +96,7 @@ FShader* FResourceManager::loadShader(string path, bool wireframe, FCullMode cul
 		registry.insert_or_assign(descriptor, (void*)res);
 	else
 	{
+		FDebug::dialog("unable to load shader: " + path);
 		delete res;
 		return nullptr;
 	}
@@ -114,7 +121,11 @@ FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 
 	FShader* shader = nullptr;
 	shader = loadShader(mp.shader, false, FCullMode::BACK);
-	if (shader == nullptr) return nullptr;
+	if (shader == nullptr)
+	{
+		FDebug::dialog("unable to load material: " + name);
+		return nullptr;
+	}
 
 	FMaterial* res = new FMaterial();
 	res->shader = shader;

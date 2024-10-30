@@ -83,9 +83,13 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		break;
 	}
 	obj->name = o.name;
-	obj->transform = FTransform(o.position, o.rotation, o.scale);
-
+	obj->transform = FTransform();
+	
 	addObject(obj, parent);
+
+	obj->transform.setLocalPosition(o.position);
+	obj->transform.setLocalEuler(o.rotation);
+	obj->transform.setLocalScale(o.scale);
 	
 	for (FObjectPreload c : o.children)
 		finalizeObject(c, obj);

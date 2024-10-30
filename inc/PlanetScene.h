@@ -6,7 +6,7 @@ class PlanetScene : public FScene
 {
 private:
 	FObject* ship_root;
-	float speed = 1.0f;
+	float speed = 0.0f;
 
 public:
 	using FScene::FScene;

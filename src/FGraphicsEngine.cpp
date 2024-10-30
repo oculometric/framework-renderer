@@ -386,7 +386,6 @@ FTexture* FGraphicsEngine::registerTexture(wstring path)
     HRESULT hr = S_OK;
 
     hr = CreateDDSTextureFromFile(getDevice(), path.c_str(), nullptr, &tex->buffer_ptr);
-    if (FAILED(hr)) FDebug::dialog("failed to load texture!");
 
     return tex;
 }
@@ -576,7 +575,7 @@ bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, F
     }
 
     // TODO: improve this, sometimes it falseley culls things
-    return false;
+    return true; // FIXME: temporarily disabled
 }
 
 void FGraphicsEngine::sortForBatching(vector<FMesh*>& objects)
@@ -688,7 +687,7 @@ void FGraphicsEngine::draw()
             if (i >= NUM_LIGHTS) break;
         }
         for (i = i; i < NUM_LIGHTS; i++) common_buffer_data->lights[i] = FLightData{ };
-        common_buffer_data->light_ambient = XMFLOAT4(getScene()->ambient_light.x, getScene()->ambient_light.y, getScene()->ambient_light.z, 1); // TODO: ambient light, world config
+        common_buffer_data->light_ambient = XMFLOAT4(getScene()->ambient_light.x, getScene()->ambient_light.y, getScene()->ambient_light.z, 1);
         common_buffer_data->time = getTime();
 
         // ensure the common constant buffer is bound

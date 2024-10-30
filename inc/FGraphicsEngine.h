@@ -74,6 +74,7 @@ private:
 	FMaterial* placeholder_material							= nullptr;
 	FShader* active_shader									= nullptr;
 	FMeshData* active_mesh									= nullptr;
+	FMaterial* active_material								= nullptr;
 	void* uniform_buffer_data								= nullptr;
 	FCommonConstantData* common_buffer_data					= nullptr;
 	ID3D11Buffer* common_buffer								= nullptr;

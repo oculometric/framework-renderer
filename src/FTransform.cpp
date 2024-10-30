@@ -107,7 +107,10 @@ void FTransform::updateParamsFromLocal()
 	XMVECTOR s; XMVECTOR q; XMVECTOR p;
 	XMMatrixDecompose(&s, &q, &p, XMLoadFloat4x4(&local_to_parent));
 	XMStoreFloat3(&local_position, p);
-	XMStoreFloat4(&local_quaternion, q);
+	if (XMVector3Length(q).m128_f32[0] < 0.0001f)
+		local_quaternion = XMFLOAT4(0,0,1,0);
+	else
+		XMStoreFloat4(&local_quaternion, q);
 	XMStoreFloat3(&local_scale, s);
 }
 
@@ -213,4 +216,5 @@ void FTransform::removeChild(FTransform* o)
 
 	children.erase(o);
 	o->parent = nullptr;
+	o->updateWorldFromLocal();
 }
