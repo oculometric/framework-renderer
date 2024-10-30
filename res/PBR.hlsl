@@ -74,25 +74,38 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         // dot product between the light direction and the surface normal
         float dir_dot_norm = dot(-light_dir, surface_normal);
         
-        if (surface.roughness_factor > 0)
-        {
-            // diffuse component of the light's contribution
-            float3 diffuse_light = saturate(dir_dot_norm) * light_col * surface_colour;
-            overall_colour += diffuse_light * surface.roughness_factor;
-        }
+        float3 halfway_vec = normalize(-light_dir + -view_dir);
         
-        if (surface.roughness_factor < 1)
-        {
-            // specular exponent. the higher the roughness, the more spread-out the specular highlight should be (and the less it should contribute)
-            // TODO: make this physically accurate (energy-preserving)
-            float specular_exp = 10.0f * (1.0f - surface.roughness_factor);
-            // specular component of the light's contribution
-            float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
-            float3 specular_colour = lerp(specular_colour.rgb, surface_colour, surface.metallic_factor);
-            float3 specular_light = specular_highlight * light_col * surface_colour;
-            // TODO: as above, energy preservation
-            overall_colour += specular_light * (1.0f - surface.roughness_factor);
-        }
+        // Trowbridge-Reitz GGX normal distribution function, ref https://learnopengl.com/PBR/Theory
+        float n_dot_h = saturate(dot(surface_normal, halfway_vec));
+        float d = (n_dot_h * n_dot_h * ((surface.roughness_factor * surface.roughness_factor) - 1)) + 1;
+        float trggx = (surface.roughness_factor * surface.roughness_factor) / (3.14159 * d * d);
+        
+        // Schlick GGX geometry function, ref as above
+        float k = (surface.roughness_factor + 1);
+        k *= k;
+        float sggx = (dot(surface_normal, -view_dir) / ((dot(surface_normal, -view_dir) * (1 - k)) + k))
+                   * (dot(surface_normal, -light_dir) / ((dot(surface_normal, -light_dir) * (1 - k)) + k));
+        
+        //if (surface.roughness_factor > 0)
+        //{
+        //    // diffuse component of the light's contribution
+        //    float3 diffuse_light = saturate(dir_dot_norm) * light_col * surface_colour;
+        //    overall_colour += diffuse_light * surface.roughness_factor;
+        //}
+        
+        //if (surface.roughness_factor < 1)
+        //{
+        //    // specular exponent. the higher the roughness, the more spread-out the specular highlight should be (and the less it should contribute)
+        //    // TODO: make this physically accurate (energy-preserving)
+        //    float specular_exp = 10.0f * (1.0f - surface.roughness_factor);
+        //    // specular component of the light's contribution
+        //    float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
+        //    float3 specular_colour = lerp(specular_colour.rgb, surface_colour, surface.metallic_factor);
+        //    float3 specular_light = specular_highlight * light_col * surface_colour;
+        //    // TODO: as above, energy preservation
+        //    overall_colour += specular_light * (1.0f - surface.roughness_factor);
+        //}
     }
     
     // apply emission component
