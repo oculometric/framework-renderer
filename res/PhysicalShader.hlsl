@@ -74,6 +74,7 @@ Fragment PS_main(Varyings input)
     PBRVaryings pbr_varyings = (PBRVaryings)0;
     pbr_varyings.position = input.position;
     pbr_varyings.view_position = input.view_position;
+    pbr_varyings.world_position = input.world_position;
     pbr_varyings.normal = input.normal;
     pbr_varyings.uv = input.uv;
     pbr_varyings.tbn = input.tbn;

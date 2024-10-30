@@ -5,7 +5,7 @@ void FLight::convertToData(FLightData* data)
 	data->colour = colour;
 	data->strength = strength;
 
-	data->angle = angle;
+	data->angle = (type == FLightType::SPOT ? angle : 180.0f);
 
 	// calculate direction from world-matrix
 	XMFLOAT4X4 world_mat = transform.getTransform();

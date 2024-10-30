@@ -34,6 +34,14 @@
               "rotation": [ 0, -90, 0 ]
             }
           ]
+        },
+        {
+          "class": "light",
+          "name": "point_light",
+          "type": "point",
+          "colour": [ 0, 1, 0 ],
+          "strength": 2.0,
+          "position": [ 0, 2, 0 ]
         }
       ]
     },
@@ -47,7 +55,18 @@
       "class": "mesh",
       "name": "box",
       "data": "res/cornell.obj",
-      "position": [ 0, 0, 6.0 ]
+      "position": [ 0, 0, 6.0 ],
+      "children": [
+        {
+          "class": "light",
+          "name": "spot_light",
+          "type": "spot",
+          "position": [ 0, 0, 3 ],
+          "colour": [ 0, 0, 1 ],
+          "strength": 5,
+          "angle": 30
+        }
+      ]
     },
     {
       "class": "camera",

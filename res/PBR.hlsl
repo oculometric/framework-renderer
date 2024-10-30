@@ -27,6 +27,7 @@ struct PBRVaryings
 {
     float4 position;            // clip space position of the fragment
     float3 view_position;       // view space position of the fragment
+    float3 world_position;      // world space position of the fragment
     float3 normal;              // world space normal of the fragment
     float2 uv;                  // uv coordinate of the fragment
     float3x3 tbn;               // tangent-bitangent-normal matrix
@@ -43,7 +44,6 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
 {
     // calculate direciton from the camera to the target fragment
     float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 1), constants.view_matrix_inv).xyz);
-    
     
     // colour from the texture
     float4 texture_colour = textures.albedo.Sample(textures.texture_sampler, varyings.uv);
@@ -64,48 +64,61 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     float3 overall_colour = lerp(float3(0,0,0), constants.light_ambient.rgb * surface_colour, surface.roughness_factor);
     for (uint i = 0; i < NUM_LIGHTS; i++)
     {
-        // TODO: implement non-directional lights
-        
         Light light = constants.lights[i];
         // direction of the light in world space
-        float3 light_dir = normalize(light.light_direction.xyz);
+        float3 light_dir;
+        float light_strength = light.strength;
+        if (light.light_direction.w > 0)
+        {
+            float3 light_vec = varyings.world_position - light.light_position;
+            light_dir = normalize(light_vec);
+            light_strength /= (length(light_vec) * length(light_vec)) + 1;
+            
+            if (light.angle < 180)
+                light_strength *= pow(saturate((light.angle - degrees(acos(dot(light_dir, light.light_direction.xyz)))) / light.angle), 0.5);
+        }
+        else
+        {
+            light_dir = normalize(light.light_direction.xyz);
+        }
         // light colour with strength applied
-        float3 light_col = light.colour.rgb * light.strength;
+        float3 light_col = light.colour.rgb * light_strength;
         // dot product between the light direction and the surface normal
         float dir_dot_norm = dot(-light_dir, surface_normal);
         
-        float3 halfway_vec = normalize(-light_dir + -view_dir);
+        //float3 halfway_vec = normalize(-light_dir + -view_dir);
         
-        // Trowbridge-Reitz GGX normal distribution function, ref https://learnopengl.com/PBR/Theory
-        float n_dot_h = saturate(dot(surface_normal, halfway_vec));
-        float d = (n_dot_h * n_dot_h * ((surface.roughness_factor * surface.roughness_factor) - 1)) + 1;
-        float trggx = (surface.roughness_factor * surface.roughness_factor) / (3.14159 * d * d);
+        //// Trowbridge-Reitz GGX normal distribution function, ref https://learnopengl.com/PBR/Theory
+        //float n_dot_h = saturate(dot(surface_normal, halfway_vec));
+        //float d = (n_dot_h * n_dot_h * ((surface.roughness_factor * surface.roughness_factor) - 1)) + 1;
+        //float trggx = (surface.roughness_factor * surface.roughness_factor) / (3.14159 * d * d);
         
-        // Schlick GGX geometry function, ref as above
-        float k = (surface.roughness_factor + 1);
-        k *= k;
-        float sggx = (dot(surface_normal, -view_dir) / ((dot(surface_normal, -view_dir) * (1 - k)) + k))
-                   * (dot(surface_normal, -light_dir) / ((dot(surface_normal, -light_dir) * (1 - k)) + k));
+        //// Schlick GGX geometry function, ref as above
+        //float k = (surface.roughness_factor + 1);
+        //k *= k;
+        //float sggx = (dot(surface_normal, -view_dir) / ((dot(surface_normal, -view_dir) * (1 - k)) + k))
+        //           * (dot(surface_normal, -light_dir) / ((dot(surface_normal, -light_dir) * (1 - k)) + k));
         
-        //if (surface.roughness_factor > 0)
-        //{
-        //    // diffuse component of the light's contribution
-        //    float3 diffuse_light = saturate(dir_dot_norm) * light_col * surface_colour;
-        //    overall_colour += diffuse_light * surface.roughness_factor;
-        //}
+        //overall_colour += sggx;
+        if (surface.roughness_factor > 0)
+        {
+            // diffuse component of the light's contribution
+            float3 diffuse_light = saturate(dir_dot_norm) * light_col * surface_colour;
+            overall_colour += diffuse_light * surface.roughness_factor;
+        }
         
-        //if (surface.roughness_factor < 1)
-        //{
-        //    // specular exponent. the higher the roughness, the more spread-out the specular highlight should be (and the less it should contribute)
-        //    // TODO: make this physically accurate (energy-preserving)
-        //    float specular_exp = 10.0f * (1.0f - surface.roughness_factor);
-        //    // specular component of the light's contribution
-        //    float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
-        //    float3 specular_colour = lerp(specular_colour.rgb, surface_colour, surface.metallic_factor);
-        //    float3 specular_light = specular_highlight * light_col * surface_colour;
-        //    // TODO: as above, energy preservation
-        //    overall_colour += specular_light * (1.0f - surface.roughness_factor);
-        //}
+        if (surface.roughness_factor < 1)
+        {
+            // specular exponent. the higher the roughness, the more spread-out the specular highlight should be (and the less it should contribute)
+            // TODO: make this physically accurate (energy-preserving)
+            float specular_exp = 10.0f * (1.0f - surface.roughness_factor);
+            // specular component of the light's contribution
+            float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
+            float3 specular_colour = lerp(specular_colour.rgb, surface_colour, surface.metallic_factor);
+            float3 specular_light = specular_highlight * light_col * surface_colour;
+            // TODO: as above, energy preservation
+            overall_colour += specular_light * (1.0f - surface.roughness_factor);
+        }
     }
     
     // apply emission component
@@ -113,6 +126,8 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     
     colour = float4(overall_colour, 1);
     normal = surface_normal;
+    
+    //colour = float4(varyings.world_position, 1);
 }
 
 #endif
