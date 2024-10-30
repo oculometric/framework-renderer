@@ -22,7 +22,9 @@ private:
 
 	HWND window_handle;
 
+	chrono::steady_clock::time_point time_keeper;
 	float total_time = 0.0f;
+	float mean_frame_time = 0.0f;
 
 	FGraphicsEngine* engine							= nullptr;
 

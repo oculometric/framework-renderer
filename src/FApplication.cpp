@@ -142,11 +142,17 @@ void FApplication::updateWindowSize()
 
 void FApplication::update()
 {
-    static ULONGLONG frame_start = GetTickCount64();
+    chrono::steady_clock::time_point now = chrono::high_resolution_clock::now();
+    chrono::duration<float> delta = now - time_keeper;
 
-    ULONGLONG frame_now = GetTickCount64();
-    float delta_time = (frame_now - frame_start) / 1000.0f;
-    frame_start = frame_now;
+    float delta_time = delta.count();
+    mean_frame_time = (0.7f * delta_time) + (0.3f * mean_frame_time);
+    float fps = 1.0f / mean_frame_time;
+
+    string new_title = "FrameworkRenderer - " + scene->name + " [ " + to_string(fps) + "fps, " + to_string(mean_frame_time) + "ms ]";
+    SetWindowTextA(window_handle, new_title.c_str());
+
+    time_keeper = now;
 
     total_time += delta_time;
 
