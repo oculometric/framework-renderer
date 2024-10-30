@@ -12,7 +12,7 @@
 					"name": "ship_cam",
 					"field_of_view": 110,
 					"position": [ 0, 0, 2 ],
-					"far_clip": 100
+					"far_clip": 1000
 				}
 			],
 			"position": [ 0, 0, 100 ],
@@ -20,14 +20,25 @@
 		},
 		{
 			"class": "mesh",
-			"name": "planet",
-			"data": "res/planet.obj"
-		},
-		{
-			"class": "mesh",
 			"name": "cornell",
 			"data": "res/cornell.obj",
 			"position": [ 0, 0, 1 ]
+		},
+		{
+			"class": "light",
+			"name": "sun",
+			"type": "directional",
+			"rotation": [ 0, 90, 0 ],
+			"colour":  [ 1, 0.8, 0.7 ],
+			"strength": 2,
+			"children": [
+				{
+					"class": "mesh",
+					"name": "planet",
+					"data": "res/planet.obj",
+					"position": [ 0, 0, -500 ]
+				}
+			]
 		}
 	]
 }

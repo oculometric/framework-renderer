@@ -87,8 +87,8 @@ float4 PS_main(Varyings input) : SV_TARGET
     float3 depth_sample = float3(view_pos.z, view_pos.z, view_pos.z);
     float3 normal_sample = normal.Sample(bilinear_sampler, pixelated_uv).rgb;
     float3 sharpened_sample = sharpen(screen, pixelated_uv, pixels).rgb;
-    colour_sample = f >= 99.0f ? skybox_sample : colour_sample;
-    sharpened_sample = f >= 99.0f ? skybox_sample : sharpened_sample;
+    colour_sample = f >= 990.0f ? skybox_sample : colour_sample;
+    sharpened_sample = f >= 990.0f ? skybox_sample : sharpened_sample;
     
     float fog_mix = clamp(pow(clamp((f - 2) / (16 - 2), 0, 1), 0.8), 0, 1);
     
