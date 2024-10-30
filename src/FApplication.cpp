@@ -146,7 +146,7 @@ void FApplication::update()
     chrono::duration<float> delta = now - time_keeper;
 
     float delta_time = delta.count();
-    mean_frame_time = (0.7f * delta_time) + (0.3f * mean_frame_time);
+    mean_frame_time = (0.5f * delta_time) + (0.5f * mean_frame_time);
     float fps = 1.0f / mean_frame_time;
 
     string new_title = "FrameworkRenderer - " + scene->name + " [ " + to_string(fps) + "fps, " + to_string(mean_frame_time) + "ms ]";

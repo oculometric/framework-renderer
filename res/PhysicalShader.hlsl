@@ -80,13 +80,11 @@ Fragment PS_main(Varyings input)
     
     float4 col;
     float3 norm;
-    float depth;
-    evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm, depth);
+    evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm);
     
     Fragment frag = (Fragment)0;
     frag.colour = col;
     frag.normal = float4(norm, 1.0f);
-    frag.depth = depth;
     
     return frag;
 }

@@ -161,6 +161,8 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     blend_descriptor.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
     blend_descriptor.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     blend_descriptor.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    blend_descriptor.RenderTarget[1] = blend_descriptor.RenderTarget[0];
+    blend_descriptor.RenderTarget[2] = blend_descriptor.RenderTarget[0];
     hr = getDevice()->CreateBlendState(&blend_descriptor, &alpha_blend_state);
     if (FAILED(hr)) return hr;
 
