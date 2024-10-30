@@ -709,11 +709,11 @@ void FGraphicsEngine::draw()
         // draw the objects
         for (FMesh* mo : batch)
             drawObject(mo);
+
+        performPostprocessing();
+
+        drawGizmos();
     }
-
-    performPostprocessing();
-
-    drawGizmos();
 
     // present backbuffer to screen
     swap_chain->Present(0, DXGI_PRESENT_ALLOW_TEARING);

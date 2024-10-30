@@ -16,8 +16,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return -1;
 	}
 
-	//application.scene = new PlanetScene(&application, "PlanetScene.fscn");
-	application.scene = new MyScene(&application, "res/MyScene.fscn");
+	application.scene = new PlanetScene(&application, "res/PlanetScene.fscn");
+	//application.scene = new MyScene(&application, "res/MyScene.fscn");
 	application.scene->finalizePreload();
 	application.scene->start();
 

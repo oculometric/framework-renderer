@@ -138,6 +138,8 @@ FJsonObject* FJsonBlob::parse(const string& s)
     FJsonObject* obj = new FJsonObject();
     all_objects.push_back(obj);
 
+    if (s.length() == 0) return obj;
+
     size_t section_start = 0;
     size_t section_end = 0;
     
