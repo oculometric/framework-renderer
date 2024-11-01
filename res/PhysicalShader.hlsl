@@ -84,7 +84,7 @@ Fragment PS_main(Varyings input)
     evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm);
     
     Fragment frag = (Fragment)0;
-    frag.colour = shadow_map.Sample(bilinear_sampler, float3(input.uv, 1.0 / 16.0));
+    frag.colour = float4(shadow_map.Sample(bilinear_sampler, float3(input.uv, 0.0)).rrr, 1);
     frag.normal = float4(norm, 1.0f);
     
     return frag;

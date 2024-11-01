@@ -85,7 +85,7 @@ private:
 	ID3D11Buffer* common_buffer								= nullptr;
 
 	ID3D11Texture2D* shadow_map_texture						= nullptr;
-	ID3D11DepthStencilView* shadow_map_view					= nullptr;
+	ID3D11DepthStencilView* shadow_map_view[NUM_LIGHTS]		= { nullptr };
 	ID3D11ShaderResourceView* shadow_map_resource			= nullptr;
 	FShadowMapConstantData* shadow_buffer_data				= nullptr;
 	FShader* shadow_map_shader								= nullptr;

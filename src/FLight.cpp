@@ -19,7 +19,10 @@ XMFLOAT4X4 FLight::getProjectionMatrix()
 {
 	// FIXME: this only works for spotlights! uhhhh....
 	XMFLOAT4X4 projection_matrix;
-	XMStoreFloat4x4(&projection_matrix, XMMatrixPerspectiveFovRH(XMConvertToRadians(angle / 2.0f), 1.0f, 0.1f, 100.0f));
+	if (type == SPOT)
+		XMStoreFloat4x4(&projection_matrix, XMMatrixPerspectiveFovRH(XMConvertToRadians(angle * 2.0f), 1.0f, 0.1f, 16.0f));
+	if (type == DIRECTIONAL)
+		XMStoreFloat4x4(&projection_matrix, XMMatrixOrthographicRH(8.0f, 8.0f, 0.1f, 16.0f));
 
 	return projection_matrix;
 }

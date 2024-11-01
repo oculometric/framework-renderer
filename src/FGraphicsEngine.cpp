@@ -137,10 +137,14 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     D3D11_DEPTH_STENCIL_VIEW_DESC shadow_view_descriptor = { };
     shadow_view_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     shadow_view_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
-    shadow_view_descriptor.Texture2DArray.ArraySize = NUM_LIGHTS;
+    shadow_view_descriptor.Texture2DArray.ArraySize = 1;
     shadow_view_descriptor.Texture2DArray.FirstArraySlice = 0;
     shadow_view_descriptor.Texture2DArray.MipSlice = 0;
-    getDevice()->CreateDepthStencilView(shadow_map_texture, &shadow_view_descriptor, &shadow_map_view);
+    for (int i = 0; i < NUM_LIGHTS; i++)
+    {
+        shadow_view_descriptor.Texture2DArray.FirstArraySlice = i;
+        getDevice()->CreateDepthStencilView(shadow_map_texture, &shadow_view_descriptor, &(shadow_map_view[i]));
+    }
 
     // create a resource view around it
     D3D11_SHADER_RESOURCE_VIEW_DESC shadow_res_descriptor = { };
@@ -676,7 +680,8 @@ FGraphicsEngine::~FGraphicsEngine()
     if (box_index_buffer) box_index_buffer->Release();
 
     if (shadow_map_resource) shadow_map_resource->Release();
-    if (shadow_map_view) shadow_map_view->Release();
+    for (int i = 0; i < NUM_LIGHTS; i++)
+        if (shadow_map_view[i]) shadow_map_view[i]->Release();
     if (shadow_map_texture) shadow_map_texture->Release();
     if (shadow_buffer_data) delete shadow_buffer_data;
 
@@ -982,7 +987,6 @@ void FGraphicsEngine::renderShadowMaps()
 
     ID3D11ShaderResourceView* tmp = nullptr;
     getContext()->PSSetShaderResources(8, 1, &tmp);
-    getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view); // FIXME: how do i bind just one of the textures in the array??
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     getContext()->IASetInputLayout(shadow_map_shader->input_layout);
     getContext()->VSSetShader(shadow_map_shader->vertex_shader_pointer, nullptr, 0);
@@ -996,8 +1000,13 @@ void FGraphicsEngine::renderShadowMaps()
 
     D3D11_MAPPED_SUBRESOURCE shadow_buffer_resource;
 
+    int light_index = 0;
     for (FLight* light : getScene()->all_lights)
     {
+        if (light->type == FLight::FLightType::POINT) { light_index++; continue; } // TODO: shadow maps for other lights
+        getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view[light_index]);
+        getContext()->ClearDepthStencilView(shadow_map_view[light_index], D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
         XMFLOAT4X4 projection_matrix = light->getProjectionMatrix();
         XMFLOAT4X4 view_matrix_inv = light->transform.getTransform();
         shadow_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
@@ -1019,5 +1028,7 @@ void FGraphicsEngine::renderShadowMaps()
 
             getContext()->DrawIndexed(static_cast<UINT>(data->indices.size()), 0, 0);
         }
+
+        light_index++;
     }
 }
