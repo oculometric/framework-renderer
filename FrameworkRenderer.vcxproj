@@ -119,6 +119,11 @@
     <ClCompile Include="src\MyScene.cpp" />
     <ClCompile Include="src\PlanetScene.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ShadowMapper.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

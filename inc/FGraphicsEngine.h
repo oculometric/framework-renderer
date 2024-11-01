@@ -28,6 +28,13 @@ struct FCommonConstantData
 	XMFLOAT3 _;                 // padding
 };
 
+struct FShadowMapConstantData
+{
+	XMMATRIX projection_matrix;
+	XMMATRIX view_matrix;
+	XMMATRIX world_matrix;
+};
+
 class FGraphicsEngine
 {
 	friend class FResourceManager;
@@ -66,18 +73,24 @@ private:
 	FShader* gizmo_shader									= nullptr;
 	ID3D11Buffer* gizmo_vertex_buffer						= nullptr;
 	ID3D11Buffer* gizmo_index_buffer						= nullptr;
-
 	FShader* box_shader										= nullptr;
 	ID3D11Buffer* box_vertex_buffer							= nullptr;
 	ID3D11Buffer* box_index_buffer							= nullptr;
 
-	FMaterial* placeholder_material							= nullptr;
-	FShader* active_shader									= nullptr;
 	FMeshData* active_mesh									= nullptr;
+	FShader* active_shader									= nullptr;
 	FMaterial* active_material								= nullptr;
 	void* uniform_buffer_data								= nullptr;
 	FCommonConstantData* common_buffer_data					= nullptr;
 	ID3D11Buffer* common_buffer								= nullptr;
+
+	ID3D11Texture2D* shadow_map_texture						= nullptr;
+	ID3D11DepthStencilView* shadow_map_view					= nullptr;
+	ID3D11ShaderResourceView* shadow_map_resource			= nullptr;
+	FShadowMapConstantData* shadow_buffer_data				= nullptr;
+	FShader* shadow_map_shader								= nullptr;
+
+	FMaterial* placeholder_material							= nullptr;
 
 private:
 	FGraphicsEngine(FApplication* owner);
@@ -89,9 +102,12 @@ private:
 
 	void resizeRenderTargets();
 
+	bool frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds);
+	void sortForBatching(vector<FMesh*>& objects);
 	void drawObject(FMesh* object);
 	void performPostprocessing();
 	void drawGizmos();
+	void renderShadowMaps();
 
 	bool registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);
@@ -101,9 +117,6 @@ private:
 
 	bool registerShader(FShader* shader, wstring path);
 	void unregisterShader(FShader* shader);
-
-	bool frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds);
-	void sortForBatching(vector<FMesh*>& objects);
 
 	inline ID3D11DeviceContext* getContext() { return application->getContext(); }
 	inline ID3D11Device* getDevice() { return application->getDevice(); }

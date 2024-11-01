@@ -2,7 +2,7 @@
 
 #include "FObject.h"
 
-#define NUM_LIGHTS 8
+#define NUM_LIGHTS 16 // this must be a square number
 // this mirrors the Light struct defined in Light.hlsl
 struct FLightData
 {
@@ -39,4 +39,5 @@ public:
 public:
 	inline FObjectType getType() { return FObjectType::LIGHT; }
 	void convertToData(FLightData* data);
+	XMFLOAT4X4 getProjectionMatrix();
 };

@@ -14,3 +14,12 @@ void FLight::convertToData(FLightData* data)
 	data->light_direction = XMFLOAT4(direction.x, direction.y, direction.z, (float)(type == FLightType::DIRECTIONAL ? 0 : 1));
 	data->light_position = XMFLOAT3(world_mat._41, world_mat._42, world_mat._43);
 }
+
+XMFLOAT4X4 FLight::getProjectionMatrix()
+{
+	// FIXME: this only works for spotlights! uhhhh....
+	XMFLOAT4X4 projection_matrix;
+	XMStoreFloat4x4(&projection_matrix, XMMatrixPerspectiveFovRH(XMConvertToRadians(angle / 2.0f), 1.0f, 0.1f, 100.0f));
+
+	return projection_matrix;
+}

@@ -94,7 +94,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     
     float mixer = ((screen_uv.x + screen_uv.y * -0.2f) + 1.0f) % 1.0f;
  
-    float3 fogged = mix_custom(sharpened_sample, float3(0.45, 0.23, 0.2), fog_mix);
+    float3 fogged = mix_custom(sharpened_sample, float3(0.45, 0.23, 0.2), fog_mix * 0.6f);
     
     //if (mixer < 0.25f)
         return float4(fogged, 1);

@@ -121,6 +121,37 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     hr = getDevice()->CreateShaderResourceView(normal_buffer, &colour_buffer_resource_descriptor, &normal_buffer_resource);
 
+    // create the shadow map texture
+    D3D11_TEXTURE2D_DESC shadow_texture_descriptor = { };
+    shadow_texture_descriptor.ArraySize = NUM_LIGHTS;
+    shadow_texture_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+    shadow_texture_descriptor.Format = DXGI_FORMAT_R24G8_TYPELESS;
+    shadow_texture_descriptor.MipLevels = 1;
+    shadow_texture_descriptor.Width = 1024;
+    shadow_texture_descriptor.Height = 1024;
+    shadow_texture_descriptor.SampleDesc.Count = 1;
+    shadow_texture_descriptor.SampleDesc.Quality = 0;
+    getDevice()->CreateTexture2D(&shadow_texture_descriptor, nullptr, &shadow_map_texture);
+
+    // create a view around it
+    D3D11_DEPTH_STENCIL_VIEW_DESC shadow_view_descriptor = { };
+    shadow_view_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    shadow_view_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+    shadow_view_descriptor.Texture2DArray.ArraySize = NUM_LIGHTS;
+    shadow_view_descriptor.Texture2DArray.FirstArraySlice = 0;
+    shadow_view_descriptor.Texture2DArray.MipSlice = 0;
+    getDevice()->CreateDepthStencilView(shadow_map_texture, &shadow_view_descriptor, &shadow_map_view);
+
+    // create a resource view around it
+    D3D11_SHADER_RESOURCE_VIEW_DESC shadow_res_descriptor = { };
+    shadow_res_descriptor.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+    shadow_res_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+    shadow_res_descriptor.Texture2DArray.ArraySize = NUM_LIGHTS;
+    shadow_res_descriptor.Texture2DArray.FirstArraySlice = 0;
+    shadow_res_descriptor.Texture2DArray.MipLevels = 1;
+    shadow_res_descriptor.Texture2DArray.MostDetailedMip = 0;
+    getDevice()->CreateShaderResourceView(shadow_map_texture, &shadow_res_descriptor, &shadow_map_resource);
+    
     return hr;
 }
 
@@ -174,12 +205,16 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     common_buffer_descriptor.Usage = D3D11_USAGE_DYNAMIC;
     common_buffer_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     common_buffer_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
     hr = getDevice()->CreateBuffer(&common_buffer_descriptor, nullptr, &common_buffer);
-    if (FAILED(hr)) { return hr; }
+    if (FAILED(hr)) return hr;
 
     common_buffer_data = new FCommonConstantData();
     uniform_buffer_data = new float[16384];
+    shadow_buffer_data = new FShadowMapConstantData();
+
+    // load shadow map shader
+    shadow_map_shader = FResourceManager::get()->loadShader("res/ShadowMapper.hlsl", false, FCullMode::OFF);
+    if (shadow_map_shader == nullptr) return E_FAIL;
 
     return hr;
 }
@@ -613,7 +648,6 @@ FGraphicsEngine::~FGraphicsEngine()
     if (bilinear_sampler_state) bilinear_sampler_state->Release();
     if (blank_texture) blank_texture->Release();
     if (blank_texture) alpha_blend_state->Release();
-    if (common_buffer) common_buffer->Release();
     if (depth_stencil_state) depth_stencil_state->Release();
 
     if (colour_buffer_intermediate_view) colour_buffer_intermediate_view->Release();
@@ -641,10 +675,17 @@ FGraphicsEngine::~FGraphicsEngine()
     if (box_vertex_buffer) box_vertex_buffer->Release();
     if (box_index_buffer) box_index_buffer->Release();
 
+    if (shadow_map_resource) shadow_map_resource->Release();
+    if (shadow_map_view) shadow_map_view->Release();
+    if (shadow_map_texture) shadow_map_texture->Release();
+    if (shadow_buffer_data) delete shadow_buffer_data;
+
     if (swap_chain) swap_chain->Release();
 
-    delete uniform_buffer_data;
-    delete common_buffer_data;
+    if (common_buffer) common_buffer->Release();
+    if (common_buffer_data) delete common_buffer_data;
+
+    if (uniform_buffer_data) delete uniform_buffer_data;
 }
 
 void FGraphicsEngine::draw()
@@ -665,6 +706,10 @@ void FGraphicsEngine::draw()
 
     if (getScene() && getScene()->active_camera)
     {
+        renderShadowMaps();
+
+        getContext()->OMSetRenderTargets(2, targets, depth_buffer_view);
+
         // write out common constant buffer variables. none of these change per-object
         
         // store transformation data
@@ -689,6 +734,9 @@ void FGraphicsEngine::draw()
         for (i = i; i < NUM_LIGHTS; i++) common_buffer_data->lights[i] = FLightData{ };
         common_buffer_data->light_ambient = XMFLOAT4(getScene()->ambient_light.x, getScene()->ambient_light.y, getScene()->ambient_light.z, 1);
         common_buffer_data->time = getTime();
+        
+        // bind the shadow map
+        getContext()->PSSetShaderResources(8, 1, &shadow_map_resource);
 
         // ensure the common constant buffer is bound
         getContext()->VSSetConstantBuffers(1, 1, &common_buffer);
@@ -926,4 +974,50 @@ void FGraphicsEngine::drawGizmos()
     getContext()->Unmap(common_buffer, 0);
 
     getContext()->DrawIndexed(static_cast<UINT>(box_inds.size()), 0, 0);
+}
+
+void FGraphicsEngine::renderShadowMaps()
+{
+    if (getScene() == nullptr) return;
+
+    ID3D11ShaderResourceView* tmp = nullptr;
+    getContext()->PSSetShaderResources(8, 1, &tmp);
+    getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view); // FIXME: how do i bind just one of the textures in the array??
+    getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    getContext()->IASetInputLayout(shadow_map_shader->input_layout);
+    getContext()->VSSetShader(shadow_map_shader->vertex_shader_pointer, nullptr, 0);
+    getContext()->PSSetShader(shadow_map_shader->pixel_shader_pointer, nullptr, 0);
+    getContext()->RSSetState(shadow_map_shader->rasterizer);
+    getContext()->VSSetConstantBuffers(0, 1, &shadow_map_shader->uniform_buffer);
+    getContext()->PSSetConstantBuffers(0, 1, &shadow_map_shader->uniform_buffer);
+
+    UINT stride = { sizeof(FVertex) };
+    UINT offset = 0;
+
+    D3D11_MAPPED_SUBRESOURCE shadow_buffer_resource;
+
+    for (FLight* light : getScene()->all_lights)
+    {
+        XMFLOAT4X4 projection_matrix = light->getProjectionMatrix();
+        XMFLOAT4X4 view_matrix_inv = light->transform.getTransform();
+        shadow_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+        shadow_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
+
+        for (FObject* obj : getScene()->all_objects)
+        {
+            if (obj->getType() != FObjectType::MESH) continue;
+
+            FMeshData* data = ((FMesh*)obj)->getData();
+            getContext()->IASetVertexBuffers(0, 1, &data->vertex_buffer_ptr, &stride, &offset);
+            getContext()->IASetIndexBuffer(data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
+
+            XMFLOAT4X4 world_matrix = obj->transform.getTransform();
+            shadow_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&world_matrix));
+            getContext()->Map(shadow_map_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &shadow_buffer_resource);
+            memcpy(shadow_buffer_resource.pData, (uint8_t*)shadow_buffer_data, sizeof(FShadowMapConstantData));
+            getContext()->Unmap(shadow_map_shader->uniform_buffer, 0);
+
+            getContext()->DrawIndexed(static_cast<UINT>(data->indices.size()), 0, 0);
+        }
+    }
 }

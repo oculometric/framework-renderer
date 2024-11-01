@@ -16,7 +16,7 @@ COMMON_CONSTANT_BUFFER;         // defines a second constant buffer in register 
 
 Texture2D      albedo       : register(t0); // contains surface colour information (alpha in A channel)
 Texture2D      normal       : register(t1); // contains surface normal information
-Texture2DArray shadow_map   : register(t2); // contains shadow atlas for the 8 lights // TODO: this
+Texture2DArray shadow_map   : register(t8); // contains shadow atlas for the 8 lights // TODO: this
 
 SamplerState bilinear_sampler : register(s0);
 
@@ -84,7 +84,7 @@ Fragment PS_main(Varyings input)
     evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm);
     
     Fragment frag = (Fragment)0;
-    frag.colour = col;
+    frag.colour = shadow_map.Sample(bilinear_sampler, float3(input.uv, 1.0 / 16.0));
     frag.normal = float4(norm, 1.0f);
     
     return frag;

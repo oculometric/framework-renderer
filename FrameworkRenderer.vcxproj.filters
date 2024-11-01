@@ -157,6 +157,9 @@
     <None Include="res\uvtest.obj">
       <Filter>Resources\Meshes</Filter>
     </None>
+    <None Include="ShadowMapper.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">
