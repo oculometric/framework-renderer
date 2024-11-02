@@ -119,6 +119,7 @@ FJsonElement FJsonBlob::decode(const string& s)
                 section_end = next(inner, section_start, ',');
                 string section = inner.substr(section_start, section_end - section_start);
                 section_start = section_end + 1;
+                if (section.length() == 0) continue;
 
                 elements.push_back(decode(section));
             }

@@ -37,6 +37,7 @@ struct PBRTextures
 {
     Texture2D albedo;           // texture to be sampled for colour data
     Texture2D normal;           // texture to be sampled for normal data
+    Texture2DArray shadow_map;  // stores shadows for the lights
     SamplerState texture_sampler;
 };
 
@@ -60,11 +61,28 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     float3 surface_normal = normalize(varyings.normal);
     if (length(texture_normal) <= 1.5f)
         surface_normal = lerp(surface_normal, mul(texture_normal, varyings.tbn), surface.normal_strength); // always make sure you have your multiplications the right way round, bucko!
+    normal = surface_normal;
     
     float3 overall_colour = lerp(float3(0,0,0), constants.light_ambient.rgb * surface_colour, surface.roughness_factor);
     for (uint i = 0; i < NUM_LIGHTS; i++)
     {
         Light light = constants.lights[i];
+        
+        // sample shadow map
+        float4 reprojected_point = mul(float4(varyings.world_position, 1), light.light_matrix);
+        float point_light_depth = reprojected_point.z;
+        
+        float2 reprojected_uv = ((reprojected_point.xy * float2(-0.5f, 0.5f)) + float2(0.5f, 0.5f)) * 0.5f;
+        float shadow_depth = textures.shadow_map.Sample(textures.texture_sampler, float3(reprojected_uv, i)).r;
+        //colour = float4(reprojected_uv, 0.0f, 1.0);
+        //colour = (reprojected_point * 0.5f) + 0.5f;
+        //colour = float4(point_light_depth, point_light_depth, point_light_depth, 1);
+        //colour = float4(shadow_depth, shadow_depth, shadow_depth, 1);
+        //colour = textures.shadow_map.Sample(textures.texture_sampler, float3(varyings.uv - 0.25f, i));
+        //return;
+        if (point_light_depth > shadow_depth)
+            continue;
+        
         // direction of the light in world space
         float3 light_dir;
         float light_strength = light.strength;
@@ -125,9 +143,6 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     overall_colour += surface.emission_strength * surface_colour;
     
     colour = float4(overall_colour, 1);
-    normal = surface_normal;
-    
-    //colour = float4(varyings.world_position, 1);
 }
 
 #endif

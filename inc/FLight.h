@@ -13,6 +13,8 @@ struct FLightData
 
 	XMFLOAT3 light_position;    // position of the light, only relevant for positional lights
 	float angle;				// angle of the light in sin(degrees). angle = 0 will disable the light, angle = 1 will illuminate in a hemisphere, angle = -1 makes it a point light (as opposed to a spot light)
+
+	XMFLOAT4X4 matrix;
 };
 
 class FLight : public FObject

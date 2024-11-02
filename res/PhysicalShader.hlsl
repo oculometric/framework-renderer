@@ -64,6 +64,7 @@ Fragment PS_main(Varyings input)
     PBRTextures pbr_textures;
     pbr_textures.albedo = albedo;
     pbr_textures.normal = normal;
+    pbr_textures.shadow_map = shadow_map;
     pbr_textures.texture_sampler = bilinear_sampler;
     
     PBRConstants pbr_constants = (PBRConstants)0;
@@ -84,7 +85,7 @@ Fragment PS_main(Varyings input)
     evaluateSurface(pbr_surface, pbr_textures, pbr_constants, pbr_varyings, col, norm);
     
     Fragment frag = (Fragment)0;
-    frag.colour = float4(shadow_map.Sample(bilinear_sampler, float3(input.uv, 0.0)).rrr, 1);
+    frag.colour = col;
     frag.normal = float4(norm, 1.0f);
     
     return frag;

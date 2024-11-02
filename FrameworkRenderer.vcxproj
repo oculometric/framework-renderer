@@ -120,7 +120,7 @@
     <ClCompile Include="src\PlanetScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ShadowMapper.hlsl">
+    <None Include="res\ShadowMapper.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -157,7 +157,7 @@
     <None Include="res\uvtest.obj">
       <Filter>Resources\Meshes</Filter>
     </None>
-    <None Include="ShadowMapper.hlsl">
+    <None Include="res\ShadowMapper.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
   </ItemGroup>
