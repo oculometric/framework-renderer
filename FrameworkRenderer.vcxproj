@@ -35,6 +35,7 @@
     <ClInclude Include="inc\Gizmo.h" />
     <ClInclude Include="inc\MyScene.h" />
     <ClInclude Include="inc\PlanetScene.h" />
+    <ClInclude Include="inc\ShadowDemoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\blank.dds" />
@@ -86,6 +87,7 @@
     <None Include="res\planet.obj">
       <FileType>Document</FileType>
     </None>
+    <None Include="res\ShadowDemo.fscn" />
     <None Include="res\sphere.obj">
       <FileType>Document</FileType>
     </None>
@@ -118,6 +120,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MyScene.cpp" />
     <ClCompile Include="src\PlanetScene.cpp" />
+    <ClCompile Include="src\ShadowDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ShadowMapper.hlsl">

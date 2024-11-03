@@ -69,6 +69,9 @@
     <ClInclude Include="inc\PlanetScene.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ShadowDemoScene.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
@@ -160,6 +163,9 @@
     <None Include="res\ShadowMapper.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="res\ShadowDemo.fscn">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">
@@ -205,6 +211,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\PlanetScene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowDemoScene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

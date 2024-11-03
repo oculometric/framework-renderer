@@ -768,7 +768,8 @@ void FGraphicsEngine::draw()
     }
 
     // present backbuffer to screen
-    swap_chain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
+    swap_chain->Present(0, 0);
+    //swap_chain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
 }
 
 void FGraphicsEngine::drawObject(FMesh* object)

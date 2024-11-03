@@ -70,9 +70,10 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         
         // sample shadow map
         float4 reprojected_point = mul(float4(varyings.world_position, 1), light.light_matrix);
+        reprojected_point /= reprojected_point.w;
         float point_light_depth = reprojected_point.z;
         
-        float2 reprojected_uv = ((reprojected_point.xy * float2(-0.5f, 0.5f)) + float2(0.5f, 0.5f)) * 0.5f;
+        float2 reprojected_uv = (reprojected_point.xy * float2(0.5f, -0.5f)) + 0.25f;
         float shadow_depth = textures.shadow_map.Sample(textures.texture_sampler, float3(reprojected_uv, i)).r;
         //colour = float4(reprojected_uv, 0.0f, 1.0);
         //colour = (reprojected_point * 0.5f) + 0.5f;

@@ -1,0 +1,55 @@
+{
+	"name": "shadow demo scene",
+	"objects": [
+		{
+			"class": "mesh",
+			"data": "res/suzanne.obj",
+			"position": [ 0, 0, 3 ]
+		},
+		{
+			"class": "mesh",
+			"data": "res/uvcube.obj",
+			"scale": [ 8, 8, 1 ]
+		},
+		{
+			"class": "camera",
+			"name": "camera",
+			"position": [ 0, 0, 5.0 ],
+			"rotation": [ 90, 0, 0 ]
+		},
+		{
+			"class": "light",
+			"position": [ 1, 0, 6.0 ],
+			"type": "spot",
+			"angle": 45,
+			"colour": [ 1, 0, 0 ],
+			"strength": 10
+		},
+		{
+			"class": "light",
+			"position": [ -0.707, 0.707, 6.0 ],
+			"type": "spot",
+			"angle": 45,
+			"colour": [ 0, 1, 0 ],
+			"strength": 10
+		},
+		{
+			"class": "light",
+			"position": [ -0.707, -0.707, 6.0 ],
+			"type": "spot",
+			"angle": 45,
+			"colour": [ 0, 0, 1 ],
+			"strength": 10
+		},
+		{
+			"class": "light",
+			"position": [ 0, -2, 6.0 ],
+			"type": "directional",
+			"angle": 45,
+			"rotation": [ 30, 0, 0 ],
+			"colour": [ 1, 1, 1 ],
+			"strength": 20
+		}
+	],
+	"ambient_light": [ 0.02, 0.02, 0.02 ]
+}
