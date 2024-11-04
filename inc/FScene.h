@@ -40,6 +40,10 @@ public:
 	FObject* active_object = nullptr;
 	string name = "Scene";
 	XMFLOAT3 ambient_light = XMFLOAT3(0, 0, 0);
+	float fog_start = 4.0f;
+	float fog_end = 16.0f;
+	float fog_strength = 0.6f;
+	XMFLOAT3 fog_colour = XMFLOAT3(0.45f, 0.23f, 0.20f);
 
 protected:
 	unordered_set<FObject*> all_objects;

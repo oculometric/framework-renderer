@@ -1,11 +1,16 @@
-cbuffer ConstantBuffer : register(b0)
+cbuffer PostProcessConstants : register(b0)
 {
     float4x4 projection_matrix;
     float4x4 view_matrix;
     float4x4 view_matrix_inv;
     float4x4 projection_matrix_inv;
     float2 screen_size;
-}
+    float2 clipping_distances;
+    float2 fog_start_end;
+    float2 _;
+    float fog_strength;
+    float3 fog_colour;
+};
 
 Texture2D screen : register(t0);
 Texture2D normal : register(t1);
@@ -82,19 +87,19 @@ float4 PS_main(Varyings input) : SV_TARGET
     float4 clip_pos = float4(input.uv, f, 1);
     float4 view_pos = mul(clip_pos, projection_matrix_inv);
     view_pos /= view_pos.w;
-    f = length(view_pos.xyz);;
+    f = length(view_pos.xyz);
 
     float3 depth_sample = float3(view_pos.z, view_pos.z, view_pos.z);
     float3 normal_sample = normal.Sample(bilinear_sampler, pixelated_uv).rgb;
     float3 sharpened_sample = sharpen(screen, pixelated_uv, pixels).rgb;
-    colour_sample = f >= 990.0f ? skybox_sample : colour_sample;
-    sharpened_sample = f >= 990.0f ? skybox_sample : sharpened_sample;
     
-    float fog_mix = clamp(pow(clamp((f - 2) / (16 - 2), 0, 1), 0.8), 0, 1);
+    sharpened_sample = (clipping_distances.g - f) <= 0.1f ? skybox_sample : sharpened_sample;
+    
+    float fog_mix = clamp(pow(clamp((f - fog_start_end.r) / (fog_start_end.g - fog_start_end.r), 0, 1), 0.8), 0, 1);
     
     float mixer = ((screen_uv.x + screen_uv.y * -0.2f) + 1.0f) % 1.0f;
  
-    float3 fogged = mix_custom(sharpened_sample, float3(0.45, 0.23, 0.2), fog_mix * 0.6f);
+    float3 fogged = mix_custom(sharpened_sample, fog_colour, fog_mix * fog_strength);
     
     //if (mixer < 0.25f)
         return float4(fogged, 1);

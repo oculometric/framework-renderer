@@ -231,9 +231,15 @@ bool operator>>(const FJsonElement& a, FScene& other)
 		}
 	}
 	if (scene_obj->has("ambient_light", JARRAY))
-	{
 		(*scene_obj)["ambient_light"] >> other.ambient_light;
-	}
+	if (scene_obj->has("fog_colour", JARRAY))
+		(*scene_obj)["fog_colour"] >> other.fog_colour;
+	if (scene_obj->has("fog_start", JFLOAT))
+		other.fog_start = (*scene_obj)["fog_start"].f_val;
+	if (scene_obj->has("fog_end", JFLOAT))
+		other.fog_end = (*scene_obj)["fog_end"].f_val;
+	if (scene_obj->has("fog_strength", JFLOAT))
+		other.fog_strength = (*scene_obj)["fog_strength"].f_val;
 
 	return true;
 }

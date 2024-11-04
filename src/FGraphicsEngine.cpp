@@ -888,20 +888,21 @@ void FGraphicsEngine::performPostprocessing()
     // update uniform buffer contents
     XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
     XMFLOAT4X4 view_matrix = getScene()->active_camera->transform.getTransform();
-    ((XMMATRIX*)uniform_buffer_data)[0] = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
-    ((XMMATRIX*)uniform_buffer_data)[1] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
-    ((XMMATRIX*)uniform_buffer_data)[2] = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
-    ((XMMATRIX*)uniform_buffer_data)[3] = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&projection_matrix)));
-    ((XMFLOAT2*)(((XMMATRIX*)uniform_buffer_data) + 4))[0] = XMFLOAT2(getWidth(), getHeight());
-
-    ID3D11ShaderReflectionConstantBuffer* shader_reflection = postprocess_shader->reflector->GetConstantBufferByIndex(0);
-    D3D11_SHADER_BUFFER_DESC shader_buffer_descriptor = { };
-    shader_reflection->GetDesc(&shader_buffer_descriptor);
+    FPostProcessConstantData* pp_uniform_buffer_data = (FPostProcessConstantData*)uniform_buffer_data;
+    pp_uniform_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
+    pp_uniform_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
+    pp_uniform_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix));
+    pp_uniform_buffer_data->projection_matrix_inv = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&projection_matrix)));
+    pp_uniform_buffer_data->screen_size = XMFLOAT2(getWidth(), getHeight());
+    pp_uniform_buffer_data->clipping_distances = XMFLOAT2(getScene()->active_camera->near_clip, getScene()->active_camera->far_clip);
+    pp_uniform_buffer_data->fog_start_end = XMFLOAT2(getScene()->fog_start, getScene()->fog_end);
+    pp_uniform_buffer_data->fog_strength = getScene()->fog_strength;
+    pp_uniform_buffer_data->fog_colour = getScene()->fog_colour;
 
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     getContext()->Map(postprocess_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
-    memcpy(constant_buffer_resource.pData, uniform_buffer_data, shader_buffer_descriptor.Size);
+    memcpy(constant_buffer_resource.pData, uniform_buffer_data, sizeof(FPostProcessConstantData));
     getContext()->Unmap(postprocess_shader->uniform_buffer, 0);
 
     // bind the special spicy textures
@@ -1010,7 +1011,6 @@ void FGraphicsEngine::renderShadowMaps()
         getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view[light_index]);
         getContext()->ClearDepthStencilView(shadow_map_view[light_index], D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-        // something is going wrong. the rendered output appears in the top left corner of the texutre, for some reason
         XMFLOAT4X4 projection_matrix = light->getProjectionMatrix();
         XMFLOAT4X4 view_matrix_inv = light->transform.getTransform();
         shadow_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));

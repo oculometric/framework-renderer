@@ -35,6 +35,20 @@ struct FShadowMapConstantData
 	XMMATRIX world_matrix;
 };
 
+struct FPostProcessConstantData
+{
+	XMMATRIX projection_matrix;
+	XMMATRIX view_matrix;
+	XMMATRIX view_matrix_inv;
+	XMMATRIX projection_matrix_inv;
+	XMFLOAT2 screen_size;
+	XMFLOAT2 clipping_distances;
+	XMFLOAT2 fog_start_end;
+	XMFLOAT2 _;
+	float fog_strength;
+	XMFLOAT3 fog_colour;
+};
+
 class FGraphicsEngine
 {
 	friend class FResourceManager;
