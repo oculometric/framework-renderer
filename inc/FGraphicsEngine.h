@@ -89,6 +89,7 @@ private:
 	ID3D11ShaderResourceView* shadow_map_resource			= nullptr;
 	FShadowMapConstantData* shadow_buffer_data				= nullptr;
 	FShader* shadow_map_shader								= nullptr;
+	D3D11_VIEWPORT shadow_viewport;
 
 	FMaterial* placeholder_material							= nullptr;
 

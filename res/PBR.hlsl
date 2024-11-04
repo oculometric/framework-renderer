@@ -73,7 +73,12 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         reprojected_point /= reprojected_point.w;
         float point_light_depth = reprojected_point.z;
         
-        float2 reprojected_uv = (reprojected_point.xy * float2(0.5f, -0.5f)) + 0.25f;
+        float2 reprojected_uv = (reprojected_point.xy * float2(0.5f, -0.5f)) + 0.5f;
+        if (reprojected_uv.x < 0 || reprojected_uv.x > 1)
+            continue;
+        if (reprojected_uv.y < 0 || reprojected_uv.y > 1)
+            continue;
+        
         float shadow_depth = textures.shadow_map.Sample(textures.texture_sampler, float3(reprojected_uv, i)).r;
         //colour = float4(reprojected_uv, 0.0f, 1.0);
         //colour = (reprojected_point * 0.5f) + 0.5f;
@@ -81,7 +86,7 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         //colour = float4(shadow_depth, shadow_depth, shadow_depth, 1);
         //colour = textures.shadow_map.Sample(textures.texture_sampler, float3(varyings.uv - 0.25f, i));
         //return;
-        if (point_light_depth > shadow_depth)
+        if ((point_light_depth - shadow_depth) > 0.001f)
             continue;
         
         // direction of the light in world space

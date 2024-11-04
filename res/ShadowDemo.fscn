@@ -42,14 +42,20 @@
 			"strength": 10
 		},
 		{
-			"class": "light",
-			"position": [ 0, -2, 6.0 ],
-			"type": "directional",
-			"angle": 45,
-			"rotation": [ 30, 0, 0 ],
-			"colour": [ 1, 1, 1 ],
-			"strength": 20
+			"class": "empty",
+			"name": "spinner",
+			"children": [
+				{
+					"class": "light",
+					"position": [ 0, -2, 6.0 ],
+					"type": "directional",
+					"rotation": [ 30, 0, 0 ],
+					"colour": [ 1, 1, 1 ],
+					"strength": 0.5
+				}
+			]
 		}
+		
 	],
 	"ambient_light": [ 0.02, 0.02, 0.02 ]
 }

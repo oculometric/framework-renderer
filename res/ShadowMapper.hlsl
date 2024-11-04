@@ -19,6 +19,4 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     return output;
 }
 
-void PS_main(Varyings input)
-{
-}
+void PS_main(Varyings input) { }

@@ -13,6 +13,9 @@ void ShadowDemoScene::start()
 
 void ShadowDemoScene::update(float delta_time)
 {
+	FObject* spinner = findObjectWithName<FObject>("spinner");
+	spinner->transform.rotate(XMFLOAT3(0,0,1), delta_time * 30.0f, XMFLOAT3(0,0,0));
+
 	if (owner->isFocused() && active_camera != nullptr)
 	{
 		XMFLOAT4X4 camera_transform = active_camera->transform.getTransform();

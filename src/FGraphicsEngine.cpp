@@ -165,7 +165,7 @@ HRESULT FGraphicsEngine::initPipelineVariables()
 
     // create viewport
     viewport = { 0.0f, 0.0f, getWidth(), getHeight(), 0.0f, 1.0f };
-    getContext()->RSSetViewports(1, &viewport);
+    shadow_viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
 
     // create texture sampler
     D3D11_SAMPLER_DESC sampler_desc = { };
@@ -713,6 +713,7 @@ void FGraphicsEngine::draw()
     {
         renderShadowMaps();
 
+        getContext()->RSSetViewports(1, &viewport);
         getContext()->OMSetRenderTargets(2, targets, depth_buffer_view);
 
         // write out common constant buffer variables. none of these change per-object
@@ -995,6 +996,7 @@ void FGraphicsEngine::renderShadowMaps()
     getContext()->RSSetState(shadow_map_shader->rasterizer);
     getContext()->VSSetConstantBuffers(0, 1, &shadow_map_shader->uniform_buffer);
     getContext()->PSSetConstantBuffers(0, 1, &shadow_map_shader->uniform_buffer);
+    getContext()->RSSetViewports(1, &shadow_viewport);
 
     UINT stride = { sizeof(FVertex) };
     UINT offset = 0;
@@ -1008,6 +1010,7 @@ void FGraphicsEngine::renderShadowMaps()
         getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view[light_index]);
         getContext()->ClearDepthStencilView(shadow_map_view[light_index], D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+        // something is going wrong. the rendered output appears in the top left corner of the texutre, for some reason
         XMFLOAT4X4 projection_matrix = light->getProjectionMatrix();
         XMFLOAT4X4 view_matrix_inv = light->transform.getTransform();
         shadow_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
