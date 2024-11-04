@@ -45,6 +45,7 @@ public:
 	inline float getWidth() { return (float)window_width; }
 	inline float getHeight() { return (float)window_height; }
 	inline HWND getWindow() { return window_handle; }
+	inline FGraphicsEngine* getEngine() { return engine; }
 
 	inline bool isFocused() { return GetFocus() == window_handle; }
 

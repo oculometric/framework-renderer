@@ -80,12 +80,6 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
             continue;
         
         float shadow_depth = textures.shadow_map.Sample(textures.texture_sampler, float3(reprojected_uv, i)).r;
-        //colour = float4(reprojected_uv, 0.0f, 1.0);
-        //colour = (reprojected_point * 0.5f) + 0.5f;
-        //colour = float4(point_light_depth, point_light_depth, point_light_depth, 1);
-        //colour = float4(shadow_depth, shadow_depth, shadow_depth, 1);
-        //colour = textures.shadow_map.Sample(textures.texture_sampler, float3(varyings.uv - 0.25f, i));
-        //return;
         if ((point_light_depth - shadow_depth) > 0.001f)
             continue;
         

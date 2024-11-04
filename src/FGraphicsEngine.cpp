@@ -178,6 +178,17 @@ HRESULT FGraphicsEngine::initPipelineVariables()
     hr = getDevice()->CreateSamplerState(&sampler_desc, &bilinear_sampler_state);
     if (FAILED(hr)) { return hr; }
 
+    // create another one, with nearest now
+    sampler_desc = { };
+    sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+    sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampler_desc.MaxLOD = 1;
+    sampler_desc.MinLOD = 0;
+    hr = getDevice()->CreateSamplerState(&sampler_desc, &nearest_sampler_state);
+    if (FAILED(hr)) { return hr; }
+
     // create depth stencil states
     D3D11_DEPTH_STENCIL_DESC ds_desc = { };
     ds_desc.DepthEnable = true;
@@ -308,6 +319,8 @@ HRESULT FGraphicsEngine::loadDefaultResources()
 
     // load skybox
     hr = CreateDDSTextureFromFile(getDevice(), L"res\\skybox.dds", nullptr, &skybox_texture);
+
+    hr = CreateDDSTextureFromFile(getDevice(), L"res\\charset.dds", nullptr, &post_process_text_texture);
 
     // load gizmo mesh
     vertex_buffer_descriptor = { };
@@ -614,7 +627,7 @@ bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, F
     }
 
     // TODO: improve this, sometimes it falseley culls things
-    return true; // FIXME: temporarily disabled
+    return true; // disabled for now
 }
 
 void FGraphicsEngine::sortForBatching(vector<FMesh*>& objects)
@@ -650,6 +663,7 @@ FGraphicsEngine::~FGraphicsEngine()
     delete FResourceManager::get();
 
     if (bilinear_sampler_state) bilinear_sampler_state->Release();
+    if (nearest_sampler_state) nearest_sampler_state->Release();
     if (blank_texture) blank_texture->Release();
     if (blank_texture) alpha_blend_state->Release();
     if (depth_stencil_state) depth_stencil_state->Release();
@@ -871,6 +885,7 @@ void FGraphicsEngine::performPostprocessing()
     getContext()->OMSetRenderTargets(2, targets, nullptr);
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     getContext()->PSSetSamplers(0, 1, &postprocess_sampler_state);
+    getContext()->PSSetSamplers(1, 1, &nearest_sampler_state);
 
     // load input layout and shader
     getContext()->IASetInputLayout(postprocess_shader->input_layout);
@@ -898,6 +913,7 @@ void FGraphicsEngine::performPostprocessing()
     pp_uniform_buffer_data->fog_start_end = XMFLOAT2(getScene()->fog_start, getScene()->fog_end);
     pp_uniform_buffer_data->fog_strength = getScene()->fog_strength;
     pp_uniform_buffer_data->fog_colour = getScene()->fog_colour;
+    pp_uniform_buffer_data->output_mode = (int)output_mode;
 
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
@@ -912,6 +928,9 @@ void FGraphicsEngine::performPostprocessing()
 
     // bind skybox texture
     getContext()->PSSetShaderResources(3, 1, &skybox_texture);
+
+    // bind text texture
+    getContext()->PSSetShaderResources(4, 1, &post_process_text_texture);
 
     // bind vertex buffers
     UINT stride = { sizeof(FVertex) };

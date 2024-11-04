@@ -47,18 +47,33 @@ struct FPostProcessConstantData
 	XMFLOAT2 _;
 	float fog_strength;
 	XMFLOAT3 fog_colour;
+	int output_mode;
 };
 
 class FGraphicsEngine
 {
 	friend class FResourceManager;
 	friend class FApplication;
+
+public:
+	enum FOutputMode
+	{
+		POST_PROCESS,
+		SCENE_COLOUR,
+		SCENE_NORMAL,
+		SCENE_DEPTH,
+		SHARPENED
+	};
+
+	FOutputMode output_mode = POST_PROCESS;
+
 private:
 	FApplication* application								= nullptr;
 
 	D3D11_VIEWPORT viewport;
 	IDXGISwapChain1* swap_chain								= nullptr;
 
+	ID3D11SamplerState* nearest_sampler_state               = nullptr;
 	ID3D11SamplerState* bilinear_sampler_state				= nullptr;
 	ID3D11BlendState* alpha_blend_state						= nullptr;
 	ID3D11ShaderResourceView* blank_texture					= nullptr;
@@ -83,6 +98,7 @@ private:
 	ID3D11Buffer* quad_index_buffer							= nullptr;
 	ID3D11SamplerState* postprocess_sampler_state			= nullptr;
 	ID3D11ShaderResourceView* skybox_texture				= nullptr;
+	ID3D11ShaderResourceView* post_process_text_texture     = nullptr;
 
 	FShader* gizmo_shader									= nullptr;
 	ID3D11Buffer* gizmo_vertex_buffer						= nullptr;
