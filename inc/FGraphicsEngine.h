@@ -66,6 +66,7 @@ public:
 	};
 
 	FOutputMode output_mode = POST_PROCESS;
+	bool draw_gizmos = false;
 
 private:
 	FApplication* application								= nullptr;

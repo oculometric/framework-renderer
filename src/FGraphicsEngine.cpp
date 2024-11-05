@@ -779,7 +779,7 @@ void FGraphicsEngine::draw()
 
         performPostprocessing();
 
-        drawGizmos();
+        if (draw_gizmos) drawGizmos();
     }
 
     // present backbuffer to screen
