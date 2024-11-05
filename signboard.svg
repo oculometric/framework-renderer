@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128"
+   height="384"
+   viewBox="0 0 128 384"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="signboard.svg"
+   inkscape:export-filename="res/signboard.png"
+   inkscape:export-xdpi="192"
+   inkscape:export-ydpi="192"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="2.587745"
+     inkscape:cx="78.833115"
+     inkscape:cy="197.27601"
+     inkscape:window-width="2560"
+     inkscape:window-height="1384"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect788"
+       style="fill:#0a0a11;fill-rule:evenodd;stroke:#09142e;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
+       d="M 0,0 H 128 V 384 H 0 Z" />
+    <text
+       xml:space="preserve"
+       style="font-size:5.33333px;line-height:1.25;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;white-space:pre;inline-size:112.372;display:inline;fill:#f1e7fa;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+       x="50.800304"
+       y="56.373997"
+       id="text10345-3"
+       transform="translate(-43.191585,-16.00943)"><tspan
+         x="50.800304"
+         y="56.373997"
+         id="tspan58"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan57">hello! this is my little demo scene for my </tspan></tspan><tspan
+         x="50.800304"
+         y="63.04066"
+         id="tspan60"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan59">DirectX 11 graphics framework. i created </tspan></tspan><tspan
+         x="50.800304"
+         y="69.707324"
+         id="tspan62"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan61">everything you see here using Blender, </tspan></tspan><tspan
+         x="50.800304"
+         y="76.373988"
+         id="tspan64"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan63">Inkscape, and Gimp.
+</tspan></tspan><tspan
+         x="50.800304"
+         y="83.040652"
+         id="tspan66"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan65">
+</tspan></tspan><tspan
+         x="50.800304"
+         y="89.707316"
+         id="tspan68"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan67">some features which i've implemented:
+</tspan></tspan><tspan
+         x="50.800304"
+         y="96.373981"
+         id="tspan70"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan69"> - basic rendering, depth buffering
+</tspan></tspan><tspan
+         x="50.800304"
+         y="103.04064"
+         id="tspan72"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan71"> - full-screen quad post-processing (sharpen, </tspan></tspan><tspan
+         x="50.800304"
+         y="109.70731"
+         id="tspan74"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan73">ASCII shader)
+</tspan></tspan><tspan
+         x="50.800304"
+         y="116.37397"
+         id="tspan76"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan75"> - skybox (via post-processing)
+</tspan></tspan><tspan
+         x="50.800304"
+         y="123.04064"
+         id="tspan78"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan77"> - fog (via post-processing)
+</tspan></tspan><tspan
+         x="50.800304"
+         y="129.7073"
+         id="tspan80"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan79"> - spot, directional, and point lights
+</tspan></tspan><tspan
+         x="50.800304"
+         y="136.37397"
+         id="tspan82"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan81"> - shadow mapping (for directional and spot </tspan></tspan><tspan
+         x="50.800304"
+         y="143.04062"
+         id="tspan84"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan83">lights)
+</tspan></tspan><tspan
+         x="50.800304"
+         y="149.70728"
+         id="tspan86"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan85"> - dithered screen-door transparency
+</tspan></tspan><tspan
+         x="50.800304"
+         y="156.37393"
+         id="tspan88"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan87"> - transform/object hierarchy
+</tspan></tspan><tspan
+         x="50.800304"
+         y="163.04059"
+         id="tspan90"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan89"> - scene graph import from JSON (using my </tspan></tspan><tspan
+         x="50.800304"
+         y="169.70725"
+         id="tspan92"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan91">own JSON deserialiser)
+</tspan></tspan><tspan
+         x="50.800304"
+         y="176.3739"
+         id="tspan94"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan93"> - (unfinished) frustrum culling using object </tspan></tspan><tspan
+         x="50.800304"
+         y="183.04056"
+         id="tspan96"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan95">bounding boxes
+</tspan></tspan><tspan
+         x="50.800304"
+         y="189.70722"
+         id="tspan98"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan97"> - object sorting by shader to minimise context </tspan></tspan><tspan
+         x="50.800304"
+         y="196.37387"
+         id="tspan100"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan99">switching
+</tspan></tspan><tspan
+         x="50.800304"
+         y="203.04053"
+         id="tspan102"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan101"> - window resizing
+</tspan></tspan><tspan
+         x="50.800304"
+         y="209.70719"
+         id="tspan104"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan103"> - gizmos and bounding boxes for objects
+</tspan></tspan><tspan
+         x="50.800304"
+         y="216.37384"
+         id="tspan106"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan105"> - (unfinished) ability to select and move objects </tspan></tspan><tspan
+         x="50.800304"
+         y="223.0405"
+         id="tspan108"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan107">at runtime
+</tspan></tspan><tspan
+         x="50.800304"
+         y="229.70716"
+         id="tspan110"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan109"> - (unfinished) PBR-based primary shader
+</tspan></tspan><tspan
+         x="50.800304"
+         y="236.37381"
+         id="tspan112"><tspan
+           style="stop-color:#000000;stop-opacity:1"
+           id="tspan111"> - (unfinished) ray traced ambient occlusion</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4px;line-height:1.05;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#e5a812;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;opacity:1;vector-effect:none;-inkscape-stroke:none;stop-opacity:1"
+       x="96.782043"
+       y="374.44547"
+       id="text10345-3-7-8"><tspan
+         sodipodi:role="line"
+         x="96.782043"
+         y="374.44547"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#e5a812;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1;vector-effect:none;-inkscape-stroke:none"
+         id="tspan6396">Jacob Costen</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;line-height:1.25;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#f1e7fa;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+       x="6.955863"
+       y="27.622652"
+       id="text10345-3-8"><tspan
+         sodipodi:role="line"
+         x="6.955863"
+         y="27.622652"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#f1e7fa;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
+         id="tspan15651-6">Graphics Framework</tspan></text>
+    <path
+       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#f1e7fa;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       d="M 8.3879723,254.36077 H 118.63705"
+       id="path1266"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     inkscape:label="icos:z18.50:x90.00:x0.00:z0.00:x0.00:x0.00"
+     transform="translate(13.397364,258.91274)"
+     id="g246">
+    <path
+       inkscape:label="Face:8"
+       style="fill:#bf0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 18.779063,41.798344 h 11.587783 l 19.4983,-20.361613 z"
+       id="path237" />
+    <path
+       inkscape:label="Face:18"
+       style="fill:#be0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 18.779063,41.798344 -0.1768,32.945697 11.764583,-32.945697 z"
+       id="path238" />
+    <path
+       inkscape:label="Face:6"
+       style="fill:#930000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 68.9006,41.798344 H 81.12803 L 49.865146,21.436731 Z"
+       id="path239" />
+    <path
+       inkscape:label="Face:7"
+       style="fill:#cd0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 30.366846,41.798344 H 68.9006 L 49.865146,21.436731 Z"
+       id="path240" />
+    <path
+       inkscape:label="Face:16"
+       style="fill:#7b0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 68.9006,41.798344 12.05063,32.945697 0.1768,-32.945697 z"
+       id="path241" />
+    <path
+       inkscape:label="Face:0"
+       style="fill:#910000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 49.865146,95.105654 49.579091,74.744041 H 18.602263 Z"
+       id="path242" />
+    <path
+       inkscape:label="Face:4"
+       style="fill:#7a0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 49.865146,95.105654 80.95123,74.744041 H 49.579091 Z"
+       id="path243" />
+    <path
+       inkscape:label="Face:10"
+       style="fill:#cb0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 49.579091,74.744041 30.366846,41.798344 18.602263,74.744041 Z"
+       id="path244" />
+    <path
+       inkscape:label="Face:14"
+       style="fill:#9b0000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 80.95123,74.744041 68.9006,41.798344 49.579091,74.744041 Z"
+       id="path245" />
+    <path
+       inkscape:label="Face:17"
+       style="fill:#d70000;fill-opacity:0;stroke:#e5a812;stroke-width:1;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 30.366846,41.798344 49.579091,74.744041 68.9006,41.798344 Z"
+       id="path246" />
+  </g>
+  <path
+     style="color:#000000;font-variation-settings:normal;opacity:1;vector-effect:none;fill:#d70000;fill-opacity:0;stroke:#e5a812;stroke-width:0.999999;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+     d="m 103.86284,267.79788 c -0.30523,3.47979 -0.65458,7.08947 -1.61688,10.10448 -0.97036,2.65334 -3.655133,3.96669 -5.674857,4.59446 1.726237,0.61533 3.516897,1.31958 5.012567,3.25941 1.03912,1.54429 1.398,4.22505 1.7641,6.5922 0.21836,1.59364 0.39009,3.21349 0.51507,4.84743 0.85702,-9.77018 1.50018,-12.89883 7.29171,-14.69904 -1.72623,-0.61529 -3.51685,-1.31953 -5.01251,-3.25934 -1.03913,-1.54428 -1.39803,-4.22504 -1.76414,-6.59219 -0.21833,-1.59353 -0.39009,-3.21361 -0.51506,-4.84741 z"
+     id="path94"
+     sodipodi:nodetypes="cccccccccccc" />
+  <path
+     style="color:#000000;font-variation-settings:normal;opacity:1;vector-effect:none;fill:#d70000;fill-opacity:0;stroke:#e5a812;stroke-width:0.999998;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+     d="m 33.435691,347.45097 c -0.313959,1.77559 -0.673299,3.61745 -1.663118,5.15588 -0.998109,1.35388 -3.759659,2.02403 -5.837141,2.34436 1.775602,0.31397 3.61747,0.67332 5.155911,1.66313 1.068836,0.78799 1.437979,2.15586 1.814548,3.36371 0.224605,0.81318 0.401246,1.63972 0.5298,2.47344 0.881528,-4.9853 1.543081,-6.58172 7.500231,-7.50028 -1.775595,-0.31396 -3.617421,-0.67331 -5.155853,-1.6631 -1.068846,-0.78798 -1.438009,-2.15586 -1.814589,-3.36371 -0.224573,-0.81312 -0.401245,-1.63978 -0.529789,-2.47343 z"
+     id="path247"
+     sodipodi:nodetypes="cccccccccccc" />
+</svg>
