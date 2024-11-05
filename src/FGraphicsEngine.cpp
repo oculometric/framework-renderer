@@ -1026,7 +1026,7 @@ void FGraphicsEngine::renderShadowMaps()
     int light_index = 0;
     for (FLight* light : getScene()->all_lights)
     {
-        if (light->type == FLight::FLightType::POINT) { light_index++; continue; } // TODO: shadow maps for other lights
+        if (light->type == FLight::FLightType::POINT) { light_index++; continue; } // TODO: shadow maps for point lights
         getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view[light_index]);
         getContext()->ClearDepthStencilView(shadow_map_view[light_index], D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -1038,6 +1038,7 @@ void FGraphicsEngine::renderShadowMaps()
         for (FObject* obj : getScene()->all_objects)
         {
             if (obj->getType() != FObjectType::MESH) continue;
+            if (!((FMesh*)obj)->cast_shadow) continue;
 
             FMeshData* data = ((FMesh*)obj)->getData();
             getContext()->IASetVertexBuffers(0, 1, &data->vertex_buffer_ptr, &stride, &offset);

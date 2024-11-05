@@ -45,6 +45,9 @@ private:
 
 class FMesh : public FObject
 {
+public:
+	bool cast_shadow = true;
+
 private:
 	FMeshData* mesh_data = nullptr;
 	FMaterial* material  = nullptr;
