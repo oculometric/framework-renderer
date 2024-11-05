@@ -64,8 +64,10 @@ float3 fog(float2 screen_uv)
     view_pos /= view_pos.w;
     f = length(view_pos.xyz);
     float3 scene_sample = screen.Sample(bilinear_sampler, screen_uv);
+    float fog_mix = clamp(pow(clamp((f - fog_start_end.r) / (fog_start_end.g - fog_start_end.r), 0, 1), 0.8), 0, 1);
+    float3 fogged = mix_custom(scene_sample, fog_colour, fog_mix * fog_strength);
     
-    return (clipping_distances.g - f) <= 0.1f ? skybox_sample : scene_sample;
+    return (clipping_distances.g - f) <= 0.1f ? skybox_sample : fogged;
 }
 
 float3 sharpen(float2 uv, float2 pixels_in_image)
@@ -99,13 +101,13 @@ float4 PS_main(Varyings input) : SV_TARGET
     float2 text_uv = screen_uv * text_resolution;
     float3 colour = fog((floor(text_uv) + 0.5f) / text_resolution).rgb;
     
-    float divs = 2.0f;
+    float divs = 64.0f;
     float3 frc = frac(colour * divs);
     float blend = dot(frc, float3(0.2126, 0.7152, 0.0722)) * 16.0f;
     float2 text_offset = float2(floor(blend % 4.0f), floor(blend / 4.0f));
     
     float mask = text_masks.Sample(nearest_sampler, (frac(text_uv) + text_offset) / 4.0f).r;
-    float3 text_blended = exp(mask > 0.5f ? floor(log(colour) * divs) / divs : ceil(log(colour) * divs) / divs);
+    float3 text_blended = mask > 0.5f ? floor(colour * divs) / divs : ceil(colour * divs) / divs;
     
     // output depending on mode
     switch (output_mode)
