@@ -21,6 +21,8 @@ struct PBRConstants
     Light lights[NUM_LIGHTS];   // list of lights to be sampled
     float3 light_ambient;       // ambient light colour
     float4x4 view_matrix_inv;   // inverse view matrix
+    bool using_triplanar;
+    float triplanar_scale;
 };
 
 struct PBRVaryings
@@ -46,8 +48,15 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     // calculate direciton from the camera to the target fragment
     float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 1), constants.view_matrix_inv).xyz);
     
+    float3 surface_normal = normalize(varyings.normal);
+    
+    // triplanar mapping, if the material enables it
+    float2 uv = varyings.uv;
+    if (constants.using_triplanar)
+        uv = (abs(surface_normal.x) > 0.707 ? varyings.world_position.yz : (abs(surface_normal.z) > 0.707 ? varyings.world_position.xy : varyings.world_position.xz)) * constants.triplanar_scale * -1.0f;
+        
     // colour from the texture
-    float4 texture_colour = textures.albedo.Sample(textures.texture_sampler, varyings.uv);
+    float4 texture_colour = textures.albedo.Sample(textures.texture_sampler, uv);
     // surface colour is the product of albedo (!!!) texture colour and base colour
     float3 surface_colour = texture_colour.rgb * surface.base_colour.rgb;
     // test alpha
@@ -56,9 +65,8 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         discard;
     
     // normal from the texture. possibly this is just blank
-    float3 texture_normal = (textures.normal.Sample(textures.texture_sampler, varyings.uv).xyz * 2.0f) - 1.0f;
+    float3 texture_normal = (textures.normal.Sample(textures.texture_sampler, uv).xyz * 2.0f) - 1.0f;
     // actual normal we're going to use for lighting
-    float3 surface_normal = normalize(varyings.normal);
     if (length(texture_normal) <= 1.5f)
         surface_normal = lerp(surface_normal, mul(texture_normal, varyings.tbn), surface.normal_strength); // always make sure you have your multiplications the right way round, bucko!
     normal = surface_normal;

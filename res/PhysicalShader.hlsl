@@ -10,6 +10,8 @@ cbuffer ConstantBuffer : register(b0)
     float metallic_factor;      // surface metallic factor. blends between using specular colour and albedo colour for specular highlight
     float normal_strength;      // strength of the normal mapping effect
     float emission_strength;    // strength of emission factor
+    float use_triplanar;        // set to >0 if you want to use triplanar mapping instead of UVs
+    float triplanar_scale;      // scale of the texture when using triplanar mapping
 }
 
 COMMON_CONSTANT_BUFFER;         // defines a second constant buffer in register b1 with the variable 'common'
@@ -71,6 +73,8 @@ Fragment PS_main(Varyings input)
     pbr_constants.lights = common.lights;
     pbr_constants.light_ambient = common.light_ambient.rgb;
     pbr_constants.view_matrix_inv = common.view_matrix_inv;
+    pbr_constants.using_triplanar = use_triplanar > 0;
+    pbr_constants.triplanar_scale = triplanar_scale;
     
     PBRVaryings pbr_varyings = (PBRVaryings)0;
     pbr_varyings.position = input.position;
