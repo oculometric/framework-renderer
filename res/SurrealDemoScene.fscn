@@ -18,6 +18,13 @@
       "field_of_view": 49.5
     },
     {
+      "class": "camera",
+      "name": "fly_cam",
+      "position": [ 0, -14.4, 8 ],
+      "rotation": [ 45, 0, 180 ],
+      "field_of_view": 49.5
+    },
+    {
       "class": "light",
       "name": "sun",
       "type": "directional",

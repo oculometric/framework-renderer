@@ -14,6 +14,9 @@ private:
 
 	bool fly_mode = false;
 
+	FCamera* walk_cam;
+	FCamera* fly_cam;
+
 public:
 	using FScene::FScene;
 
