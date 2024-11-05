@@ -25,4 +25,5 @@ public:
 
 private:
 	XMFLOAT2 getMouseDeltaAndReset();
+	void selectUnderMouse();
 };
