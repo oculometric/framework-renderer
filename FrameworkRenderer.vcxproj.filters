@@ -166,6 +166,9 @@
     <None Include="res\ShadowDemo.fscn">
       <Filter>Resources</Filter>
     </None>
+    <None Include="res\SurrealDemoScene.fscn">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">

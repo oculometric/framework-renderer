@@ -91,6 +91,7 @@
     <None Include="res\sphere.obj">
       <FileType>Document</FileType>
     </None>
+    <None Include="res\SurrealDemoScene.fscn" />
     <None Include="res\suzanne.obj">
       <FileType>Document</FileType>
     </None>
