@@ -187,6 +187,33 @@ void FTransform::setPosition(XMFLOAT3 p)
 	updateParamsFromLocal();
 }
 
+XMFLOAT4 FTransform::getQuaternion() const
+{
+	XMVECTOR s; XMVECTOR q; XMVECTOR p;
+	XMMatrixDecompose(&s, &q, &p, XMLoadFloat4x4(&local_to_world));
+	XMFLOAT4 quat;
+	if (XMVector3Length(q).m128_f32[0] < 0.0001f)
+		quat = XMFLOAT4(0, 0, 1, 0);
+	else
+		XMStoreFloat4(&quat, q);
+	return quat;
+}
+
+void FTransform::setQuaternion(XMFLOAT4 q)
+{
+	XMFLOAT3 p = getPosition();
+	XMFLOAT3 s = getScale();
+
+	XMStoreFloat4x4(&local_to_world,
+		XMMatrixIdentity()
+		* XMMatrixScalingFromVector(XMLoadFloat3(&s))
+		* XMMatrixRotationQuaternion(XMLoadFloat4(&q))
+		* XMMatrixTranslationFromVector(XMLoadFloat3(&p)));
+
+	updateLocalFromWorld();
+	updateParamsFromLocal();
+}
+
 FTransform* FTransform::getParent() const
 {
 	return parent;

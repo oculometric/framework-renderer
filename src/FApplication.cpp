@@ -140,6 +140,8 @@ void FApplication::updateWindowSize()
         needs_viewport_resize = true;
     window_width = new_width;
     window_height = new_height;
+    window_x = r.left;
+    window_y = r.top;
 }
 
 void FApplication::update()

@@ -22,4 +22,7 @@ public:
 
 	void start();
 	void update(float delta_time);
+
+private:
+	XMFLOAT2 getMouseDeltaAndReset();
 };

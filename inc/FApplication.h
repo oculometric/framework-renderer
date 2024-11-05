@@ -14,6 +14,8 @@ class FApplication
 private:
 	int window_width = 640;
 	int window_height = 480;
+	int window_x = 0;
+	int window_y = 0;
 
 	ID3D11DeviceContext* immediate_context			= nullptr;
 	ID3D11Device* device							= nullptr;
@@ -44,6 +46,8 @@ public:
 	void updateWindowSize();
 	inline float getWidth() { return (float)window_width; }
 	inline float getHeight() { return (float)window_height; }
+	inline float getX() { return (float)window_x; }
+	inline float getY() { return (float)window_y; }
 	inline HWND getWindow() { return window_handle; }
 	inline FGraphicsEngine* getEngine() { return engine; }
 
