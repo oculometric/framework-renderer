@@ -36,6 +36,7 @@
     <ClInclude Include="inc\MyScene.h" />
     <ClInclude Include="inc\PlanetScene.h" />
     <ClInclude Include="inc\ShadowDemoScene.h" />
+    <ClInclude Include="inc\SurrealDemoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\blank.dds" />
@@ -92,6 +93,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="res\SurrealDemoScene.fscn" />
+    <None Include="res\SurrealDemoScene\BlackBricks.fmat" />
+    <None Include="res\SurrealDemoScene\Marble.fmat" />
+    <None Include="res\SurrealDemoScene\PlanetA.fmat" />
+    <None Include="res\SurrealDemoScene\PlanetC.fmat" />
+    <None Include="res\SurrealDemoScene\WhitePlaster.fmat" />
     <None Include="res\suzanne.obj">
       <FileType>Document</FileType>
     </None>
@@ -122,6 +128,7 @@
     <ClCompile Include="src\MyScene.cpp" />
     <ClCompile Include="src\PlanetScene.cpp" />
     <ClCompile Include="src\ShadowDemoScene.cpp" />
+    <ClCompile Include="src\SurrealDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ShadowMapper.hlsl">

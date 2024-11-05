@@ -25,7 +25,7 @@ XMFLOAT4X4 FLight::getProjectionMatrix()
 	if (type == SPOT)
 		XMStoreFloat4x4(&projection_matrix, XMMatrixPerspectiveFovRH(XMConvertToRadians(angle * 2.0f), 1.0f, 0.1f, 16.0f));
 	if (type == DIRECTIONAL)
-		XMStoreFloat4x4(&projection_matrix, XMMatrixOrthographicRH(16, 16, 0.1f, 64.0f));
+		XMStoreFloat4x4(&projection_matrix, XMMatrixOrthographicRH(32, 32, 0.1f, 32));
 
 	return projection_matrix;
 }

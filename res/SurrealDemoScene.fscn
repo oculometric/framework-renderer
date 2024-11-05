@@ -2,28 +2,95 @@
   "name": "DX11 Framework Demo Scene",
   "assets": {
     "materials": [
-      
+      { "path": "res/SurrealDemoScene/BlackBricks.fmat" },
+      { "path": "res/SurrealDemoScene/WhitePlaster.fmat" },
+      { "path": "res/SurrealDemoScene/PlanetA.fmat" },
+      { "path": "res/SurrealDemoScene/PlanetC.fmat" },
+      { "path": "res/SurrealDemoScene/Marble.fmat" }
     ]
   },
   "objects": [
     {
       "class": "camera",
-      "name": "camera",
-      "position": [ 0, 0, 5.0 ],
-      "rotation": [ 90, 0, 0 ]
+      "name": "walk_cam",
+      "position": [ 0, -9.4, 1.56 ],
+      "rotation": [ 90, 0, 180 ],
+      "field_of_view": 49.5
     },
     {
       "class": "light",
       "name": "sun",
       "type": "directional",
       "colour": [ 1.000, 0.837, 0.740 ],
-      "position": [ 6, 22, 7 ],
+      "position": [ -2, -22, 7 ],
       "strength": 5,
-      "rotation": [ -30.3, 47.2, -88.2 ]
+      "rotation": [ -30, -27.2, 0 ]
     },
     {
       "class": "mesh",
-      "data": 
+      "name": "walls",
+      "data": "res/SurrealDemoScene/museum_walls.obj",
+      "material": "res/SurrealDemoScene/BlackBricks.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/museum_panels.obj",
+      "material": "res/SurrealDemoScene/WhitePlaster.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/medium_pedestal.obj",
+      "position": [ -5, -17, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/medium_pedestal.obj",
+      "position": [ -6.5, -17, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/medium_pedestal.obj",
+      "position": [ 2.5, -30, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat",
+      "children": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/planet.obj",
+          "position": [ 0, 0, 1.8 ],
+          "rotation": [ 0, 0, 25 ],
+          "material": "res/SurrealDemoScene/PlanetA.fmat"
+        }
+      ]
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/medium_pedestal.obj",
+      "position": [ 2.5, -32, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat",
+      "children": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/planet.obj",
+          "position": [ 0, 0, 1.8 ]
+        }
+      ]
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/medium_pedestal.obj",
+      "position": [ 2.5, -34, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat",
+      "children": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/planet.obj",
+          "position": [ 0, 0, 1.8 ],
+          "rotation": [ 0, 0, 15 ],
+          "material": "res/SurrealDemoScene/PlanetC.fmat"
+        }
+      ]
     }
   ],
   "ambient_light": [ 0.050, 0.025, 0.066 ]

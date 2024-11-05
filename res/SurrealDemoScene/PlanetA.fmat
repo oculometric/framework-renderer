@@ -1,0 +1,33 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+		"res/SurrealDemoScene/gas_giant_t.dds"
+	],
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 0, 0, 0, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 1.0,
+			"type": "float"
+		},
+		{
+			"param": "normal_strength",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "emission_strength",
+			"value": 0.5,
+			"type": "float"
+		}
+	]
+}

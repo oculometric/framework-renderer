@@ -3,6 +3,7 @@
 #include "FApplication.h"
 #include "PlanetScene.h"
 #include "ShadowDemoScene.h"
+#include "SurrealDemoScene.h"
 #include "MyScene.h"
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
@@ -18,8 +19,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 
 	//application.scene = new PlanetScene(&application, "res/PlanetScene.fscn");
-	application.scene = new MyScene(&application, "res/MyScene.fscn");
+	//application.scene = new MyScene(&application, "res/MyScene.fscn");
 	//application.scene = new ShadowDemoScene(&application, "res/ShadowDemo.fscn");
+	application.scene = new SurrealDemoScene(&application, "res/SurrealDemoScene.fscn");
 	application.scene->finalizePreload();
 	application.scene->start();
 

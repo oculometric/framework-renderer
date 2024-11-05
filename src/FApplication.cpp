@@ -158,13 +158,6 @@ void FApplication::update()
 
     total_time += delta_time;
 
-    static bool is_debug_mode = false;
-    if (GetAsyncKeyState(VK_TAB) & 0x0001)
-    {
-        is_debug_mode = !is_debug_mode;
-        //immediate_context->RSSetState(is_debug_mode ? debug_rasterizer_state : rasterizer_state);
-    }
-
     if (scene)
         scene->update(delta_time);
 }
