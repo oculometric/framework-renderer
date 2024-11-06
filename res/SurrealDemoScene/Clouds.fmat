@@ -1,0 +1,10 @@
+{
+	"shader": "res/Clouds.hlsl",
+	"uniforms": [
+		{
+			"param": "scale",
+			"value": [ 1, 0.42, 0, 1 ],
+			"type": "float4"
+		}
+	]
+}

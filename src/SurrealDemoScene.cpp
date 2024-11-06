@@ -56,7 +56,12 @@ void SurrealDemoScene::update(float delta_time)
 			0.0f
 		);
 
-		FLOAT speed = GetAsyncKeyState(VK_SHIFT) & 0xF000 ? 8.0f : 3.0f;
+		if (abs(camera_motion.x) > 0 || abs(camera_motion.y) > 0 || abs(camera_motion.z) > 0)
+			current_speed = min(1.0f, current_speed + (delta_time * 2.0f));
+		else
+			current_speed = max(0.0f, current_speed - (delta_time * 2.0f));
+
+		float real_speed = (GetAsyncKeyState(VK_SHIFT) & 0xF000 ? 8.0f : 4.0f) * current_speed;
 
 		//FLOAT up_down = (float)(((GetAsyncKeyState(VK_UP) & 0xF000) > 0) - ((GetAsyncKeyState(VK_DOWN) & 0xF000) > 0));
 		//FLOAT left_right = (float)(((GetAsyncKeyState(VK_LEFT) & 0xF000) > 0) - ((GetAsyncKeyState(VK_RIGHT) & 0xF000) > 0));
@@ -74,7 +79,7 @@ void SurrealDemoScene::update(float delta_time)
 				&delta,
 				XMVector4Transform
 				(
-					XMVector4Normalize(XMLoadFloat4(&camera_motion)) * delta_time * speed,
+					XMVector4Normalize(XMLoadFloat4(&camera_motion)) * delta_time * real_speed,
 					XMLoadFloat4x4(&camera_transform)
 				)
 			);
@@ -90,7 +95,7 @@ void SurrealDemoScene::update(float delta_time)
 			(
 				&delta,
 				((XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&right), XMVectorSet(0, 0, 1, 0))) * camera_motion.z) +
-				(XMLoadFloat3(&right) * camera_motion.x)) * delta_time * speed
+				(XMLoadFloat3(&right) * camera_motion.x)) * delta_time * real_speed
 			);
 		}
 		active_camera->transform.translate(delta);

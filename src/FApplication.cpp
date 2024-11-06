@@ -27,9 +27,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
     case WM_SIZE:
         if (application == nullptr) break;
-        application->updateWindowSize();
+        if (application->getWindow() != hWnd) break;
+            application->updateWindowSize();
         break;
 
     default:
@@ -88,6 +90,12 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
     window_handle = CreateWindow(window_name, window_name, WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_THICKFRAME, CW_USEDEFAULT, CW_USEDEFAULT, rc.right-rc.left, rc.bottom-rc.top, nullptr, nullptr, hInstance, nullptr);
     window_x = rc.left;
     window_y = rc.top;
+
+    const wchar_t* info_window_name = L"Framework Info";
+    info_window_handle = CreateWindow(L"STATIC", info_window_name, WS_VISIBLE | WS_OVERLAPPED | SS_LEFT | WS_POPUP, rc.right + 200, rc.top + 200, 300, 400, window_handle, nullptr, hInstance, nullptr);
+    // use SetWindowText to change it!
+    // TODO: here....
+    SetWindowText(info_window_handle, L"Framework Info \n hello, world!");
 
     return S_OK;
 }

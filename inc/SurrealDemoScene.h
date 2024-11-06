@@ -12,6 +12,7 @@ private:
 	FObject* orrery_core;
 
 	bool fly_mode = false;
+	float current_speed = 0.0f;
 
 	FCamera* walk_cam;
 	FCamera* fly_cam;

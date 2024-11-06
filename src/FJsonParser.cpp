@@ -154,6 +154,8 @@ FJsonObject* FJsonBlob::parse(const string& s)
         string key = section.substr(0, colon);
         string value = section.substr(colon + 1);
         key = extract(key, 0, colon);
+        if (value.length() == 0) continue;
+
         obj->elements.insert_or_assign(key, decode(value));
     }
     while (section_start - 1 != string::npos);

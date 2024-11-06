@@ -26,7 +26,7 @@
 		},
 		{
 			"param": "emission_strength",
-			"value": 0.5,
+			"value": 0.6,
 			"type": "float"
 		}
 	]

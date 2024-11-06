@@ -1,0 +1,29 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+		"res/SurrealDemoScene/sand_t.dds",
+		"res/SurrealDemoScene/sand_n.dds"
+	],
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 0.6, 0.2, 0.1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "normal_strength",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 0, 0, 0, 1 ],
+			"type": "float4"
+		}
+	]
+}

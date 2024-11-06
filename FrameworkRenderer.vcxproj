@@ -37,6 +37,7 @@
     <ClInclude Include="inc\PlanetScene.h" />
     <ClInclude Include="inc\ShadowDemoScene.h" />
     <ClInclude Include="inc\SurrealDemoScene.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\blank.dds" />
@@ -95,13 +96,16 @@
     <None Include="res\SurrealDemoScene.fscn" />
     <None Include="res\SurrealDemoScene\BlackBricks.fmat" />
     <None Include="res\SurrealDemoScene\BlendDemo.fmat" />
+    <None Include="res\SurrealDemoScene\Clouds.fmat" />
     <None Include="res\SurrealDemoScene\Earth.fmat" />
     <None Include="res\SurrealDemoScene\InfoPanel.fmat" />
+    <None Include="res\SurrealDemoScene\Landscape.fmat" />
     <None Include="res\SurrealDemoScene\Marble.fmat" />
     <None Include="res\SurrealDemoScene\PalmFrond.fmat" />
     <None Include="res\SurrealDemoScene\PlanetA.fmat" />
     <None Include="res\SurrealDemoScene\PlanetB.fmat" />
     <None Include="res\SurrealDemoScene\PlanetC.fmat" />
+    <None Include="res\SurrealDemoScene\Sand.fmat" />
     <None Include="res\SurrealDemoScene\WhitePlaster.fmat" />
     <None Include="res\SurrealDemoScene\Wireframe.fmat" />
     <None Include="res\suzanne.obj">
@@ -140,6 +144,9 @@
     <None Include="res\ShadowMapper.hlsl">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FrameworkRenderer.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -180,7 +180,7 @@ FMeshData* FMesh::loadMesh(string path)
 
     // compute tangents
     vector<bool> touched = vector<bool>(mesh_data->vertices.size(), false);
-    for (uint16_t tri = 0; tri < mesh_data->indices.size() / 3; tri++)
+    for (uint32_t tri = 0; tri < mesh_data->indices.size() / 3; tri++)
     {
         uint16_t v0 = mesh_data->indices[((uint32_t)tri * 3) + 0]; FVertex f0 = mesh_data->vertices[v0];
         uint16_t v1 = mesh_data->indices[((uint32_t)tri * 3) + 1]; FVertex f1 = mesh_data->vertices[v1];

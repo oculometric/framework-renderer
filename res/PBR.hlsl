@@ -68,7 +68,7 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     float3 texture_normal = (textures.normal.Sample(textures.texture_sampler, uv).xyz * 2.0f) - 1.0f;
     // actual normal we're going to use for lighting
     if (length(texture_normal) <= 1.5f)
-        surface_normal = lerp(surface_normal, mul(texture_normal, varyings.tbn), surface.normal_strength); // always make sure you have your multiplications the right way round, bucko!
+        surface_normal = normalize(lerp(surface_normal, mul(texture_normal, varyings.tbn), surface.normal_strength)); // always make sure you have your multiplications the right way round, bucko!
     normal = surface_normal;
     
     float3 overall_colour = lerp(float3(0,0,0), constants.light_ambient.rgb * surface_colour, surface.roughness_factor);

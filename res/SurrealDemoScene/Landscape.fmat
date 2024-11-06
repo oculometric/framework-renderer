@@ -1,0 +1,23 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+		"res/SurrealDemoScene/landscape_t.dds"
+	],
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 0.25, 0.1, 0.05, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 0, 0, 0, 1 ],
+			"type": "float4"
+		}
+	]
+}
