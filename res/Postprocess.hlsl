@@ -105,7 +105,7 @@ float4 PS_main(Varyings input) : SV_TARGET
     // number of colour luminosity divisions
     const float divs = 4.0f;
     // fraction between the lower colour bound and the upper colour bound, in each channel
-    float3 frc = frac(log(colour) * divs);
+    float3 frc = frac(colour * divs);
     
     const float3 luma_vector = float3(0.2126, 0.7152, 0.0722);
     

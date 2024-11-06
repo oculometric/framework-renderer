@@ -207,7 +207,8 @@
     {
       "class": "mesh",
       "data": "res/SurrealDemoScene/sand.obj",
-      "material": "res/SurrealDemoScene/Sand.fmat"
+      "material": "res/SurrealDemoScene/Sand.fmat",
+      "position": [ 0, 0, -0.1 ]
     },
     {
       "class": "mesh",
