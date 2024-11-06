@@ -75,7 +75,6 @@
     <ClInclude Include="inc\SurrealDemoScene.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
@@ -218,6 +217,9 @@
     <None Include="res\SurrealDemoScene\TripodLamp.fmat">
       <Filter>Resources</Filter>
     </None>
+    <None Include="res\SurrealDemoScene\Wood.fmat">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">
@@ -271,8 +273,5 @@
     <ClCompile Include="src\SurrealDemoScene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="FrameworkRenderer.rc" />
   </ItemGroup>
 </Project>

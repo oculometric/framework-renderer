@@ -15,7 +15,8 @@
       { "path": "res/SurrealDemoScene/BlendDemo.fmat" },
       { "path": "res/SurrealDemoScene/Sand.fmat" },
       { "path": "res/SurrealDemoScene/Landscape.fmat" },
-      { "path": "res/SurrealDemoScene/TripodLamp.fmat" }
+      { "path": "res/SurrealDemoScene/TripodLamp.fmat" },
+      { "path": "res/SurrealDemoScene/Wood.fmat" }
       //{ "path": "res/SurrealDemoScene/Clouds.fmat" }
     ]
   },
@@ -235,19 +236,43 @@
       "class": "mesh",
       "data": "res/SurrealDemoScene/lamp_a.obj",
       "material": "res/SurrealDemoScene/TripodLamp.fmat",
-      "position": [ -1.62, -21.46, -0.02 ]
+      "position": [ 0, 0, 0 ]
     },
     {
       "class": "mesh",
       "data": "res/SurrealDemoScene/lamp_b.obj",
-      "material": "res/SurrealDemoScene/TripodLamp.fmat",
-      "position": [ -1.49, -22.43, -0.02 ]
+      "material": "res/SurrealDemoScene/Wood.fmat",
+      "position": [ 0, 0, 0 ]
     },
     {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/lamp_c.obj",
-      "material": "res/SurrealDemoScene/TripodLamp.fmat",
-      "position": [ -1.73, -23.64, -0.02 ]
+      "class": "light",
+      "type": "spot",
+      "angle": 20,
+      "colour": [ 1, 0, 0 ],
+      "strength": 10,
+      "rotation": [ 77.338, -125.505, -65.92 ],
+      "position": [ -1.708, -21.477, 1.572 ],
+      "scale": [ 1, 1, -1 ]
+    },
+    {
+      "class": "light",
+      "type": "spot",
+      "angle": 20,
+      "colour": [ 0, 1, 0 ],
+      "strength": 10,
+      "rotation": [ 131.310, -99.015, -128.15 ],
+      "position": [ -1.535, -22.429, 1.741 ],
+      "scale": [ 1, 1, -1 ]
+    },
+    {
+      "class": "light",
+      "type": "spot",
+      "angle": 20,
+      "colour": [ 0, 0, 1 ],
+      "strength": 10,
+      "rotation": [ 77.338, -125.705, -92.958 ],
+      "position": [ -1.818, -23.618, 1.572 ],
+      "scale": [ 1, 1, -1 ]
     }
   ],
   "ambient_light": [ 0.050, 0.025, 0.066 ],

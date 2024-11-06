@@ -37,7 +37,6 @@
     <ClInclude Include="inc\PlanetScene.h" />
     <ClInclude Include="inc\ShadowDemoScene.h" />
     <ClInclude Include="inc\SurrealDemoScene.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\blank.dds" />
@@ -109,6 +108,7 @@
     <None Include="res\SurrealDemoScene\TripodLamp.fmat" />
     <None Include="res\SurrealDemoScene\WhitePlaster.fmat" />
     <None Include="res\SurrealDemoScene\Wireframe.fmat" />
+    <None Include="res\SurrealDemoScene\Wood.fmat" />
     <None Include="res\suzanne.obj">
       <FileType>Document</FileType>
     </None>
@@ -145,9 +145,6 @@
     <None Include="res\ShadowMapper.hlsl">
       <FileType>Document</FileType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="FrameworkRenderer.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

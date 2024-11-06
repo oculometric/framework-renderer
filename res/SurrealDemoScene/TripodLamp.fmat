@@ -12,7 +12,7 @@
 		},
 		{
 			"param": "roughness_factor",
-			"value": 0.5,
+			"value": 0.3,
 			"type": "float"
 		},
 		{
@@ -24,6 +24,11 @@
 			"param": "specular_colour",
 			"value": [ 1, 1, 1, 1 ],
 			"type": "float4"
+		},
+		{
+			"param": "metallic_factor",
+			"value": 0.9,
+			"type": "float"
 		}
 	]
 }

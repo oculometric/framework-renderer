@@ -7,8 +7,8 @@ void FTransform::setLocalEuler(XMFLOAT3 e)
 	XMStoreFloat4x4(&local_to_parent,
 		XMMatrixIdentity()
 		* XMMatrixScalingFromVector(XMLoadFloat3(&local_scale))
-		* XMMatrixRotationY(XMConvertToRadians(e.y))
 		* XMMatrixRotationX(XMConvertToRadians(e.x))
+		* XMMatrixRotationY(XMConvertToRadians(e.y))
 		* XMMatrixRotationZ(XMConvertToRadians(e.z))
 		* XMMatrixTranslationFromVector(XMLoadFloat3(&local_position)));
 
