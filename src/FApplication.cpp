@@ -95,9 +95,6 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
 
     const wchar_t* info_window_name = L"Framework Info";
     info_window_handle = CreateWindow(L"STATIC", info_window_name, WS_VISIBLE | WS_OVERLAPPED | SS_LEFT | WS_POPUP, rc.right + 200, rc.top + 200, 300, 400, window_handle, nullptr, hInstance, nullptr);
-    // use SetWindowText to change it!
-    // TODO: here....
-    SetWindowText(info_window_handle, L"Framework Info \n hello, world!");
 
     return S_OK;
 }

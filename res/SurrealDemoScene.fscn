@@ -212,7 +212,7 @@
       "class": "mesh",
       "data": "res/SurrealDemoScene/landscape.obj",
       "material": "res/SurrealDemoScene/Landscape.fmat",
-      "rotation": [ 0, 0, 0 ]
+      "rotation": [ 0, 0, 180 ]
     },
     {
       "class": "mesh",
