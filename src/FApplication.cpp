@@ -86,7 +86,9 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
     RECT rc = { 0,0, window_width, window_height };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     window_handle = CreateWindow(window_name, window_name, WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_THICKFRAME, CW_USEDEFAULT, CW_USEDEFAULT, rc.right-rc.left, rc.bottom-rc.top, nullptr, nullptr, hInstance, nullptr);
-    
+    window_x = rc.left;
+    window_y = rc.top;
+
     return S_OK;
 }
 
@@ -140,6 +142,8 @@ void FApplication::updateWindowSize()
         needs_viewport_resize = true;
     window_width = new_width;
     window_height = new_height;
+
+    GetWindowRect(window_handle, &r);
     window_x = r.left;
     window_y = r.top;
 }

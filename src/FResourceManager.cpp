@@ -120,7 +120,7 @@ FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 		return (FMaterial*)(registry[descriptor]);
 
 	FShader* shader = nullptr;
-	shader = loadShader(mp.shader, false, FCullMode::BACK);
+	shader = loadShader(mp.shader, mp.wireframe, mp.culling);
 	if (shader == nullptr)
 	{
 		FDebug::dialog("unable to load material: " + name);

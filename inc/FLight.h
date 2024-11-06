@@ -2,7 +2,9 @@
 
 #include "FObject.h"
 
-#define NUM_LIGHTS 16 // this must be a square number
+#define NUM_LIGHTS 8
+#define LIGHTMAP_SIZE 2048
+
 // this mirrors the Light struct defined in Light.hlsl
 struct FLightData
 {

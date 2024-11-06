@@ -79,6 +79,20 @@ bool operator>>(const FJsonElement& a, FMaterialPreload& other)
 			other.parameters.insert_or_assign(name, param);
 		}
 	}
+	if (obj->has("wireframe", JFLOAT))
+		other.wireframe = (*obj)["wireframe"].f_val > 0.0f;
+	if (obj->has("culling", JSTRING))
+	{
+		string c = (*obj)["culling"].s_val;
+		if (c == "FRONT")
+			other.culling = FCullMode::FRONT;
+		else if (c == "OFF")
+			other.culling = FCullMode::OFF;
+		else
+			other.culling = FCullMode::BACK;
+	}
+	else
+		other.culling = FCullMode::BACK;
 
 	return true;
 }

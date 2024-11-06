@@ -76,6 +76,8 @@ struct FMaterialPreload
 	string shader;
 	map<string, FMaterialParameter> parameters;
 	vector<string> textures;
+	bool wireframe = false;
+	FCullMode culling = FCullMode::BACK;
 };
 
 class FMaterial

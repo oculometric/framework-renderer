@@ -28,4 +28,11 @@ struct CommonConstants
 
 #define COMMON_CONSTANT_BUFFER cbuffer CommonConstantBuffer : register(b1) { CommonConstants common; }
 
+float4 modelProjectionTransformation(float3 position, float4x4 world_matrix, out float3 world_position, float4x4 view_matrix, out float3 view_position, float4x4 projection_matrix)
+{
+    world_position = mul(float4(position, 1), world_matrix).xyz;
+    view_position = mul(float4(world_position, 1), view_matrix).xyz;
+    return mul(float4(view_position, 1), projection_matrix);
+}
+
 #endif

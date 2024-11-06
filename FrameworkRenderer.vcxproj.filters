@@ -72,6 +72,9 @@
     <ClInclude Include="inc\ShadowDemoScene.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="inc\SurrealDemoScene.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
@@ -169,6 +172,33 @@
     <None Include="res\SurrealDemoScene.fscn">
       <Filter>Resources</Filter>
     </None>
+    <None Include="res\SurrealDemoScene\WhitePlaster.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\BlackBricks.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Marble.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PlanetA.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PlanetC.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Earth.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PlanetB.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PalmFrond.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Wireframe.fmat">
+      <Filter>Headers</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">
@@ -217,6 +247,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\ShadowDemoScene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SurrealDemoScene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

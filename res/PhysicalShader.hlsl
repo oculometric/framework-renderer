@@ -37,10 +37,7 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
 {
     Varyings output = (Varyings)0;
     
-    output.model_position = position;
-    output.world_position = mul(float4(output.model_position, 1), common.world_matrix).xyz;
-    output.view_position = mul(float4(output.world_position, 1), common.view_matrix).xyz;
-    output.position = mul(float4(output.view_position, 1), common.projection_matrix);
+    output.position = modelProjectionTransformation(position, common.world_matrix, output.world_position, common.view_matrix, output.view_position, common.projection_matrix);
     
     output.uv = uv * float2(1.0f, -1.0f);
     

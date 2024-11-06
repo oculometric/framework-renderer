@@ -1,0 +1,12 @@
+{
+	"shader": "res/SolidColour.hlsl",
+	"wireframe": 1,
+	"culling": "OFF",
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 1, 0.42, 0, 1 ],
+			"type": "float4"
+		}
+	]
+}

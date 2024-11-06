@@ -94,10 +94,14 @@
     </None>
     <None Include="res\SurrealDemoScene.fscn" />
     <None Include="res\SurrealDemoScene\BlackBricks.fmat" />
+    <None Include="res\SurrealDemoScene\Earth.fmat" />
     <None Include="res\SurrealDemoScene\Marble.fmat" />
+    <None Include="res\SurrealDemoScene\PalmFrond.fmat" />
     <None Include="res\SurrealDemoScene\PlanetA.fmat" />
+    <None Include="res\SurrealDemoScene\PlanetB.fmat" />
     <None Include="res\SurrealDemoScene\PlanetC.fmat" />
     <None Include="res\SurrealDemoScene\WhitePlaster.fmat" />
+    <None Include="res\SurrealDemoScene\Wireframe.fmat" />
     <None Include="res\suzanne.obj">
       <FileType>Document</FileType>
     </None>

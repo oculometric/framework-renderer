@@ -5,8 +5,12 @@
       { "path": "res/SurrealDemoScene/BlackBricks.fmat" },
       { "path": "res/SurrealDemoScene/WhitePlaster.fmat" },
       { "path": "res/SurrealDemoScene/PlanetA.fmat" },
+      { "path": "res/SurrealDemoScene/PlanetB.fmat" },
       { "path": "res/SurrealDemoScene/PlanetC.fmat" },
-      { "path": "res/SurrealDemoScene/Marble.fmat" }
+      { "path": "res/SurrealDemoScene/Marble.fmat" },
+      { "path": "res/SurrealDemoScene/Earth.fmat" },
+      { "path": "res/SurrealDemoScene/PalmFrond.fmat" },
+      { "path": "res/SurrealDemoScene/Wireframe.fmat" }
     ]
   },
   "objects": [
@@ -66,7 +70,7 @@
           "class": "mesh",
           "data": "res/SurrealDemoScene/planet.obj",
           "position": [ 0, 0, 1.8 ],
-          "rotation": [ 0, 0, 25 ],
+          "rotation": [ 0, 0, 15 ],
           "material": "res/SurrealDemoScene/PlanetA.fmat"
         }
       ]
@@ -80,7 +84,9 @@
         {
           "class": "mesh",
           "data": "res/SurrealDemoScene/planet.obj",
-          "position": [ 0, 0, 1.8 ]
+          "position": [ 0, 0, 1.8 ],
+          "rotation": [ 0, 0, 85 ],
+          "material": "res/SurrealDemoScene/PlanetB.fmat"
         }
       ]
     },
@@ -98,6 +104,35 @@
           "material": "res/SurrealDemoScene/PlanetC.fmat"
         }
       ]
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/planter_base.obj",
+      "position": [ 1.56, -13.57, -0.09 ],
+      "material": "res/SurrealDemoScene/Marble.fmat",
+      "children": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/planter_earth.obj",
+          "position": [ 0, 0, 0 ],
+          "material": "res/SurrealDemoScene/Earth.fmat"
+        },
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/palm.obj",
+          "position": [ 0, 0, 0.86 ],
+          "material": "res/SurrealDemoScene/PalmFrond.fmat"
+        }
+      ]
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/wireframes.obj",
+      "material": "res/SurrealDemoScene/Wireframe.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/artefacts.obj"
     }
   ],
   "ambient_light": [ 0.050, 0.025, 0.066 ]

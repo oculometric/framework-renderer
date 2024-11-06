@@ -127,8 +127,8 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     shadow_texture_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
     shadow_texture_descriptor.Format = DXGI_FORMAT_R24G8_TYPELESS;
     shadow_texture_descriptor.MipLevels = 1;
-    shadow_texture_descriptor.Width = 1024;
-    shadow_texture_descriptor.Height = 1024;
+    shadow_texture_descriptor.Width = LIGHTMAP_SIZE;
+    shadow_texture_descriptor.Height = LIGHTMAP_SIZE;
     shadow_texture_descriptor.SampleDesc.Count = 1;
     shadow_texture_descriptor.SampleDesc.Quality = 0;
     getDevice()->CreateTexture2D(&shadow_texture_descriptor, nullptr, &shadow_map_texture);
@@ -165,7 +165,7 @@ HRESULT FGraphicsEngine::initPipelineVariables()
 
     // create viewport
     viewport = { 0.0f, 0.0f, getWidth(), getHeight(), 0.0f, 1.0f };
-    shadow_viewport = { 0.0f, 0.0f, 1024.0f, 1024.0f, 0.0f, 1.0f };
+    shadow_viewport = { 0.0f, 0.0f, LIGHTMAP_SIZE, LIGHTMAP_SIZE, 0.0f, 1.0f };
 
     // create texture sampler
     D3D11_SAMPLER_DESC sampler_desc = { };
@@ -246,7 +246,7 @@ HRESULT FGraphicsEngine::loadDefaultResources()
         return hr; 
     }
 
-    FShader* shader = FResourceManager::get()->loadShader("res/PhysicalShader.hlsl", false, FCullMode::BACK);
+    FShader* shader = FResourceManager::get()->loadShader("res/PhysicalShader.hlsl", false, FCullMode::OFF);
     if (shader == nullptr)
     {
         FDebug::dialog("failed to load PhysicalShader.hlsl!");

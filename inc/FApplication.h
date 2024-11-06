@@ -12,8 +12,8 @@ class FGraphicsEngine;
 class FApplication
 {
 private:
-	int window_width = 640;
-	int window_height = 480;
+	int window_width = 1280;
+	int window_height = 960;
 	int window_x = 0;
 	int window_y = 0;
 
