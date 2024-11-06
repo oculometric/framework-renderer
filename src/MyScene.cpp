@@ -8,6 +8,8 @@
 #include "FDebug.h"
 #include "FGraphicsEngine.h"
 
+using namespace std;
+
 void MyScene::start()
 {
 	// 99% of the initialisation is now done from the config file! see MyScene.json

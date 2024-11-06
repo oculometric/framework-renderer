@@ -6,7 +6,6 @@
 #include "FTransform.h"
 
 using namespace DirectX;
-using namespace std;
 
 enum FObjectType
 {
@@ -19,7 +18,7 @@ enum FObjectType
 class FObject
 {
 public:
-	string name = "Object";
+	std::string name = "Object";
 	FTransform transform;
 
 public:
@@ -42,7 +41,6 @@ public:
 public:
 	inline FObjectType getType() { return FObjectType::CAMERA; }
 
-	void lookAt(XMFLOAT3 eye, XMFLOAT3 target, XMFLOAT3 up);
 	void updateProjectionMatrix();
 	inline XMFLOAT4X4 getProjectionMatrix() const { return projection_matrix; }
 };

@@ -2,12 +2,13 @@
 
 #include "FGraphicsEngine.h"
 
+#include <format>
+
 #include "DDSTextureLoader.h"
 #include "FResourceManager.h"
 #include "FJsonParser.h"
 #include "FDebug.h"
 #include "Gizmo.h"
-
 
 using namespace std;
 
@@ -712,6 +713,19 @@ void FGraphicsEngine::draw()
     if (application->needs_viewport_resize)
         resizeRenderTargets();
 
+    meshes = 0;
+    lights = 0;
+    tris = 0;
+    float time_clear = 0.0f;
+    float time_shadows = 0.0f;
+    float time_uniforms = 0.0f;
+    float time_batching = 0.0f;
+    float time_objects = 0.0f;
+    float time_postprocess = 0.0f;
+    float time_gizmos = 0.0f;
+
+    chrono::steady_clock::time_point a = chrono::high_resolution_clock::now();
+
     // present unbinds render target, so rebind and clear at start of each frame
     float clear[4] = { 0, 0, 0, 1 };
     float zero[4] = { 0, 0, 0, 1 };
@@ -723,9 +737,15 @@ void FGraphicsEngine::draw()
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     getContext()->PSSetSamplers(0, 1, &bilinear_sampler_state);
 
+    chrono::steady_clock::time_point b = chrono::high_resolution_clock::now();
+    time_clear = ((chrono::duration<float>)(b - a)).count();
+
     if (getScene() && getScene()->active_camera)
     {
         renderShadowMaps();
+
+        a = chrono::high_resolution_clock::now();
+        time_shadows = ((chrono::duration<float>)(a - b)).count();
 
         getContext()->RSSetViewports(1, &viewport);
         getContext()->OMSetRenderTargets(2, targets, depth_buffer_view);
@@ -747,6 +767,7 @@ void FGraphicsEngine::draw()
         int i = 0;
         for (FLight* light : getScene()->all_lights)
         {
+            lights++;
             light->convertToData(common_buffer_data->lights + i);
             i++;
             if (i >= NUM_LIGHTS) break;
@@ -762,6 +783,9 @@ void FGraphicsEngine::draw()
         getContext()->VSSetConstantBuffers(1, 1, &common_buffer);
         getContext()->PSSetConstantBuffers(1, 1, &common_buffer);
 
+        b = chrono::high_resolution_clock::now();
+        time_uniforms = ((chrono::duration<float>)(b - a)).count();
+
         // extract all the objects we actually care about (no point sorting things we're going to discard)
         vector<FMesh*> batch;
         batch.reserve(getScene()->all_objects.size());
@@ -773,14 +797,60 @@ void FGraphicsEngine::draw()
         // sort the objects for batching, so we have fewer context/state switches
         sortForBatching(batch);
 
+        a = chrono::high_resolution_clock::now();
+        time_batching = ((chrono::duration<float>)(a - b)).count();
+
         // draw the objects
         for (FMesh* mo : batch)
             drawObject(mo);
 
+        b = chrono::high_resolution_clock::now();
+        time_objects = ((chrono::duration<float>)(b - a)).count();
+
         performPostprocessing();
 
+        a = chrono::high_resolution_clock::now();
+        time_postprocess = ((chrono::duration<float>)(a - b)).count();
+
         if (draw_gizmos) drawGizmos();
+
+        b = chrono::high_resolution_clock::now();
+        time_gizmos = ((chrono::duration<float>)(b - a)).count();
     }
+
+    // update stats window
+    XMFLOAT3 forward = XMFLOAT3(0,0,0);
+    int objects = 0;
+    if (getScene() != nullptr)
+    {
+        forward = getScene()->active_camera->transform.getForward();
+        objects = getScene()->all_objects.size();
+    }
+
+    static chrono::steady_clock::time_point last = chrono::high_resolution_clock::now();
+    chrono::steady_clock::time_point now = chrono::high_resolution_clock::now();
+
+    float frame_delta = ((chrono::duration<float>)(now - last)).count();
+    last = now;
+
+    wstring str = format(L" Framework Stats\n"
+        L"\n"
+        L" frame time:          {:4f}ms\n"
+        L" framerate:           {:4f}fps\n"
+        L" sub-timings:\n"
+        L"     clear:           {:4f}ms\n"
+        L"     shadows:         {:4f}ms\n"
+        L"     uniforms:        {:4f}ms\n"
+        L"     batching:        {:4f}ms\n"
+        L"     objects:         {:4f}ms\n"
+        L"     postprocessing:  {:4f}ms\n"
+        L"     gizmos:          {:4f}ms\n"
+        L" objects in scene:    {}\n"
+        L"     meshes drawn:    {}\n"
+        L"     triangles drawn: {}\n"
+        L"     lights:          {}\n"
+        L" camera forward:\n    {:4f}\n    {:4f}\n    {:4f}", frame_delta, 1.0f / frame_delta, time_clear, time_shadows, time_uniforms, time_batching, time_objects, time_postprocess, time_gizmos, objects, meshes, tris, lights, forward.x, forward.y, forward.z);
+    application->updateStats(str);
 
     // present backbuffer to screen
     swap_chain->Present(0, 0);
@@ -789,6 +859,8 @@ void FGraphicsEngine::draw()
 
 void FGraphicsEngine::drawObject(FMesh* object)
 {
+    meshes++;
+
     // check if the object we have is valid and a mesh
     FMesh* mesh_object = object;
     FMeshData* mesh_data = mesh_object->getData();
@@ -877,6 +949,7 @@ void FGraphicsEngine::drawObject(FMesh* object)
 
     // draw the object
     getContext()->DrawIndexed(static_cast<UINT>(mesh_data->indices.size()), 0, 0);
+    tris += mesh_data->indices.size() / 3;
 }
 
 void FGraphicsEngine::performPostprocessing()

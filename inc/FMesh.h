@@ -30,10 +30,10 @@ private:
 	inline FMeshData() { };
 
 	// per vertex data
-	vector<FVertex> vertices;
+	std::vector<FVertex> vertices;
 
 	// per face corner data
-	vector<uint16_t> indices;
+	std::vector<uint16_t> indices;
 
 	// local-space bounding box
 	FBoundingBox bounds;
@@ -55,7 +55,7 @@ private:
 public:
 	inline FObjectType getType() { return FObjectType::MESH; }
 
-	static FMeshData* loadMesh(string path);
+	static FMeshData* loadMesh(std::string path);
 	inline FMeshData* getData() { return mesh_data; }
 	inline void setData(FMeshData* data) { mesh_data = data; }
 	inline FMaterial* getMaterial() { return material; }

@@ -11,7 +11,6 @@
 
 #define MAX_TEXTURES 8
 
-using namespace std;
 using namespace DirectX;
 
 enum FShaderUniformType
@@ -73,9 +72,9 @@ struct FMaterialParameter
 
 struct FMaterialPreload
 {
-	string shader;
-	map<string, FMaterialParameter> parameters;
-	vector<string> textures;
+	std::string shader;
+	std::map<std::string, FMaterialParameter> parameters;
+	std::vector<std::string> textures;
 	bool wireframe = false;
 	FCullMode culling = FCullMode::BACK;
 };
@@ -92,13 +91,13 @@ private:
 	FShader* shader = nullptr;
 
 	// parameter map
-	map<string, FMaterialParameter> parameters;
+	std::map<std::string, FMaterialParameter> parameters;
 
 	// textures to be used
 	FTexture* textures[MAX_TEXTURES] = { nullptr };
 
 public:
-	void setParameter(string name, FMaterialParameter param);
-	FMaterialParameter getParameter(string name);
+	void setParameter(std::string name, FMaterialParameter param);
+	FMaterialParameter getParameter(std::string name);
 	void assignTexture(FTexture* tex, size_t index);
 };

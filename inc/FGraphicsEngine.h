@@ -124,6 +124,10 @@ private:
 
 	FMaterial* placeholder_material							= nullptr;
 
+	int meshes;
+	int lights;
+	int tris;
+
 private:
 	FGraphicsEngine(FApplication* owner);
 
@@ -135,7 +139,7 @@ private:
 	void resizeRenderTargets();
 
 	bool frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds);
-	void sortForBatching(vector<FMesh*>& objects);
+	void sortForBatching(std::vector<FMesh*>& objects);
 	void drawObject(FMesh* object);
 	void performPostprocessing();
 	void drawGizmos();
@@ -144,10 +148,10 @@ private:
 	bool registerMesh(FMeshData* mesh_data);
 	void unregisterMesh(FMeshData* mesh_data);
 
-	FTexture* registerTexture(wstring path);
+	FTexture* registerTexture(std::wstring path);
 	void unregisterTexture(FTexture* texture);
 
-	bool registerShader(FShader* shader, wstring path);
+	bool registerShader(FShader* shader, std::wstring path);
 	void unregisterShader(FShader* shader);
 
 	inline ID3D11DeviceContext* getContext() { return application->getContext(); }

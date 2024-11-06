@@ -6,8 +6,6 @@
 
 #include "FMaterial.h"
 
-using namespace std;
-
 class FApplication;
 class FGraphicsEngine;
 class FTexture;
@@ -30,7 +28,7 @@ private:
 
 	struct FResource
 	{
-		string name;
+		std::string name;
 		FResourceType type;
 
 		inline bool operator<(const FResource& b) const { return (name < b.name); }
@@ -38,7 +36,7 @@ private:
 
 	FGraphicsEngine* application = nullptr;
 
-	map<FResource, void*> registry;
+	std::map<FResource, void*> registry;
 
 	inline FResourceManager(FGraphicsEngine* engine) : application(engine) { }
 
@@ -47,17 +45,17 @@ private:
 public:
 	static FResourceManager* get();
 
-	FTexture*  loadTexture(string path);
+	FTexture*  loadTexture(std::string path);
 	bool       unloadTexture(FTexture* res);
 
-	FMeshData* loadMesh(string path);
+	FMeshData* loadMesh(std::string path);
 	bool       unloadMesh(FMeshData* res);
 
-	FShader*   loadShader(string path, bool wireframe, FCullMode culling);
+	FShader*   loadShader(std::string path, bool wireframe, FCullMode culling);
 	bool       unloadShader(FShader* res);
 
-	FMaterial* createMaterial(string name, FMaterialPreload mp);
-	FMaterial* getMaterial(string name);
+	FMaterial* createMaterial(std::string name, FMaterialPreload mp);
+	FMaterial* getMaterial(std::string name);
 	bool	   unloadMaterial(FMaterial* mat);
 
 	~FResourceManager();

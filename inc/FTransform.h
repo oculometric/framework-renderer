@@ -4,7 +4,6 @@
 #include <DirectXMath.h>
 
 using namespace DirectX;
-using namespace std;
 
 class FObject;
 
@@ -19,7 +18,7 @@ private:
 	XMFLOAT3 local_scale;				// local scale    within parent space
 
 	FTransform* parent = nullptr;
-	unordered_set<FTransform*> children = { };
+	std::unordered_set<FTransform*> children = { };
 
 private:
 	void updateWorldFromLocal();		// compute local-to-world matrix from local-to-parent matrix and the parent's local-to-world

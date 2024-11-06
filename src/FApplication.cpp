@@ -10,6 +10,8 @@
 #include "FResourceManager.h"
 #include "FDebug.h"
 
+using namespace std;
+
 FApplication* application = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -154,6 +156,11 @@ void FApplication::updateWindowSize()
     GetWindowRect(window_handle, &r);
     window_x = r.left;
     window_y = r.top;
+}
+
+void FApplication::updateStats(wstring str)
+{
+    SetWindowText(info_window_handle, str.c_str());
 }
 
 void FApplication::update()

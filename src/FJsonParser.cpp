@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+using namespace std;
+
 bool FJsonBlob::validate(const string& s)
 {
     // assume it's good

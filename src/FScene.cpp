@@ -4,6 +4,8 @@
 #include "FMesh.h"
 #include "FResourceManager.h"
 
+using namespace std;
+
 FScene::FScene(FApplication* application, string scene_file)
 {
 	owner = application;

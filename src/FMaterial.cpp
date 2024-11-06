@@ -2,6 +2,8 @@
 
 #include "FJsonParser.h"
 
+using namespace std;
+
 void FMaterial::setParameter(string name, FMaterialParameter param)
 {
 	parameters.insert_or_assign(name, param);

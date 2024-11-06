@@ -5,7 +5,6 @@
 #include <vector>
 #include <DirectXMath.h>
 
-using namespace std;
 using namespace DirectX;
 
 enum FJsonType
@@ -22,8 +21,8 @@ struct FJsonElement
 {
 	FJsonType type;
 	
-	string s_val;
-	vector<FJsonElement> a_val;
+	std::string s_val;
+	std::vector<FJsonElement> a_val;
 	union
 	{
 		float f_val;
@@ -42,9 +41,9 @@ private:
 public:
 
 	inline FJsonElement(float f) { f_val = f; type = FJsonType::JFLOAT; }
-	inline FJsonElement(string s) { s_val = s; type = FJsonType::JSTRING; }
+	inline FJsonElement(std::string s) { s_val = s; type = FJsonType::JSTRING; }
 	inline FJsonElement(FJsonObject* o) { o_val = o; type = FJsonType::JOBJECT; }
-	inline FJsonElement(vector<FJsonElement> a) { a_val = a; type = FJsonType::JARRAY; }
+	inline FJsonElement(std::vector<FJsonElement> a) { a_val = a; type = FJsonType::JARRAY; }
 	inline FJsonElement(const FJsonElement& other) { assign(other); }
 	inline FJsonElement(const FJsonElement&& other) noexcept { assign(other); }
 	inline FJsonElement operator=(const FJsonElement& other) { assign(other); return *this; }
@@ -54,30 +53,30 @@ public:
 
 struct FJsonObject
 {
-	map<string, FJsonElement> elements = map<string, FJsonElement>({ });
+	std::map<std::string, FJsonElement> elements = std::map<std::string, FJsonElement>({ });
 
 	inline FJsonObject() { }
 	
-	inline bool has(string s, FJsonType t) { if (elements.count(s) <= 0) return false; return elements.at(s).type == t; }
-	inline FJsonElement operator[](string s) { return elements.at(s); }
+	inline bool has(std::string s, FJsonType t) { if (elements.count(s) <= 0) return false; return elements.at(s).type == t; }
+	inline FJsonElement operator[](std::string s) { return elements.at(s); }
 	inline FJsonElement operator[](const char* s) { return elements.at(s); }
 };
 
 class FJsonBlob
 {
 private:
-	vector<FJsonObject*> all_objects;
+	std::vector<FJsonObject*> all_objects;
 	FJsonElement root = FJsonElement(nullptr);
 
-	bool validate(const string& s);
-	size_t next(const string& s, const size_t start, const char delim);
-	string extract(const string& s, const size_t start, size_t& end);
-	FJsonElement decode(const string& s);
-	FJsonObject* parse(const string& s);
-	string reduce(const string& s);
+	bool validate(const std::string& s);
+	size_t next(const std::string& s, const size_t start, const char delim);
+	std::string extract(const std::string& s, const size_t start, size_t& end);
+	FJsonElement decode(const std::string& s);
+	FJsonObject* parse(const std::string& s);
+	std::string reduce(const std::string& s);
 
 public:
-	FJsonBlob(string path);
+	FJsonBlob(std::string path);
 	FJsonBlob() = delete;
 	FJsonBlob(const FJsonBlob& other) = delete;
 	FJsonBlob(const FJsonBlob&& other) = delete;

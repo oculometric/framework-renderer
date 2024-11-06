@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+using namespace std;
+
 struct FFaceCorner { uint16_t co; uint16_t uv; uint16_t vn; };
 
 // splits a formatted OBJ face corner into its component indices

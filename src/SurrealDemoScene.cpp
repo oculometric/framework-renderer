@@ -8,6 +8,8 @@
 #include "FDebug.h"
 #include "FGraphicsEngine.h"
 
+using namespace std;
+
 void SurrealDemoScene::start()
 {
 	orrery_base = findObjectWithName<FObject>("orrery_base");
@@ -65,8 +67,8 @@ void SurrealDemoScene::update(float delta_time)
 
 		//FLOAT up_down = (float)(((GetAsyncKeyState(VK_UP) & 0xF000) > 0) - ((GetAsyncKeyState(VK_DOWN) & 0xF000) > 0));
 		//FLOAT left_right = (float)(((GetAsyncKeyState(VK_LEFT) & 0xF000) > 0) - ((GetAsyncKeyState(VK_RIGHT) & 0xF000) > 0));
-		FLOAT up_down = mouse_delta.y * 40.0f;
-		FLOAT left_right = mouse_delta.x * -40.0f;
+		FLOAT up_down = mouse_delta.y * 80.0f;
+		FLOAT left_right = mouse_delta.x * -80.0f;
 
 		active_camera->transform.rotate(XMFLOAT3(0, 0, 1), left_right * 60.0f * delta_time, active_camera->transform.getPosition());
 		active_camera->transform.rotate(active_camera->transform.getRight(), up_down * 60.0f * delta_time, active_camera->transform.getPosition());
@@ -102,7 +104,7 @@ void SurrealDemoScene::update(float delta_time)
 	}
 }
 
-//#define VIRTUAL_MACHINE_DEV_ENV
+#define VIRTUAL_MACHINE_DEV_ENV
 XMFLOAT2 SurrealDemoScene::getMouseDeltaAndReset()
 {
 #ifdef VIRTUAL_MACHINE_DEV_ENV
@@ -117,7 +119,7 @@ XMFLOAT2 SurrealDemoScene::getMouseDeltaAndReset()
 #ifdef VIRTUAL_MACHINE_DEV_ENV
 	XMFLOAT2 delta = XMFLOAT2(clip_pos.x - last_cursor_pos.x, clip_pos.y - last_cursor_pos.y);
 	last_cursor_pos = clip_pos;
-	return XMFLOAT2(delta.x / owner->getWidth(), delta.y / owner->getWidth());
+	return XMFLOAT2(delta.x / (owner->getWidth() / 2), delta.y / (owner->getWidth() / 2));
 #else
 	if (owner->isFocused())
 		SetCursorPos(window_center.x, window_center.y);

@@ -3,8 +3,6 @@
 #include <windows.h>
 #include <string>
 
-using namespace std;
-
 class FDebug
 {
 	friend class FApplication;
@@ -17,6 +15,6 @@ private:
 public:
 	static FDebug* get();
 
-	static void console(string s);
-	static void dialog(string s);
+	static void console(std::string s);
+	static void dialog(std::string s);
 };

@@ -6,6 +6,8 @@
 #include "FGraphicsEngine.h"
 #include "FDebug.h"
 
+using namespace std;
+
 static FResourceManager* resource_manager;
 
 void FResourceManager::set(FResourceManager* manager)
