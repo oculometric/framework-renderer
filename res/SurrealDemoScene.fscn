@@ -10,7 +10,9 @@
       { "path": "res/SurrealDemoScene/Marble.fmat" },
       { "path": "res/SurrealDemoScene/Earth.fmat" },
       { "path": "res/SurrealDemoScene/PalmFrond.fmat" },
-      { "path": "res/SurrealDemoScene/Wireframe.fmat" }
+      { "path": "res/SurrealDemoScene/Wireframe.fmat" },
+      { "path": "res/SurrealDemoScene/InfoPanel.fmat" },
+      { "path": "res/SurrealDemoScene/BlendDemo.fmat" }
     ]
   },
   "objects": [
@@ -133,7 +135,64 @@
     {
       "class": "mesh",
       "data": "res/SurrealDemoScene/artefacts.obj"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/info_panel.obj",
+      "position": [ 0, -28.5, 0 ],
+      "material": "res/SurrealDemoScene/InfoPanel.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/blend_demo.obj",
+      "position": [ 0, 0, 0 ],
+      "material": "res/SurrealDemoScene/BlendDemo.fmat"
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/extended_pedestal.obj",
+      "position": [ -4, -34, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat",
+      "children": [
+        {
+          "class": "mesh",
+          "name": "orrery_base",
+          "data": "res/SurrealDemoScene/orrery_base.obj",
+          "position": [ 0, 0, 1.4 ],
+          "children": [
+            {
+              "class": "mesh",
+              "name": "orrery_planet_a",
+              "data": "res/SurrealDemoScene/orrery_orbiter_a.obj",
+              "position": [ 0, 0, -0.08 ]
+            },
+            {
+              "class": "mesh",
+              "name": "orrery_planet_b",
+              "data": "res/SurrealDemoScene/orrery_orbiter_b.obj",
+              "position": [ 0, 0, -0.08 ]
+            },
+            {
+              "class": "mesh",
+              "name": "orrery_mid",
+              "data": "res/SurrealDemoScene/orrery_mid.obj",
+              "position": [ 0, 0, 0.88 ],
+              "children": [
+                {
+                  "class": "mesh",
+                  "name": "orrery_core",
+                  "data": "res/SurrealDemoScene/orrery_core.obj",
+                  "position": [ 0, 0, 0 ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
-  "ambient_light": [ 0.050, 0.025, 0.066 ]
+  "ambient_light": [ 0.050, 0.025, 0.066 ],
+  "fog_strength": 0.9,
+  "fog_start": 12,
+  "fog_end": 24
 }

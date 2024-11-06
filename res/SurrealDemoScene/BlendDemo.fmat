@@ -1,7 +1,7 @@
 {
 	"shader": "res/PhysicalShader.hlsl",
 	"textures": [
-		"res/SurrealDemoScene/white_plaster_t.dds"
+		"res/SurrealDemoScene/alpha_dither_demo_t.dds"
 	],
 	"uniforms": [
 		{
@@ -15,24 +15,9 @@
 			"type": "float"
 		},
 		{
-			"param": "normal_strength",
-			"value": 1,
-			"type": "float"
-		},
-		{
 			"param": "specular_colour",
 			"value": [ 1, 1, 1, 1 ],
 			"type": "float4"
-		},
-		{
-			"param": "use_triplanar",
-			"value": 1,
-			"type": "float"
-		},
-		{
-			"param": "triplanar_scale",
-			"value": 0.25,
-			"type": "float"
 		}
 	]
 }

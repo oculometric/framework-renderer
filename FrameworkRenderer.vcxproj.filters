@@ -196,8 +196,14 @@
     <None Include="res\SurrealDemoScene\PalmFrond.fmat">
       <Filter>Resources</Filter>
     </None>
+    <None Include="res\SurrealDemoScene\InfoPanel.fmat">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\BlendDemo.fmat">
+      <Filter>Resources</Filter>
+    </None>
     <None Include="res\SurrealDemoScene\Wireframe.fmat">
-      <Filter>Headers</Filter>
+      <Filter>Resources</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

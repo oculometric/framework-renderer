@@ -10,6 +10,12 @@
 
 void SurrealDemoScene::start()
 {
+	orrery_base = findObjectWithName<FObject>("orrery_base");
+	orrery_mid = findObjectWithName<FObject>("orrery_mid");
+	orrery_planet_a = findObjectWithName<FObject>("orrery_planet_a");
+	orrery_planet_b = findObjectWithName<FObject>("orrery_planet_b");
+	orrery_core = findObjectWithName<FObject>("orrery_core");
+
 	fly_cam = findObjectWithName<FCamera>("fly_cam");
 	walk_cam = findObjectWithName<FCamera>("walk_cam");
 	active_camera = fly_mode ? fly_cam : walk_cam;
@@ -20,6 +26,11 @@ void SurrealDemoScene::start()
 void SurrealDemoScene::update(float delta_time)
 {
 	XMFLOAT2 mouse_delta = getMouseDeltaAndReset();
+
+	orrery_mid->transform.rotate(orrery_mid->transform.getRight(), delta_time * 30.0f, orrery_mid->transform.getPosition());
+	orrery_core->transform.rotate(orrery_core->transform.getForward(), delta_time * 45.0f, orrery_core->transform.getPosition());
+	orrery_planet_a->transform.rotate(orrery_planet_a->transform.getForward(), delta_time * 10.0f, orrery_planet_a->transform.getPosition());
+	orrery_planet_b->transform.rotate(orrery_planet_b->transform.getForward(), delta_time * 2.0f, orrery_planet_b->transform.getPosition());
 
 	if (owner->isFocused() && active_camera != nullptr)
 	{

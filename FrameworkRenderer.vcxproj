@@ -94,7 +94,9 @@
     </None>
     <None Include="res\SurrealDemoScene.fscn" />
     <None Include="res\SurrealDemoScene\BlackBricks.fmat" />
+    <None Include="res\SurrealDemoScene\BlendDemo.fmat" />
     <None Include="res\SurrealDemoScene\Earth.fmat" />
+    <None Include="res\SurrealDemoScene\InfoPanel.fmat" />
     <None Include="res\SurrealDemoScene\Marble.fmat" />
     <None Include="res\SurrealDemoScene\PalmFrond.fmat" />
     <None Include="res\SurrealDemoScene\PlanetA.fmat" />

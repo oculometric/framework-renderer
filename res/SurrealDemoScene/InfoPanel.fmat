@@ -1,0 +1,23 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+		"res/SurrealDemoScene/signboard_t.dds"
+	],
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 0, 0, 0, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 1.0,
+			"type": "float"
+		},
+		{
+			"param": "emission_strength",
+			"value": 0.5,
+			"type": "float"
+		}
+	]
+}
