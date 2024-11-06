@@ -137,7 +137,8 @@
     {
       "class": "mesh",
       "data": "res/SurrealDemoScene/wireframes.obj",
-      "material": "res/SurrealDemoScene/Wireframe.fmat"
+      "material": "res/SurrealDemoScene/Wireframe.fmat",
+      "cast_shadow": 0
     },
     {
       "class": "mesh",
@@ -236,13 +237,15 @@
       "class": "mesh",
       "data": "res/SurrealDemoScene/lamp_a.obj",
       "material": "res/SurrealDemoScene/TripodLamp.fmat",
-      "position": [ 0, 0, 0 ]
+      "position": [ 0, 0, 0 ],
+      "cast_shadow": 0
     },
     {
       "class": "mesh",
       "data": "res/SurrealDemoScene/lamp_b.obj",
       "material": "res/SurrealDemoScene/Wood.fmat",
-      "position": [ 0, 0, 0 ]
+      "position": [ 0, 0, 0 ],
+      "cast_shadow": 0
     },
     {
       "class": "light",

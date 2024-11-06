@@ -99,15 +99,23 @@ float4 PS_main(Varyings input) : SV_TARGET
     // text shader
     float2 text_resolution = screen_size / 8.0f;
     float2 text_uv = screen_uv * text_resolution;
+    // sample the pixel (floored for pixelation) and fog it
     float3 colour = fog((floor(text_uv) + 0.5f) / text_resolution).rgb;
     
-    float divs = 64.0f;
-    float3 frc = frac(colour * divs);
-    float blend = dot(frc, float3(0.2126, 0.7152, 0.0722)) * 16.0f;
-    float2 text_offset = float2(floor(blend % 4.0f), floor(blend / 4.0f));
+    // number of colour luminosity divisions
+    const float divs = 4.0f;
+    // fraction between the lower colour bound and the upper colour bound, in each channel
+    float3 frc = frac(log(colour) * divs);
     
+    const float3 luma_vector = float3(0.2126, 0.7152, 0.0722);
+    
+    // float which we use to select the character to use. as the luminosity of the fraction increases, we use a higher-fill-percentage character for dithering
+    float character_selector = dot(frc, luma_vector) * 16.0f;
+    // offset into the text atlas based on the character selector
+    float2 text_offset = float2(floor(character_selector) % 4.0f, floor(character_selector / 4.0f));
+    // sample the text atlas and use it as a mask to blend between the rounded-down colour and the rounded-up colour
     float mask = text_masks.Sample(nearest_sampler, (frac(text_uv) + text_offset) / 4.0f).r;
-    float3 text_blended = mask > 0.5f ? floor(colour * divs) / divs : ceil(colour * divs) / divs;
+    float3 text_blended = exp(mask < 0.5f ? floor(log(colour) * divs) / divs : ceil(log(colour) * divs) / divs);
     
     // output depending on mode
     switch (output_mode)

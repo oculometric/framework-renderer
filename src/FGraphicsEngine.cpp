@@ -824,7 +824,7 @@ void FGraphicsEngine::draw()
     if (getScene() != nullptr)
     {
         forward = getScene()->active_camera->transform.getForward();
-        objects = getScene()->all_objects.size();
+        objects = static_cast<int>(getScene()->all_objects.size());
     }
 
     static chrono::steady_clock::time_point last = chrono::high_resolution_clock::now();
@@ -949,7 +949,7 @@ void FGraphicsEngine::drawObject(FMesh* object)
 
     // draw the object
     getContext()->DrawIndexed(static_cast<UINT>(mesh_data->indices.size()), 0, 0);
-    tris += mesh_data->indices.size() / 3;
+    tris += static_cast<int>(mesh_data->indices.size() / 3);
 }
 
 void FGraphicsEngine::performPostprocessing()

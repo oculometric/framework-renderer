@@ -51,6 +51,7 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		FMesh* me = new FMesh();
 		if (o.data_name != "") me->setData(rm->loadMesh(o.data_name));
 		if (o.material_name != "") me->setMaterial(rm->getMaterial(o.material_name));
+		me->cast_shadow = o.cast_shadow;
 		obj = me;
 		break;
 	}
@@ -147,6 +148,7 @@ bool operator>>(const FJsonElement& a, FObjectPreload& other)
 		other.object_type = FObjectType::MESH;
 		if (obj->has("data", JSTRING)) other.data_name = (*obj)["data"].s_val;
 		if (obj->has("material", JSTRING)) other.material_name = (*obj)["material"].s_val;
+		if (obj->has("cast_shadow", JFLOAT)) other.cast_shadow = (*obj)["cast_shadow"].f_val > 0.0f;
 	}
 	else if (object_class == "camera")
 	{

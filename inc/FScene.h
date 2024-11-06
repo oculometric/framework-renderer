@@ -29,6 +29,7 @@ struct FObjectPreload
 	XMFLOAT3 colour = XMFLOAT3(0,0,0);
 	float strength = 1;
 	float angle = 45;
+	bool cast_shadow = true;
 };
 
 class FScene
