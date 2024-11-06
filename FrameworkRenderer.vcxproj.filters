@@ -215,6 +215,9 @@
     <None Include="res\SurrealDemoScene\Landscape.fmat">
       <Filter>Resources</Filter>
     </None>
+    <None Include="res\SurrealDemoScene\TripodLamp.fmat">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">

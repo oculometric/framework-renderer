@@ -1,0 +1,29 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+		"res/SurrealDemoScene/tripod_lamp_t.dds",
+		"res/SurrealDemoScene/tripod_lamp_n.dds"
+	], // this material is lacking a little, since i don't have a metallic map/roughness map. i could do that, but at this stage with so much work on multiple modules to do, no time to do it, plus two essays, i'm not prioritising it
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 0.5,
+			"type": "float"
+		},
+		{
+			"param": "normal_strength",
+			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "specular_colour",
+			"value": [ 1, 1, 1, 1 ],
+			"type": "float4"
+		}
+	]
+}
