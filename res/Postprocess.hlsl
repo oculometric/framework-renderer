@@ -57,7 +57,7 @@ float3 fog(float2 screen_uv)
     float4 clip_dir = normalize(float4(uv, 1, 1));
     float3 direction = mul(mul(clip_dir, projection_matrix_inv) * float4(1, 1, 1, 0), view_matrix_inv).xyz * float3(-1, 1, 1);
     
-    float3 skybox_sample = skybox.Sample(bilinear_sampler, direction.xzy).rgb * 1.8;
+    float3 skybox_sample = skybox.Sample(bilinear_sampler, direction.xzy).rgb * 0.8f;
     float f = depth.Sample(bilinear_sampler, screen_uv).r;
     float4 clip_pos = float4(uv, f, 1);
     float4 view_pos = mul(clip_pos, projection_matrix_inv);
