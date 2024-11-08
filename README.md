@@ -54,5 +54,6 @@ While in debug/fly mode, you gain a debug overlay which is drawn on top of the p
 - skybox (implemented in post-processing)
 - support for multiple render passes sent to the post processing shader (colour, normal, depth, AO)
 - object shader and material sorting to minimise context switches required
+- viewport resizing at runtime
 - (INCOMPLETE) frustrum culling based on object bounding boxes
 - (INCOMPLETE) ambient occlusion using compute shaders
