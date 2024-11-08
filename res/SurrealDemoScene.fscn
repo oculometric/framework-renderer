@@ -16,7 +16,8 @@
       { "path": "res/SurrealDemoScene/Sand.fmat" },
       { "path": "res/SurrealDemoScene/Landscape.fmat" },
       { "path": "res/SurrealDemoScene/TripodLamp.fmat" },
-      { "path": "res/SurrealDemoScene/Wood.fmat" }
+      { "path": "res/SurrealDemoScene/Wood.fmat" },
+      { "path": "res/monitor.fmat" }
       //{ "path": "res/SurrealDemoScene/Clouds.fmat" }
     ]
   },
@@ -277,6 +278,30 @@
       "rotation": [ 77.338, -125.705, -92.958 ],
       "position": [ -1.818, -23.618, 1.572 ],
       "scale": [ 1, 1, -1 ]
+    },
+    {
+      "class": "mesh",
+      "data": "res/SurrealDemoScene/medium_pedestal.obj",
+      "position": [ 9.5, -24, -0.058 ],
+      "material": "res/SurrealDemoScene/Marble.fmat",
+      "children": [
+        {
+          "class": "mesh",
+          "data": "res/monitor.obj",
+          "position": [ 0, 0, 1.6 ],
+          "rotation": [ -10, 20, -85 ],
+          "material": "res/monitor.fmat"
+        },
+        {
+          "class": "light",
+          "type": "spot",
+          "angle": 40,
+          "strength": 3,
+          "colour": [ 1, 0, 1 ],
+          "position": [ 0.8, 1.0, 2.8 ],
+          "rotation": [ -45, 0, -20 ]
+        }
+      ]
     }
   ],
   "ambient_light": [ 0.050, 0.025, 0.066 ],
