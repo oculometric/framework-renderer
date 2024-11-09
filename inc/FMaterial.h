@@ -9,10 +9,11 @@
 
 #include "FTexture.h"
 
-#define MAX_TEXTURES 8
+#define MAX_TEXTURES 8		// maximum number of texture slots which can be bound on a material
 
 using namespace DirectX;
 
+// data type for shader uniforms
 enum FShaderUniformType
 {
 	F1, F3, F4,
@@ -21,8 +22,10 @@ enum FShaderUniformType
 	INVALID
 };
 
+// which side, if any, to cull of a mesh's triangles
 enum FCullMode { OFF, BACK, FRONT };
 
+// encapsulates shader parameters and keeps track of GPU resource parameters
 class FShader
 {
 	friend class FResourceManager;
@@ -36,7 +39,7 @@ private:
 	bool draw_wireframe = false;
 	FCullMode cull_mode = FCullMode::OFF;
 
-	// for rendering
+	// GPU resources for rendering
 	ID3D11VertexShader* vertex_shader_pointer = nullptr;
 	ID3D11PixelShader* pixel_shader_pointer = nullptr;
 	ID3D11RasterizerState* rasterizer = nullptr;
@@ -45,6 +48,7 @@ private:
 	ID3D11ShaderReflection* reflector = nullptr;
 };
 
+// represents a parameter which is applied to a material and corresponds to a uniform/constant value
 struct FMaterialParameter
 {
 	FShaderUniformType type;
@@ -70,15 +74,18 @@ struct FMaterialParameter
 	inline FMaterialParameter(XMINT3 arg)     { type = FShaderUniformType::I3; i3 = arg; }
 };
 
+// contains data about how to construct a material. this is needed due to the initialisation order of shaders, textures, meshes and materials
 struct FMaterialPreload
 {
-	std::string shader;
+	std::string shader;						// path to the shader to use
+	// map of parameter names to parameter values
 	std::map<std::string, FMaterialParameter> parameters;
-	std::vector<std::string> textures;
-	bool wireframe = false;
-	FCullMode culling = FCullMode::BACK;
+	std::vector<std::string> textures;		// list of texture paths
+	bool wireframe = false;					// whether the shader should use wireframe values
+	FCullMode culling = FCullMode::BACK;	// culling mode for the shader to use
 };
 
+// encapsulates a material and its parameters, shader, and textures
 class FMaterial
 {
 	friend class FResourceManager;

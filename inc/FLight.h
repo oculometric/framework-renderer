@@ -2,8 +2,8 @@
 
 #include "FObject.h"
 
-#define NUM_LIGHTS 8
-#define LIGHTMAP_SIZE 2048
+#define NUM_LIGHTS 8		// number of lights which can render simultaneously
+#define LIGHTMAP_SIZE 2048	// size of the shadow map texture for each light
 
 // this mirrors the Light struct defined in Light.hlsl
 struct FLightData
@@ -19,6 +19,7 @@ struct FLightData
 	XMFLOAT4X4 matrix;
 };
 
+// an object type which behaves as a light
 class FLight : public FObject
 {
 public:
@@ -38,10 +39,12 @@ public:
 	// direction is only relevant for directional and spot lights
 	// position is only relevant for point and spot lights
 	// angle is only relevant for spot lights
+
 	float angle = 45.0f; // in degrees
 
 public:
 	inline FObjectType getType() { return FObjectType::LIGHT; }
-	void convertToData(FLightData* data);
-	XMFLOAT4X4 getProjectionMatrix();
+	
+	void convertToData(FLightData* data);	// constructs a light data configuration from the light object
+	XMFLOAT4X4 getProjectionMatrix();		// returns the projection matrix for the light, treating it as a camera
 };

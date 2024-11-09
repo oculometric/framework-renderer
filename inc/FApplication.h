@@ -9,6 +9,7 @@
 
 class FGraphicsEngine;
 
+// manages the windows, devices, timekeeping, and graphics engine
 class FApplication
 {
 private:
@@ -22,25 +23,28 @@ private:
 	IDXGIDevice* dxgi_device						= nullptr;
 	IDXGIFactory2* dxgi_factory						= nullptr;
 
-	HWND window_handle;
+	HWND window_handle;			// handle for the main game window
 
-	HWND info_window_handle;
+	HWND info_window_handle;	// handle for the stats window
 
+	// used to keep track of the frame delta-time
 	std::chrono::steady_clock::time_point time_keeper;
 	float total_time = 0.0f;
 	float mean_frame_time = 0.0f;
 
+	// reference to the graphics engine
 	FGraphicsEngine* engine							= nullptr;
 
 public:
-	FScene* scene = nullptr;
-	bool needs_viewport_resize = false;
+	FScene* scene = nullptr;				// active scene
+	bool needs_viewport_resize = false;		// whether or not the window has been resized and thus graphics resources like the framebuffer need to also be resized
 
 public:
-	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);
+	HRESULT initialise(HINSTANCE hInstance, int nCmdShow);			// configures the application, device, context, and graphics engine
 	HRESULT createWindowHandle(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createD3DDevice();
 
+	// getters for various properties/states
 	inline ID3D11DeviceContext* getContext() { return immediate_context; }
 	inline ID3D11Device* getDevice() { return device; }
 	inline IDXGIFactory2* getFactory() { return dxgi_factory; }
@@ -52,10 +56,12 @@ public:
 	inline float getY() { return (float)window_y; }
 	inline HWND getWindow() { return window_handle; }
 	inline FGraphicsEngine* getEngine() { return engine; }
-	void updateStats(std::wstring str);
-
 	inline bool isFocused() { return GetFocus() == window_handle; }
 
+	// set the text content of the stats window
+	void updateStats(std::wstring str);
+
+	// update and draw methods which will be passed on to the graphics engine and the scene
 	void update();
 	void draw();
 

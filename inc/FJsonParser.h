@@ -7,6 +7,7 @@
 
 using namespace DirectX;
 
+// data type for a JSON element
 enum FJsonType
 {
 	JFLOAT,
@@ -17,6 +18,7 @@ enum FJsonType
 
 struct FJsonObject;
 
+// represents an element in a JSON file, which is contained within a JSON object, containing some piece of data: either a string, an array of other elements, a float, or an object
 struct FJsonElement
 {
 	FJsonType type;
@@ -39,6 +41,7 @@ private:
 	}
 
 public:
+	// initialisers for various types of JSON element
 
 	inline FJsonElement(float f) { f_val = f; type = FJsonType::JFLOAT; }
 	inline FJsonElement(std::string s) { s_val = s; type = FJsonType::JSTRING; }
@@ -51,6 +54,7 @@ public:
 	inline ~FJsonElement() { if (type == FJsonType::JARRAY) a_val.~vector(); }
 };
 
+// represents an object in a JSON file, which contains a map linking string keys with element values
 struct FJsonObject
 {
 	std::map<std::string, FJsonElement> elements = std::map<std::string, FJsonElement>({ });
@@ -62,18 +66,19 @@ struct FJsonObject
 	inline FJsonElement operator[](const char* s) { return elements.at(s); }
 };
 
+// represents all the data in a JSON file. manages allocated JSON objects and elements, and once parsed, it can be traversed by whatever is being imported via JSON
 class FJsonBlob
 {
 private:
-	std::vector<FJsonObject*> all_objects;
-	FJsonElement root = FJsonElement(nullptr);
+	std::vector<FJsonObject*> all_objects;			// array of allocated JSON objects
+	FJsonElement root = FJsonElement(nullptr);		// root element
 
-	bool validate(const std::string& s);
-	size_t next(const std::string& s, const size_t start, const char delim);
-	std::string extract(const std::string& s, const size_t start, size_t& end);
-	FJsonElement decode(const std::string& s);
-	FJsonObject* parse(const std::string& s);
-	std::string reduce(const std::string& s);
+	bool validate(const std::string& s);			// scans a JSON string to check if it is valid (returning true for validity)
+	size_t next(const std::string& s, const size_t start, const char delim);	// finds the next instance of a specific character, after a starting point
+	std::string extract(const std::string& s, const size_t start, size_t& end); // extract the contents of a pair of brackets
+	FJsonElement decode(const std::string& s);		// decodes a string into a JSON element
+	FJsonObject* parse(const std::string& s);		// parses a string into a JSON object (containing a collection of elements)
+	std::string reduce(const std::string& s);		// removes comments, newlines, spaces, etc, leaving only the actual content of a JSON file
 
 public:
 	FJsonBlob(std::string path);
@@ -88,13 +93,11 @@ public:
 	~FJsonBlob();
 };
 
-// override this in order to parse specific classes out of FJsonObjects
-// inline bool operator>>(const FJsonElement& a, T& other) { };
-
 class FScene;
 struct FObjectPreload;
 struct FMaterialPreload;
 
+// these operators are are used to translate a JSON element into various data types
 bool operator>>(const FJsonElement& a, FScene& other);
 bool operator>>(const FJsonElement& a, FObjectPreload& other);
 bool operator>>(const FJsonElement& a, FMaterialPreload& other);

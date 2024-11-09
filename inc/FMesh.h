@@ -7,6 +7,7 @@
 #include "FTexture.h"
 #include "FMaterial.h"
 
+// structure of a vertex, corresponds to the input layout used by all vertex shaders
 struct FVertex
 {
 	XMFLOAT3 position = XMFLOAT3( 0.0f, 0.0f, 0.0f );
@@ -16,16 +17,19 @@ struct FVertex
 	XMFLOAT3 tangent  = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 };
 
+// structure for storing a bounding box
 struct FBoundingBox
 {
 	XMFLOAT3 max_corner = XMFLOAT3( 0,0,0 );
 	XMFLOAT3 min_corner = XMFLOAT3( 0,0,0 );
 };
 
+// structure for storing a mesh and its data
 class FMeshData
 {
 	friend class FMesh;
 	friend class FGraphicsEngine;
+
 private:
 	inline FMeshData() { };
 
@@ -38,25 +42,28 @@ private:
 	// local-space bounding box
 	FBoundingBox bounds;
 
-	// for rendering
+	// GPU resources for rendering
 	ID3D11Buffer* vertex_buffer_ptr = nullptr;
 	ID3D11Buffer* index_buffer_ptr  = nullptr;
 };
 
+// object type which contains a mesh which will be drawn
 class FMesh : public FObject
 {
 public:
-	bool cast_shadow = true;
+	bool cast_shadow = true;		// toggles whether this mesh is included in the shadow mapping pass
 
 private:
-	FMeshData* mesh_data = nullptr;
-	FMaterial* material  = nullptr;
+	FMeshData* mesh_data = nullptr;	// mesh data to be used
+	FMaterial* material  = nullptr;	// material data to be used
 
 public:
 	inline FObjectType getType() { return FObjectType::MESH; }
 
+	// custom OBJ loading function
 	static FMeshData* loadMesh(std::string path);
 	
+	// tests whether a ray intersects with an axis-aligned bounding box
 	static bool intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XMFLOAT3 ray_direction, float& tmin, float& tmax);
 
 	inline FMeshData* getData() { return mesh_data; }

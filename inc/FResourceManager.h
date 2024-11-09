@@ -13,10 +13,13 @@ class FMeshData;
 class FShader;
 class FResourceManager;
 
+// manages the resources in use by the active scene(s), and prevents duplication and memory leaks
 class FResourceManager
 {
 	friend class FApplication;
+
 private:
+	// type of resource
 	enum FResourceType
 	{
 		TEXTURE,
@@ -25,6 +28,7 @@ private:
 		MATERIAL
 	};
 
+	// resource structure, describing the type and path of a particular loaded resource
 	struct FResource
 	{
 		std::string name;
@@ -33,32 +37,36 @@ private:
 		inline bool operator<(const FResource& b) const { return (name < b.name); }
 	};
 
+	// reference to the owning application
 	FGraphicsEngine* application = nullptr;
 
+	// registry of loaded assets. the value type is a pointer to any one of the resource types (material, mesh data, texture, shader)
 	std::map<FResource, void*> registry;
 
 	inline FResourceManager(FGraphicsEngine* engine) : application(engine) { }
 
-	static void set(FResourceManager* manager);
+	static void set(FResourceManager* manager);		// sets the static reference in the source file
 
 public:
-	static FResourceManager* get();
+	static FResourceManager* get();					// gets the static reference from source file
 
-	FTexture*  loadTexture(std::string path);
-	bool       unloadTexture(FTexture* res);
+	FTexture*  loadTexture(std::string path);		// load a texture, from a path, or just return a reference to it if already loaded
+	bool       unloadTexture(FTexture* res);		// unload a loaded texture
 
-	FMeshData* loadMesh(std::string path);
-	bool       unloadMesh(FMeshData* res);
+	FMeshData* loadMesh(std::string path);			// load a mesh, from a path, or just return a reference to it if already loaded
+	bool       unloadMesh(FMeshData* res);			// unload a loaded mesh
 
+	// load a shader, and configure it with parameters, from a path, or just return a reference to it if already loaded
 	FShader*   loadShader(std::string path, bool wireframe, FCullMode culling);
-	bool       unloadShader(FShader* res);
+	bool       unloadShader(FShader* res);			// unload a loaded shader
 
+	// construct a material according to a set of preload parameters, with a name (usually the file path) to reference it by
 	FMaterial* createMaterial(std::string name, FMaterialPreload mp);
-	FMaterial* getMaterial(std::string name);
-	bool	   unloadMaterial(FMaterial* mat);
+	FMaterial* getMaterial(std::string name);		// get a material with a specified name (usually the file path)
+	bool	   unloadMaterial(FMaterial* mat);		// unload a loaded material
 
 	~FResourceManager();
 
 private:
-	bool	   unload(void* res);
+	bool	   unload(void* res);					// unload all loaded resources
 };

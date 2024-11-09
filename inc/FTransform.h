@@ -7,6 +7,7 @@ using namespace DirectX;
 
 class FObject;
 
+// class which encapsulates behaviour for maintaining a structured scene hierarchy, and implements numerous useful functions for applying transformations both in world space and local space
 class FTransform
 {
 private:

@@ -7,6 +7,9 @@
 
 using namespace DirectX;
 
+// vertex and index data for the gizmo mesh (a set of coloured axes), and box mesh (a bounding box)
+// both of these will be drawn as line strips, not triangle strips
+
 std::vector<FVertex> gizmo_verts =
 {
 	FVertex{ XMFLOAT3(0, 0, 0),			XMFLOAT4(1, 1, 1, 1) },
