@@ -56,6 +56,9 @@ public:
 	inline FObjectType getType() { return FObjectType::MESH; }
 
 	static FMeshData* loadMesh(std::string path);
+	
+	static bool intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XMFLOAT3 ray_direction, float& tmin, float& tmax);
+
 	inline FMeshData* getData() { return mesh_data; }
 	inline void setData(FMeshData* data) { mesh_data = data; }
 	inline FMaterial* getMaterial() { return material; }

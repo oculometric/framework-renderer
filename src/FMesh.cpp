@@ -229,6 +229,34 @@ FMeshData* FMesh::loadMesh(string path)
 	return mesh_data;
 }
 
+bool FMesh::intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XMFLOAT3 ray_direction, float& tmin, float& tmax)
+{
+    // based closely on https://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
+    float mins[3] = { bb.min_corner.x, bb.min_corner.y, bb.min_corner.z };
+    float maxs[3] = { bb.max_corner.x, bb.max_corner.y, bb.max_corner.z };
+
+    float origin[3] = { ray_origin.x, ray_origin.y, ray_origin.z };
+    float inv_direction[3] = { 1.0f / ray_direction.x, 1.0f / ray_direction.y, 1.0f / ray_direction.z };
+
+    tmin = 0;
+    tmax = INFINITY;
+    bool failed = false;
+
+    for (int i = 0; i < 3; i++)
+    {
+        float t0 = (mins[i] - origin[i]) * inv_direction[i];
+        float t1 = (maxs[i] - origin[i]) * inv_direction[i];
+        if (inv_direction[i] < 0)
+            swap(t0, t1);
+        tmin = max(t0, tmin);
+        tmax = min(t1, tmax);
+
+        if (tmax < tmin) { failed = true; break; }
+    }
+
+    return !failed;
+}
+
 FBoundingBox FMesh::getWorldSpaceBounds()
 {
     XMFLOAT3 mi = mesh_data->bounds.min_corner;

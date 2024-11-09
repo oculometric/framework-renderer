@@ -157,8 +157,7 @@ void SurrealDemoScene::selectUnderMouse()
 			)
 		);
 
-		float inv_direction[3] = { 1.0f / world_direction.x, 1.0f / world_direction.y, 1.0f / world_direction.z };
-		float origin[3] = { view._41, view._42, view._43 };
+		XMFLOAT3 origin = XMFLOAT3(view._41, view._42, view._43);
 
 		FObject* closest = nullptr;
 		float dist = INFINITY;
@@ -169,27 +168,10 @@ void SurrealDemoScene::selectUnderMouse()
 			FMesh* m = (FMesh*)obj;
 			FBoundingBox box = m->getWorldSpaceBounds();
 
-			// based closely on https://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
-			float mins[3] = { box.min_corner.x, box.min_corner.y, box.min_corner.z };
-			float maxs[3] = { box.max_corner.x, box.max_corner.y, box.max_corner.z };
+			float tmin;
+			float tmax;
 
-			float tmin = 0;
-			float tmax = 1000;
-			bool failed = false;
-
-			for (int i = 0; i < 3; i++)
-			{
-				float t0 = (mins[i] - origin[i]) * inv_direction[i];
-				float t1 = (maxs[i] - origin[i]) * inv_direction[i];
-				if (inv_direction[i] < 0)
-					swap(t0, t1);
-				tmin = max(t0, tmin);
-				tmax = min(t1, tmax);
-
-				if (tmax < tmin) { failed = true; break; }
-			}
-
-			if (!failed && tmin < dist)
+			if (FMesh::intersectBoundingBox(box, origin, world_direction, tmin, tmax) && tmin < dist)
 			{
 				closest = obj;
 				dist = tmin;

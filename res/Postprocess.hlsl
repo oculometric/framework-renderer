@@ -67,7 +67,7 @@ float3 fog(float2 screen_uv)
     float fog_mix = clamp(pow(clamp((f - fog_start_end.r) / (fog_start_end.g - fog_start_end.r), 0, 1), 0.8), 0, 1);
     float3 fogged = mix_custom(scene_sample, fog_colour, fog_mix * fog_strength);
     
-    return (clipping_distances.g - f) <= 0.1f ? skybox_sample : fogged;
+    return (clipping_distances.g - f) <= 10.0f ? skybox_sample : fogged;
 }
 
 float3 sharpen(float2 uv, float2 pixels_in_image)
