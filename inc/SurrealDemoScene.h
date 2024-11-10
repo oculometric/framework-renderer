@@ -10,12 +10,16 @@ private:
 	FObject* orrery_planet_b;
 	FObject* orrery_mid;
 	FObject* orrery_core;
+	FObject* monitor;
 
 	bool fly_mode = false;
 	float current_speed = 0.0f;
 
 	FCamera* walk_cam;
 	FCamera* fly_cam;
+
+	int interaction_mode = 0;
+	XMFLOAT4X4 original_transform;
 
 public:
 	using FScene::FScene;

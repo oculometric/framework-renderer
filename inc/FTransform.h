@@ -49,6 +49,7 @@ public:
 
 	inline XMFLOAT4X4 getTransform() const { return local_to_world; }
 	inline XMFLOAT4X4 getLocalTransform() const { return local_to_parent; }
+	void setTransform(XMFLOAT4X4 t);
 
 	XMFLOAT3 getPosition() const;
 	void setPosition(XMFLOAT3 p);

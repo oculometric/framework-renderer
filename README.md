@@ -12,7 +12,7 @@ You can use the number keys (not the numpad) 1-6 to view different render passes
 3. Normal pass
 4. Depth pass
 5. Sharpened post processing
-6. Ray-traced ambient occlusion pass
+6. Ambient occlusion pass
 
 When you've had enough of looking around the scene on foot, you can **press TAB to enter debug/fly mode.**
 
@@ -20,12 +20,14 @@ When in debug/fly mode, you can move up and down (relative to the camera) using 
 
 While in debug/fly mode, you gain a debug overlay which is drawn on top of the post processing, showing the transforms of each object (emptys, meshes, cameras, lights).
 
+Also while in this mode, you can actually edit the scene! First, click to select an object (based on bounding boxes). Now you can use G followed by mouse movement to move an object around. R to rotate, F to scale. Click to confirm each operation, or press escape to cancel.
+
 ## Features
 
 ### Lighting
 - point, spot, and directional lights
 - up to 8 lights in total
-- shadow maps (functional for spot and directional lights)
+- realtime shadow maps (functional for spot and directional lights)
 - lights as scene objects (can be transformed, parented, etc)
 
 ### Shading
@@ -55,5 +57,11 @@ While in debug/fly mode, you gain a debug overlay which is drawn on top of the p
 - support for multiple render passes sent to the post processing shader (colour, normal, depth, AO)
 - object shader and material sorting to minimise context switches required
 - viewport resizing at runtime
+- simple object manipulation with user input
 - (INCOMPLETE) frustrum culling based on object bounding boxes
 - (INCOMPLETE) ambient occlusion using compute shaders
+
+## Credits
+Every part of the project is created by me, aside from:
+- DDSTextureLoader.h/.cpp, supplied by the course
+- Skybox background is a modified version of NASA's 2020 Deep Star Maps (https://svs.gsfc.nasa.gov/4851/); NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC. Constellation figures based on those developed for the IAU by Alan MacRobert of Sky and Telescope magazine (Roger Sinnott and Rick Fienberg).

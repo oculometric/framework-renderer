@@ -172,6 +172,14 @@ FTransform FTransform::operator=(FTransform&& other) noexcept
 	return *this;
 }
 
+void FTransform::setTransform(XMFLOAT4X4 t)
+{
+	local_to_world = t;
+
+	updateLocalFromWorld();
+	updateParamsFromLocal();
+}
+
 XMFLOAT3 FTransform::getPosition() const
 {
 	return XMFLOAT3(local_to_world._41, local_to_world._42, local_to_world._43);
@@ -193,7 +201,7 @@ XMFLOAT4 FTransform::getQuaternion() const
 	XMMatrixDecompose(&s, &q, &p, XMLoadFloat4x4(&local_to_world));
 	XMFLOAT4 quat;
 	if (XMVector3Length(q).m128_f32[0] < 0.0001f)
-		quat = XMFLOAT4(0, 0, 1, 0);
+		quat = XMFLOAT4(0, 0, -1, 0);
 	else
 		XMStoreFloat4(&quat, q);
 	return quat;

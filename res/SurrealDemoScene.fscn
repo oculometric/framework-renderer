@@ -287,8 +287,9 @@
       "children": [
         {
           "class": "mesh",
+          "name": "monitor",
           "data": "res/monitor.obj",
-          "position": [ 0, 0, 1.6 ],
+          "position": [ 0, 0, 1.4 ],
           "rotation": [ -10, 20, -85 ],
           "material": "res/monitor.fmat"
         },
