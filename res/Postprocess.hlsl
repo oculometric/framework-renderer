@@ -16,10 +16,11 @@ cbuffer PostProcessConstants : register(b0)
 Texture2D screen : register(t0);
 Texture2D normal : register(t1);
 Texture2D depth  : register(t2);
-TextureCube skybox : register(t3);
+Texture2D ambient_occlusion  : register(t3);
+TextureCube skybox : register(t4);
 SamplerState bilinear_sampler : register(s0);
 SamplerState nearest_sampler : register(s1);
-Texture2D text_masks : register(t4);
+Texture2D text_masks : register(t5);
 
 struct Varyings
 {
@@ -95,6 +96,9 @@ float3 sharpen(float2 uv, float2 pixels_in_image)
 float4 PS_main(Varyings input) : SV_TARGET
 {
     float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
+    
+    float ao = ambient_occlusion.Sample(bilinear_sampler, screen_uv).r;
+    return float4(screen_uv, ao, 1);
     
     // text shader
     float2 text_resolution = screen_size / 8.0f;

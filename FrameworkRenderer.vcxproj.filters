@@ -223,6 +223,9 @@
     <None Include="res\Sand.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="res\AmbientOcclusion.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">

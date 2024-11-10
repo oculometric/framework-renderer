@@ -1,7 +1,7 @@
 #if !defined(COMMON_H)
 #define COMMON_H
 
-#define NUM_LIGHTS 16
+#define NUM_LIGHTS 8
 
 #include "Light.hlsl"
 

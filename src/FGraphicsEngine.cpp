@@ -3,6 +3,7 @@
 #include "FGraphicsEngine.h"
 
 #include <format>
+#include <random>
 
 #include "DDSTextureLoader.h"
 #include "FResourceManager.h"
@@ -101,7 +102,7 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     depth_buffer_view_descriptor.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     depth_buffer_view_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     depth_buffer_view_descriptor.Texture2D.MipSlice = 0;
-    if (depth_buffer == nullptr) return -1;
+    if (depth_buffer == nullptr) return E_FAIL;
     getDevice()->CreateDepthStencilView(depth_buffer, &depth_buffer_view_descriptor, &depth_buffer_view);
 
     // create a shader resource view around the depth buffer
@@ -115,12 +116,23 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     hr = getDevice()->CreateTexture2D(&colour_buffer_descriptor, nullptr, &normal_buffer);
 
     // create a render target view around that texture
-    if (normal_buffer == nullptr) return -1;
+    if (normal_buffer == nullptr) return E_FAIL;
     hr = getDevice()->CreateRenderTargetView(normal_buffer, &colour_buffer_view_descriptor, &normal_buffer_view);
 
     // create a shader resource view around the normal buffer
     colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     hr = getDevice()->CreateShaderResourceView(normal_buffer, &colour_buffer_resource_descriptor, &normal_buffer_resource);
+
+    // create ambient occlusion buffer resources
+    colour_buffer_descriptor.Format = DXGI_FORMAT_R8_UNORM;
+    hr = getDevice()->CreateTexture2D(&colour_buffer_descriptor, nullptr, &ao_buffer);
+    if (ao_buffer == nullptr) return E_FAIL;
+    colour_buffer_view_descriptor.Format = DXGI_FORMAT_R8_UNORM;
+    hr = getDevice()->CreateRenderTargetView(ao_buffer, &colour_buffer_view_descriptor, &ao_buffer_view);
+    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8_UNORM;
+    hr = getDevice()->CreateShaderResourceView(ao_buffer, &colour_buffer_resource_descriptor, &ao_buffer_resource);
+
+    if (FAILED(hr)) return hr;
 
     // create the shadow map texture
     D3D11_TEXTURE2D_DESC shadow_texture_descriptor = { };
@@ -156,7 +168,7 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     shadow_res_descriptor.Texture2DArray.MipLevels = 1;
     shadow_res_descriptor.Texture2DArray.MostDetailedMip = 0;
     getDevice()->CreateShaderResourceView(shadow_map_texture, &shadow_res_descriptor, &shadow_map_resource);
-    
+
     return hr;
 }
 
@@ -363,9 +375,24 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     // load gizmo shader
     gizmo_shader = FResourceManager::get()->loadShader("res/Gizmo.hlsl", true, FCullMode::OFF);
     if (gizmo_shader == nullptr)
-    {
-        FDebug::dialog("failed to load Gizmo.hlsl!");
         return E_FAIL;
+
+    // load AO shader
+    ao_shader = FResourceManager::get()->loadShader("res/AmbientOcclusion.hlsl", false, FCullMode::OFF);
+    if (ao_shader == nullptr)
+        return E_FAIL;
+
+    // create AO constant buffer and initialise samples array
+    ao_buffer_data = new FAmbientOcclusionConstantData();
+    ao_buffer_data->radius = 0.5f;
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    std::default_random_engine rand;
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        XMFLOAT4 s = XMFLOAT4((dist(rand) * 2.0f) - 1.0f, (dist(rand) * 2.0f) - 1.0f, dist(rand), 0.0f);
+        float fi = (float)i / (float)NUM_SAMPLES;
+        XMVECTOR v = XMVector4Normalize(XMLoadFloat4(&s)) * (0.05f + ((1.0f - 0.05f) * fi * fi));
+        XMStoreFloat4(&(ao_buffer_data->samples[i]), v);
     }
 
     return S_OK;
@@ -382,6 +409,10 @@ void FGraphicsEngine::resizeRenderTargets()
     if (normal_buffer_view) normal_buffer_view->Release();
     if (normal_buffer_resource) normal_buffer_resource->Release();
     if (normal_buffer) normal_buffer->Release();
+
+    if (ao_buffer_view) ao_buffer_view->Release();
+    if (ao_buffer_resource) ao_buffer_resource->Release();
+    if (ao_buffer) ao_buffer->Release();
 
     if (depth_buffer_view) depth_buffer_view->Release();
     if (depth_buffer_resource) depth_buffer_resource->Release();
@@ -726,6 +757,10 @@ FGraphicsEngine::~FGraphicsEngine()
     if (normal_buffer_view) normal_buffer_view->Release();
     if (normal_buffer) normal_buffer->Release();
 
+    if (ao_buffer_resource) ao_buffer_resource->Release();
+    if (ao_buffer_view) ao_buffer_view->Release();
+    if (ao_buffer) ao_buffer->Release();
+
     if (quad_index_buffer) quad_index_buffer->Release();
     if (quad_vertex_buffer) quad_vertex_buffer->Release();
     if (postprocess_sampler_state) postprocess_sampler_state->Release();
@@ -749,6 +784,8 @@ FGraphicsEngine::~FGraphicsEngine()
     if (common_buffer_data) delete common_buffer_data;
 
     if (uniform_buffer_data) delete uniform_buffer_data;
+
+    if (ao_buffer_data) delete ao_buffer_data;
 }
 
 void FGraphicsEngine::draw()
@@ -997,24 +1034,22 @@ void FGraphicsEngine::drawObject(FMesh* object)
 
 void FGraphicsEngine::performPostprocessing()
 {
-    ID3D11RenderTargetView* targets[] = { colour_buffer_view, nullptr };
+    // bind the AO buffer as the render target
+    ID3D11RenderTargetView* targets[] = { ao_buffer_view, nullptr };
     getContext()->OMSetRenderTargets(2, targets, nullptr);
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     getContext()->PSSetSamplers(0, 1, &postprocess_sampler_state);
     getContext()->PSSetSamplers(1, 1, &nearest_sampler_state);
 
     // load input layout and shader
-    getContext()->IASetInputLayout(postprocess_shader->input_layout);
-    getContext()->VSSetShader(postprocess_shader->vertex_shader_pointer, nullptr, 0);
-    getContext()->PSSetShader(postprocess_shader->pixel_shader_pointer, nullptr, 0);
-    getContext()->RSSetState(postprocess_shader->rasterizer);
+    getContext()->IASetInputLayout(ao_shader->input_layout);
+    getContext()->VSSetShader(ao_shader->vertex_shader_pointer, nullptr, 0);
+    getContext()->PSSetShader(ao_shader->pixel_shader_pointer, nullptr, 0);
+    getContext()->RSSetState(ao_shader->rasterizer);
 
     // make sure this uniform buffer is bound
-    getContext()->VSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
-    getContext()->PSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
-
-    active_shader = postprocess_shader;
-    active_mesh = nullptr;
+    getContext()->VSSetConstantBuffers(0, 1, &ao_shader->uniform_buffer);
+    getContext()->PSSetConstantBuffers(0, 1, &ao_shader->uniform_buffer);
 
     // update uniform buffer contents
     XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
@@ -1031,8 +1066,51 @@ void FGraphicsEngine::performPostprocessing()
     pp_uniform_buffer_data->fog_colour = getScene()->fog_colour;
     pp_uniform_buffer_data->output_mode = (int)output_mode;
 
+    // use some of the same data for the AO constant buffer
+    ao_buffer_data->projection_matrix = pp_uniform_buffer_data->projection_matrix;
+    ao_buffer_data->projection_matrix_inv = pp_uniform_buffer_data->projection_matrix_inv;
+    ao_buffer_data->screen_size = pp_uniform_buffer_data->screen_size;
+    ao_buffer_data->view_matrix = pp_uniform_buffer_data->view_matrix;
+    ao_buffer_data->view_matrix_inv = pp_uniform_buffer_data->view_matrix_inv;
+
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
+    getContext()->Map(ao_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
+    memcpy(constant_buffer_resource.pData, ao_buffer_data, sizeof(FPostProcessConstantData));
+    getContext()->Unmap(ao_shader->uniform_buffer, 0);
+
+    // bind vertex buffers
+    UINT stride = { sizeof(FVertex) };
+    UINT offset = 0;
+    getContext()->IASetVertexBuffers(0, 1, &quad_vertex_buffer, &stride, &offset);
+    getContext()->IASetIndexBuffer(quad_index_buffer, DXGI_FORMAT_R16_UINT, 0);
+
+    // bind spicy textures
+    getContext()->PSSetShaderResources(0, 1, &normal_buffer_resource);
+    getContext()->PSSetShaderResources(1, 1, &depth_buffer_resource);
+
+    // draw the quad
+    getContext()->DrawIndexed(6, 0, 0);
+
+    // now, swap some data around and bind different stuff, we're doing the real post processing now
+    targets[0] = colour_buffer_view;
+    getContext()->OMSetRenderTargets(2, targets, nullptr);
+    getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // load input layout and shader
+    getContext()->IASetInputLayout(postprocess_shader->input_layout);
+    getContext()->VSSetShader(postprocess_shader->vertex_shader_pointer, nullptr, 0);
+    getContext()->PSSetShader(postprocess_shader->pixel_shader_pointer, nullptr, 0);
+    getContext()->RSSetState(postprocess_shader->rasterizer);
+
+    // make sure this uniform buffer is bound
+    getContext()->VSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
+    getContext()->PSSetConstantBuffers(0, 1, &postprocess_shader->uniform_buffer);
+
+    active_shader = postprocess_shader;
+    active_mesh = nullptr;
+
+    // write uniform buffer data onto GPU
     getContext()->Map(postprocess_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
     memcpy(constant_buffer_resource.pData, uniform_buffer_data, sizeof(FPostProcessConstantData));
     getContext()->Unmap(postprocess_shader->uniform_buffer, 0);
@@ -1041,18 +1119,13 @@ void FGraphicsEngine::performPostprocessing()
     getContext()->PSSetShaderResources(0, 1, &colour_buffer_resource);
     getContext()->PSSetShaderResources(1, 1, &normal_buffer_resource);
     getContext()->PSSetShaderResources(2, 1, &depth_buffer_resource);
+    getContext()->PSSetShaderResources(3, 1, &ao_buffer_resource);
 
     // bind skybox texture
-    getContext()->PSSetShaderResources(3, 1, &skybox_texture);
+    getContext()->PSSetShaderResources(4, 1, &skybox_texture);
 
     // bind text texture
-    getContext()->PSSetShaderResources(4, 1, &post_process_text_texture);
-
-    // bind vertex buffers
-    UINT stride = { sizeof(FVertex) };
-    UINT offset = 0;
-    getContext()->IASetVertexBuffers(0, 1, &quad_vertex_buffer, &stride, &offset);
-    getContext()->IASetIndexBuffer(quad_index_buffer, DXGI_FORMAT_R16_UINT, 0);
+    getContext()->PSSetShaderResources(5, 1, &post_process_text_texture);
 
     // draw the quad
     getContext()->DrawIndexed(6, 0, 0);
@@ -1062,6 +1135,7 @@ void FGraphicsEngine::performPostprocessing()
     getContext()->PSSetShaderResources(0, 1, &tmp);
     getContext()->PSSetShaderResources(1, 1, &tmp);
     getContext()->PSSetShaderResources(2, 1, &tmp);
+    getContext()->PSSetShaderResources(4, 1, &tmp);
 }
 
 void FGraphicsEngine::drawGizmos()

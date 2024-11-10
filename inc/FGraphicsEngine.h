@@ -52,6 +52,21 @@ struct FPostProcessConstantData
 	int output_mode;
 };
 
+#define NUM_SAMPLES 64
+
+// mirrors the constant buffer used by the ambient occlusion shader
+struct FAmbientOcclusionConstantData
+{
+	XMMATRIX projection_matrix;
+	XMMATRIX view_matrix;
+	XMMATRIX view_matrix_inv;
+	XMMATRIX projection_matrix_inv;
+	XMFLOAT2 screen_size;
+	float radius;
+	float _;
+	XMFLOAT4 samples[NUM_SAMPLES];
+};
+
 // encapsulates all functionality which involves talking to the DirectX graphics API
 class FGraphicsEngine
 {
@@ -98,12 +113,18 @@ private:
 	ID3D11RenderTargetView* normal_buffer_view				= nullptr;	// render target view for the normal texture
 	ID3D11ShaderResourceView* normal_buffer_resource		= nullptr;	// shader resource view for the normal texture, for use with post-processing
 
+	ID3D11Texture2D* ao_buffer								= nullptr;	// texture used as the ambient occlusion render target, to which the AO shader draws
+	ID3D11RenderTargetView* ao_buffer_view					= nullptr;	// render target view for the ambient occlusion texture
+	ID3D11ShaderResourceView* ao_buffer_resource			= nullptr;	// shader resource view for the ambient occlusion texture
+
 	FShader* postprocess_shader								= nullptr;	// shader which handles post-processing
 	ID3D11Buffer* quad_vertex_buffer						= nullptr;	// vertex+index buffers for a simple quad, used for drawing the post-processing shader
 	ID3D11Buffer* quad_index_buffer							= nullptr;
 	ID3D11SamplerState* postprocess_sampler_state			= nullptr;	// sampler state used for sampling screen textures in the post-processing shader, prevents pixel wrapping
 	ID3D11ShaderResourceView* skybox_texture				= nullptr;	// skybox texture, used with post-processing shader
 	ID3D11ShaderResourceView* post_process_text_texture     = nullptr;	// text atlas texture, used with post-processing shader for ASCII effect
+	FShader* ao_shader										= nullptr;	// shader applied to fullscreen quad for computing ambient occlusion pass
+	FAmbientOcclusionConstantData* ao_buffer_data			= nullptr;	// constant buffer data to be passed to the AO shader
 
 	FShader* gizmo_shader									= nullptr;	// shader which is used to draw gizmos
 	ID3D11Buffer* gizmo_vertex_buffer						= nullptr;	// vertex+index buffers for a simple set of axes, coloured according to axis, used for gizmos
