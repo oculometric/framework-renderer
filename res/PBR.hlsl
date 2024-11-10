@@ -46,7 +46,7 @@ struct PBRTextures
 void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants constants, PBRVaryings varyings, out float4 colour, out float3 normal)
 {
     // calculate direciton from the camera to the target fragment
-    float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 1), constants.view_matrix_inv).xyz);
+    float3 view_dir = normalize(mul(float4(normalize(varyings.view_position), 0), constants.view_matrix_inv).xyz);
     
     float3 surface_normal = normalize(varyings.normal);
     
@@ -75,6 +75,9 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
     for (uint i = 0; i < NUM_LIGHTS; i++)
     {
         Light light = constants.lights[i];
+        
+        // if light has zero strength, skip it, it's probably disabled
+        if (light.strength == 0) continue;
         
         // sample shadow map
         float4 reprojected_point = mul(float4(varyings.world_position, 1), light.light_matrix);
@@ -107,42 +110,53 @@ void evaluateSurface(PBRSurface surface, PBRTextures textures, PBRConstants cons
         }
         // light colour with strength applied
         float3 light_col = light.colour.rgb * light_strength;
+        
+        // light direction
+        float3 w_i = -light_dir;
+        // view direction
+        float3 w_o = -view_dir;
+        // surface normal
+        float3 n = surface_normal;
+        // roughness factor
+        float a = surface.roughness_factor;
+        
         // dot product between the light direction and the surface normal
-        float dir_dot_norm = dot(-light_dir, surface_normal);
+        float wi_dot_n = dot(w_i, n);
+        // dot product between the view direction and the surface normal
+        float wo_dot_n = dot(w_o, n);
+        // vector which is halfway between the light vector and surface normal
+        float3 h = normalize(w_i + n);
         
-        //float3 halfway_vec = normalize(-light_dir + -view_dir);
+        // Trowbridge-Reitz GGX normal distribution function, ref https://learnopengl.com/PBR/Theory
+        float n_dot_h = dot(n, h);
+        float a2 = a * a;
+        float d = (max(n_dot_h, 0.0f) * max(n_dot_h, 0.0f) * (a2 - 1.0f)) + 1.0f;
+        float ndf_trggx = a2 / (3.14159f * d * d);
         
-        //// Trowbridge-Reitz GGX normal distribution function, ref https://learnopengl.com/PBR/Theory
-        //float n_dot_h = saturate(dot(surface_normal, halfway_vec));
-        //float d = (n_dot_h * n_dot_h * ((surface.roughness_factor * surface.roughness_factor) - 1)) + 1;
-        //float trggx = (surface.roughness_factor * surface.roughness_factor) / (3.14159 * d * d);
+        // Schlick GGX geometry function, ref as above
+        float k = ((a + 1) * (a + 1)) / 8;
+        float gf_sggx = (saturate(wo_dot_n) / ((saturate(wo_dot_n) * (1.0f - k)) + k))
+                      * (saturate(wi_dot_n) / ((saturate(wi_dot_n) * (1.0f - k)) + k)); // modified to add saturate functions
         
-        //// Schlick GGX geometry function, ref as above
-        //float k = (surface.roughness_factor + 1);
-        //k *= k;
-        //float sggx = (dot(surface_normal, -view_dir) / ((dot(surface_normal, -view_dir) * (1 - k)) + k))
-        //           * (dot(surface_normal, -light_dir) / ((dot(surface_normal, -light_dir) * (1 - k)) + k));
+        // Fresnel-Schlick fresnel approximation, ref as above
+        float3 f0 = lerp(float3(0.04f, 0.04f, 0.04f), surface_colour, surface.metallic_factor);
+        float3 ff_fs = f0 + ((1.0f - f0) * pow(saturate(1.0f - max(n_dot_h, 0.0f)), 5.0f));
         
-        //overall_colour += sggx;
-        if (surface.roughness_factor > 0)
-        {
-            // diffuse component of the light's contribution
-            float3 diffuse_light = saturate(dir_dot_norm) * light_col * surface_colour;
-            overall_colour += diffuse_light * surface.roughness_factor;
-        }
+        // Cook-Torrance specular BRDF, ref as above
+        float3 f_ct = (ndf_trggx * gf_sggx * ff_fs) / ((4.0f * max(wi_dot_n, 0.0f) * max(wo_dot_n, 0.0f)) + 0.0001f);
         
-        if (surface.roughness_factor < 1)
-        {
-            // specular exponent. the higher the roughness, the more spread-out the specular highlight should be (and the less it should contribute)
-            // TODO: make this physically accurate (energy-preserving)
-            float specular_exp = 10.0f * (1.0f - surface.roughness_factor);
-            // specular component of the light's contribution
-            float specular_highlight = pow(saturate(dot(reflect(view_dir, surface_normal), light_dir)), specular_exp) * (dir_dot_norm > 0.0f);
-            float3 specular_colour = lerp(specular_colour.rgb, surface_colour, surface.metallic_factor);
-            float3 specular_light = specular_highlight * light_col * surface_colour;
-            // TODO: as above, energy preservation
-            overall_colour += specular_light * (1.0f - surface.roughness_factor);
-        }
+        // Lambertian diffuse BRDF, ref as above
+        float3 f_lambert = surface_colour / 3.14159f;
+        
+        float3 k_s = ff_fs;
+        float3 k_d = float3(1.0f, 1.0f, 1.0f) - k_s;
+        k_d *= 1.0f - surface.metallic_factor;
+        
+        // Cook-Torrance BRDF (combined), ref as above
+        float3 f_r = ((k_d * f_lambert) + (f_ct));
+        
+        float3 l = f_r * saturate(wi_dot_n) * light_col;
+        overall_colour += l;
     }
     
     // apply emission component

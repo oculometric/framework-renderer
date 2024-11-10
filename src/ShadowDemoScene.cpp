@@ -6,9 +6,11 @@
 #include "FResourceManager.h"
 #include "FApplication.h"
 #include "FDebug.h"
+#include "FGraphicsEngine.h"
 
 void ShadowDemoScene::start()
 {
+	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SCENE_COLOUR;
 }
 
 void ShadowDemoScene::update(float delta_time)

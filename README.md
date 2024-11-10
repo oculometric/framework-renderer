@@ -35,7 +35,7 @@ Also while in this mode, you can actually edit the scene! First, click to select
 - use of both solid and wireframe rasterisers
 - use of both triangle (for normal meshes) and line (for debug gizmos) assembler modes
 - normal mapping using normal texture
-- (INCOMPLETE) PBR uber-shader
+- PBR-based uber-shader, following maths from [https://learnopengl.com/PBR/Theory]
 
 ### Scene Graph
 - transform/object heirarchy

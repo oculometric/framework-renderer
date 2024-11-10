@@ -12,12 +12,17 @@
 		},
 		{
 			"param": "roughness_factor",
-			"value": 0.5,
+			"value": 0.8,
 			"type": "float"
 		},
 		{
 			"param": "normal_strength",
 			"value": 1,
+			"type": "float"
+		},
+		{
+			"param": "metallic_factor",
+			"value": 0.1,
 			"type": "float"
 		},
 		{

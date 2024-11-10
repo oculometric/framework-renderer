@@ -1,9 +1,14 @@
 {
 	"name": "shadow demo scene",
 	"objects": [
+		//{
+		//	"class": "mesh",
+		//	"data": "res/suzanne.obj",
+		//	"position": [ 0, 0, 3 ]
+		//},
 		{
 			"class": "mesh",
-			"data": "res/suzanne.obj",
+			"data": "res/sphere.obj",
 			"position": [ 0, 0, 3 ]
 		},
 		{
@@ -55,7 +60,7 @@
 				}
 			]
 		}
-		
+
 	],
 	"ambient_light": [ 0.02, 0.02, 0.02 ]
 }
