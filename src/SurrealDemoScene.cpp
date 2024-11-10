@@ -44,6 +44,7 @@ void SurrealDemoScene::update(float delta_time)
 		if (GetAsyncKeyState('3') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SCENE_NORMAL;
 		if (GetAsyncKeyState('4') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SCENE_DEPTH;
 		if (GetAsyncKeyState('5') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
+		if (GetAsyncKeyState('6') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::AMBIENT_OCCLUSION;
 
 		if (interaction_mode == 0)
 		{
@@ -183,7 +184,7 @@ void SurrealDemoScene::update(float delta_time)
 	}
 }
 
-#define VIRTUAL_MACHINE_DEV_ENV
+//#define VIRTUAL_MACHINE_DEV_ENV
 XMFLOAT2 SurrealDemoScene::getMouseDeltaAndReset()
 {
 #ifdef VIRTUAL_MACHINE_DEV_ENV

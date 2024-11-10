@@ -98,7 +98,6 @@ float4 PS_main(Varyings input) : SV_TARGET
     float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
     
     float ao = ambient_occlusion.Sample(bilinear_sampler, screen_uv).r;
-    return float4(screen_uv, ao, 1);
     
     // text shader
     float2 text_resolution = screen_size / 8.0f;
@@ -139,6 +138,8 @@ float4 PS_main(Varyings input) : SV_TARGET
             return float4((f.rrr - clipping_distances.r) / (clipping_distances.g - clipping_distances.r), 1);
         case 4:
             return float4(sharpen(screen_uv, screen_size), 1);
+        case 5:
+            return float4(ao, ao, ao, 1);
     }
     
     return float4(0, 0, 0, 1);

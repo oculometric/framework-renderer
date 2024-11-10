@@ -31,14 +31,21 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     return output;
 }
 
-float PS_main(Varyings input) : SV_TARGET
+float linearise(float d, float near, float far)
 {
-    float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
+    return (2.0f * near) / ((far + near) - (d * (far - near)));
+}
+
+float4 PS_main(Varyings input) : SV_TARGET
+{
+    float2 screen_uv = (input.uv * float2(0.5f, -0.5f)) + 0.5f;
     
     // view space normal
-    float3 n = mul(float4(normal.Sample(bilinear_sampler, screen_uv).xyz, 0.0f), view_matrix);
+    float3 n = normalize(mul(float4(normal.Sample(bilinear_sampler, screen_uv).xyz, 0.0f), view_matrix)).xyz;
     // depth from depth buffer
     float d = depth.Sample(bilinear_sampler, screen_uv).x;
+    // linearised depth
+    float l = linearise(d, 1.0f, 0.01f);
     // view space position
     float4 ndc = float4(input.position.xy, d, 1.0f);
     float4 p = mul(ndc, projection_matrix_inv);
@@ -50,7 +57,7 @@ float PS_main(Varyings input) : SV_TARGET
     // random bitangent
     float3 b = normalize(cross(t, n));
     // tangent bitangent normal matrix
-    float3x3 tbn = float3x3(t, b, n);
+    float3x3 tbn = float3x3(t, b, -n);
     
     // sample occlusion
     float occlusion = 0.0f;
@@ -63,15 +70,14 @@ float PS_main(Varyings input) : SV_TARGET
         ws /= ws.w;
         // sample depth
         float sd = depth.Sample(bilinear_sampler, (ws.xy * float2(0.5f, -0.5f)) + 0.5f).x;
+        float sl = linearise(sd, 1.0f, 0.01f);
         
         // test occlusion
-        float r = smoothstep(0.0f, 1.0f, radius / abs(d - sd));
-        occlusion += ((sd >= d + 0.025f) ? 1.0f : 0.0f) * r;
+        float r = 1.0f; //float r = smoothstep(0.0f, 1.0f, radius / abs(l - sl));
+        occlusion += ((sl >= l + 0.025f) ? 1.0f : 0.0f) * r;
     }
     
     occlusion = 1.0f - (occlusion / NUM_SAMPLES);
     
-    return 1.0f;
-    
-    return occlusion;
+    return float4(occlusion, 0, 0, 1);
 }

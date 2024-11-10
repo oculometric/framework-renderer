@@ -81,7 +81,8 @@ public:
 		SCENE_COLOUR,
 		SCENE_NORMAL,
 		SCENE_DEPTH,
-		SHARPENED
+		SHARPENED,
+		AMBIENT_OCCLUSION
 	};
 
 	FOutputMode output_mode = POST_PROCESS;

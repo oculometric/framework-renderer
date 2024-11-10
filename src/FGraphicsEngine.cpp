@@ -124,12 +124,12 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     hr = getDevice()->CreateShaderResourceView(normal_buffer, &colour_buffer_resource_descriptor, &normal_buffer_resource);
 
     // create ambient occlusion buffer resources
-    colour_buffer_descriptor.Format = DXGI_FORMAT_R8_UNORM;
+    //colour_buffer_descriptor.Format = DXGI_FORMAT_R32_TYPELESS;
     hr = getDevice()->CreateTexture2D(&colour_buffer_descriptor, nullptr, &ao_buffer);
     if (ao_buffer == nullptr) return E_FAIL;
-    colour_buffer_view_descriptor.Format = DXGI_FORMAT_R8_UNORM;
+    //colour_buffer_view_descriptor.Format = DXGI_FORMAT_R32_TYPELESS;
     hr = getDevice()->CreateRenderTargetView(ao_buffer, &colour_buffer_view_descriptor, &ao_buffer_view);
-    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8_UNORM;
+    //colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R32_TYPELESS;
     hr = getDevice()->CreateShaderResourceView(ao_buffer, &colour_buffer_resource_descriptor, &ao_buffer_resource);
 
     if (FAILED(hr)) return hr;
@@ -813,6 +813,7 @@ void FGraphicsEngine::draw()
     getContext()->OMSetRenderTargets(2, targets, depth_buffer_view);
     getContext()->ClearRenderTargetView(colour_buffer_intermediate_view, clear);
     getContext()->ClearRenderTargetView(normal_buffer_view, zero);
+    getContext()->ClearRenderTargetView(ao_buffer_view, zero);
     getContext()->ClearDepthStencilView(depth_buffer_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     getContext()->PSSetSamplers(0, 1, &bilinear_sampler_state);
