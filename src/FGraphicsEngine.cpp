@@ -1077,7 +1077,7 @@ void FGraphicsEngine::performPostprocessing()
     // write uniform buffer data onto GPU
     D3D11_MAPPED_SUBRESOURCE constant_buffer_resource;
     getContext()->Map(ao_shader->uniform_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constant_buffer_resource);
-    memcpy(constant_buffer_resource.pData, ao_buffer_data, sizeof(FPostProcessConstantData));
+    memcpy(constant_buffer_resource.pData, ao_buffer_data, sizeof(FAmbientOcclusionConstantData));
     getContext()->Unmap(ao_shader->uniform_buffer, 0);
 
     // bind vertex buffers

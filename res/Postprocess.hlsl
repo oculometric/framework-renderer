@@ -97,13 +97,14 @@ float4 PS_main(Varyings input) : SV_TARGET
 {
     float2 screen_uv = (input.uv / float2(2.0f, -2.0f)) + 0.5f;
     
-    float ao = ambient_occlusion.Sample(bilinear_sampler, screen_uv).r;
-    
     // text shader
     float2 text_resolution = screen_size / 8.0f;
     float2 text_uv = screen_uv * text_resolution;
     // sample the pixel (floored for pixelation) and fog it
-    float3 colour = fog((floor(text_uv) + 0.5f) / text_resolution).rgb;
+    float2 pixelated_uv = (floor(text_uv) + 0.5f) / text_resolution;
+    float3 colour = fog(pixelated_uv).rgb;
+    float pixelated_ao = ambient_occlusion.Sample(bilinear_sampler, pixelated_uv).r;
+    colour = colour * pixelated_ao;
     
     // number of colour luminosity divisions
     const float divs = 4.0f;
@@ -137,9 +138,10 @@ float4 PS_main(Varyings input) : SV_TARGET
             f = length(view_pos.xyz);
             return float4((f.rrr - clipping_distances.r) / (clipping_distances.g - clipping_distances.r), 1);
         case 4:
-            return float4(sharpen(screen_uv, screen_size), 1);
+            float ao = ambient_occlusion.Sample(bilinear_sampler, screen_uv).r;
+            return float4(sharpen(screen_uv, screen_size) * ao, 1);
         case 5:
-            return float4(ao, ao, ao, 1);
+            return float4(ambient_occlusion.Sample(bilinear_sampler, screen_uv).rrr, 1);
     }
     
     return float4(0, 0, 0, 1);

@@ -1,5 +1,7 @@
 #define NUM_SAMPLES 64
 
+#include "Dither.hlsl"
+
 cbuffer AmbientOcclusionConstants : register(b0)
 {
     float4x4 projection_matrix;
@@ -31,53 +33,54 @@ Varyings VS_main(float3 position : POSITION, float4 colour : COLOR, float3 norma
     return output;
 }
 
-float linearise(float d, float near, float far)
-{
-    return (2.0f * near) / ((far + near) - (d * (far - near)));
-}
-
 float4 PS_main(Varyings input) : SV_TARGET
 {
     float2 screen_uv = (input.uv * float2(0.5f, -0.5f)) + 0.5f;
     
-    // view space normal
-    float3 n = normalize(mul(float4(normal.Sample(bilinear_sampler, screen_uv).xyz, 0.0f), view_matrix)).xyz;
-    // depth from depth buffer
-    float d = depth.Sample(bilinear_sampler, screen_uv).x;
-    // linearised depth
-    float l = linearise(d, 1.0f, 0.01f);
-    // view space position
-    float4 ndc = float4(input.position.xy, d, 1.0f);
-    float4 p = mul(ndc, projection_matrix_inv);
-    p /= p.w;
-    // random vector
-    float3 v = normalize((screen_uv.x * float3(345.1456, -1243.6403, -105.2631)) + (screen_uv.y * float3(102.4677, -2357.3530, 23.0455)));
-    // random tangent
-    float3 t = normalize(cross(n, n+v));
-    // random bitangent
-    float3 b = normalize(cross(t, n));
-    // tangent bitangent normal matrix
-    float3x3 tbn = float3x3(t, b, -n);
+    float3 world_normal = normal.Sample(bilinear_sampler, screen_uv).xyz;
+    float3 view_normal = normalize(mul(float4(world_normal, 0.0f), view_matrix).xyz);
     
-    // sample occlusion
+    float z = depth.Sample(bilinear_sampler, screen_uv).x;
+    float4 clip_position = float4(input.uv, z, 1.0f);
+    float4 view_position = mul(clip_position, projection_matrix_inv);
+    view_position /= view_position.w;
+    float linear_depth = -view_position.z;
+    
+    float2 pixel_uv = floor(screen_uv * screen_size);
+    float dither = (dither_map_4[(pixel_uv.x % 4) + ((pixel_uv.y % 4) * 4)] / 16) * 2 - 1;
+    
+    // FIXME: fix the back quarter being wrong
+    float3 view_normal_perp_1 = view_normal.zxy;
+    float3 view_normal_perp_2 = view_normal.yzx;
+    float anti_dither = sqrt(1 - (dither * dither));
+    
+    float3 view_tangent = (dither * view_normal_perp_1) + (anti_dither * view_normal_perp_2);
+    float3 view_bitangent = normalize(cross(view_tangent, view_normal));
+    view_tangent = normalize(cross(view_bitangent, view_normal));
+    float3x3 tbn = float3x3(view_tangent, view_bitangent, view_normal);
+    
     float occlusion = 0.0f;
     for (int i = 0; i < NUM_SAMPLES; i++)
     {
-        // sample position
-        float3 s = (mul(samples[i].xyz, tbn) * radius) + p.xyz;
-        // sample position in clip space
-        float4 ws = mul(float4(s, 1.0f), projection_matrix);
-        ws /= ws.w;
-        // sample depth
-        float sd = depth.Sample(bilinear_sampler, (ws.xy * float2(0.5f, -0.5f)) + 0.5f).x;
-        float sl = linearise(sd, 1.0f, 0.01f);
+        float3 view_sample = (mul(samples[i].xyz, tbn) * radius) + view_position.xyz;
+        float4 sample_ndc = mul(float4(view_sample, 1.0f), projection_matrix);
+        sample_ndc /= sample_ndc.w;
+        float linear_sample_depth = -view_sample.z;
         
-        // test occlusion
-        float r = 1.0f; //float r = smoothstep(0.0f, 1.0f, radius / abs(l - sl));
-        occlusion += ((sl >= l + 0.025f) ? 1.0f : 0.0f) * r;
+        if (abs(sample_ndc.x) > 1 || abs(sample_ndc.y) > 1)
+            continue;
+        
+        float sample_z = depth.Sample(bilinear_sampler, (sample_ndc.xy * float2(0.5f, -0.5f)) + 0.5f).x;
+        float4 resample_ndc = float4(view_sample.xy, sample_z, 1.0f);
+        float4 view_resample = mul(resample_ndc, projection_matrix_inv);
+        view_resample /= view_resample.w;
+        float linear_resample_depth = -view_resample.z;
+        
+        float r = smoothstep(0.0f, 1.0f, radius / abs(linear_depth - linear_resample_depth));
+        occlusion += ((linear_sample_depth > linear_resample_depth + 0.025f) ? 1.0f : 0.0f) * r;
     }
     
-    occlusion = 1.0f - (occlusion / NUM_SAMPLES);
+    occlusion = pow(1.0f - (occlusion / NUM_SAMPLES), 3.0f);
     
     return float4(occlusion, 0, 0, 1);
 }
