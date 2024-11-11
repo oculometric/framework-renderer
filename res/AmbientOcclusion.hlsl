@@ -49,7 +49,6 @@ float4 PS_main(Varyings input) : SV_TARGET
     float2 pixel_uv = floor(screen_uv * screen_size);
     float dither = (dither_map_4[(pixel_uv.x % 4) + ((pixel_uv.y % 4) * 4)] / 16) * 2 - 1;
     
-    // FIXME: fix the back quarter being wrong
     float3 view_normal_perp_1 = view_normal.zxy;
     float3 view_normal_perp_2 = view_normal.yzx;
     float anti_dither = sqrt(1 - (dither * dither));
@@ -80,7 +79,7 @@ float4 PS_main(Varyings input) : SV_TARGET
         occlusion += ((linear_sample_depth > linear_resample_depth + 0.025f) ? 1.0f : 0.0f) * r;
     }
     
-    occlusion = pow(1.0f - (occlusion / NUM_SAMPLES), 3.0f);
+    occlusion = pow(smoothstep(0, 1, 1 - (occlusion / NUM_SAMPLES)), 3);
     
     return float4(occlusion, 0, 0, 1);
 }

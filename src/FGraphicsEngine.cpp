@@ -113,14 +113,19 @@ HRESULT FGraphicsEngine::createSwapChainAndFrameBuffer()
     if (FAILED(hr)) return hr;
 
     // create a normal buffer texture
+    colour_buffer_descriptor.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
     hr = getDevice()->CreateTexture2D(&colour_buffer_descriptor, nullptr, &normal_buffer);
 
+    if (FAILED(hr)) return hr;
+
     // create a render target view around that texture
-    if (normal_buffer == nullptr) return E_FAIL;
+    colour_buffer_view_descriptor.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
     hr = getDevice()->CreateRenderTargetView(normal_buffer, &colour_buffer_view_descriptor, &normal_buffer_view);
 
+    if (FAILED(hr)) return hr;
+
     // create a shader resource view around the normal buffer
-    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    colour_buffer_resource_descriptor.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
     hr = getDevice()->CreateShaderResourceView(normal_buffer, &colour_buffer_resource_descriptor, &normal_buffer_resource);
 
     // create ambient occlusion buffer resources
