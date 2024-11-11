@@ -31,5 +31,4 @@ One element of the framework which was never fully implemented was frustrum cull
 [7]: Gunnell, G. (2024) 'I Tried Turning Games Into Text', _YouTube_. Available at: https://www.youtube.com/watch?v=gg40RWiaHRY (Accessed: 11 November 2024).
 [8]: Lengyel, E. (2001) _Mathematics for 3D game programming and Computer Graphics, first edition_. Course Technology PTR.
 
-**ALSO FINISH THE UML DIAGRAM**
 **WRITE SOME MORE**

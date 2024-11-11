@@ -25,7 +25,7 @@ struct FCommonConstantData
 
 	FLOAT time;                 // current world time in seconds
 	XMFLOAT2 screen_size;		// size of screen in pixels
-	XMFLOAT3 _;                 // padding
+	FLOAT _;					// padding
 };
 
 // mirrors the contant buffer used by the shadow mapping shader
