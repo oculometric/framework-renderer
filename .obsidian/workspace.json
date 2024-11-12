@@ -162,8 +162,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "7c48f28f669d9c89",
+  "active": "8d3a7064c0c85e2f",
   "lastOpenFiles": [
+    "shadow_mapping.png",
+    "res/cloud_atlas.png",
+    "res/SurrealDemoScene/cloud_atlas.dds",
+    "res/Clouds.hlsl",
+    "ascii_postprocess.png",
+    "ambient_occlusion.png",
     "x64/Debug/Framewor.a85993e6.tlog/unsuccessfulbuild",
     "res/SurrealDemoScene/OrreryGold.fmat",
     "res/SurrealDemoScene/TripodLamp - Copy.fmat",
@@ -172,9 +178,6 @@
     "x64/Debug/Framewor.a85993e6.tlog/link.33504.read.5.tlog",
     "x64/Debug/Framewor.a85993e6.tlog/link.33504-cvtres.write.1.tlog",
     "x64/Debug/Framewor.a85993e6.tlog/link.33504-cvtres.read.1.tlog",
-    "x64/Debug/Framewor.a85993e6.tlog/link.33504-rc.write.1.tlog",
-    "x64/Debug/Framewor.a85993e6.tlog/link.33504-rc.read.1.tlog",
-    "x64/Debug/Framewor.a85993e6.tlog/link.33504.read.3.tlog",
     "UML.png",
     "README.md",
     "Reflective Report.md"
