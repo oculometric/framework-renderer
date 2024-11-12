@@ -48,6 +48,9 @@ void SurrealDemoScene::update(float delta_time)
 
 		if (interaction_mode == 0)
 		{
+			if (GetAsyncKeyState('V') & 0x0001)
+				owner->getEngine()->enable_vsync = !(owner->getEngine()->enable_vsync);
+
 			if (GetAsyncKeyState(VK_TAB) & 0x0001)
 			{
 				fly_mode = !fly_mode;

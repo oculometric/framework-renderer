@@ -7,7 +7,7 @@
    viewBox="0 0 128 384"
    version="1.1"
    id="svg5"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    sodipodi:docname="signboard.svg"
    inkscape:export-filename="res/signboard.png"
    inkscape:export-xdpi="192"
@@ -27,13 +27,13 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
      showgrid="false"
-     inkscape:zoom="2.587745"
-     inkscape:cx="78.833115"
-     inkscape:cy="197.27601"
-     inkscape:window-width="2560"
-     inkscape:window-height="1384"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="2.4840495"
+     inkscape:cx="19.323287"
+     inkscape:cy="165.25436"
+     inkscape:window-width="1920"
+     inkscape:window-height="1094"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -52,165 +52,109 @@
        x="50.800304"
        y="56.373997"
        id="text10345-3"
-       transform="translate(-43.191585,-16.00943)"><tspan
+       transform="translate(-43.191585,-21.645389)"><tspan
          x="50.800304"
          y="56.373997"
-         id="tspan58"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan57">hello! this is my little demo scene for my </tspan></tspan><tspan
+         id="tspan1">hello! this is my little demo scene for my </tspan><tspan
          x="50.800304"
          y="63.04066"
-         id="tspan60"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan59">DirectX 11 graphics framework. i created </tspan></tspan><tspan
+         id="tspan2">DirectX 11 graphics framework. i created </tspan><tspan
          x="50.800304"
          y="69.707324"
-         id="tspan62"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan61">everything you see here using Blender, </tspan></tspan><tspan
+         id="tspan3">everything you see here using Blender, </tspan><tspan
          x="50.800304"
          y="76.373988"
-         id="tspan64"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan63">Inkscape, and Gimp.
-</tspan></tspan><tspan
+         id="tspan4">Inkscape, and Gimp.
+</tspan><tspan
          x="50.800304"
          y="83.040652"
-         id="tspan66"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan65">
-</tspan></tspan><tspan
+         id="tspan5">
+</tspan><tspan
          x="50.800304"
          y="89.707316"
-         id="tspan68"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan67">some features which i've implemented:
-</tspan></tspan><tspan
+         id="tspan6">some features which i've implemented:
+</tspan><tspan
          x="50.800304"
          y="96.373981"
-         id="tspan70"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan69"> - basic rendering, depth buffering
-</tspan></tspan><tspan
+         id="tspan7"> - basic rendering, depth buffering
+</tspan><tspan
          x="50.800304"
          y="103.04064"
-         id="tspan72"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan71"> - full-screen quad post-processing (sharpen, </tspan></tspan><tspan
+         id="tspan8"> - full-screen quad post-processing (sharpen, </tspan><tspan
          x="50.800304"
          y="109.70731"
-         id="tspan74"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan73">ASCII shader)
-</tspan></tspan><tspan
+         id="tspan10">ASCII shader)
+</tspan><tspan
          x="50.800304"
          y="116.37397"
-         id="tspan76"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan75"> - skybox (via post-processing)
-</tspan></tspan><tspan
+         id="tspan11"> - skybox (via post-processing)
+</tspan><tspan
          x="50.800304"
          y="123.04064"
-         id="tspan78"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan77"> - fog (via post-processing)
-</tspan></tspan><tspan
+         id="tspan12"> - fog (via post-processing)
+</tspan><tspan
          x="50.800304"
          y="129.7073"
-         id="tspan80"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan79"> - spot, directional, and point lights
-</tspan></tspan><tspan
+         id="tspan13"> - spot, directional, and point lights
+</tspan><tspan
          x="50.800304"
          y="136.37397"
-         id="tspan82"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan81"> - shadow mapping (for directional and spot </tspan></tspan><tspan
+         id="tspan14"> - shadow mapping (for directional and spot </tspan><tspan
          x="50.800304"
          y="143.04062"
-         id="tspan84"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan83">lights)
-</tspan></tspan><tspan
+         id="tspan15">lights)
+</tspan><tspan
          x="50.800304"
          y="149.70728"
-         id="tspan86"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan85"> - dithered screen-door transparency
-</tspan></tspan><tspan
+         id="tspan16"> - dithered screen-door transparency
+</tspan><tspan
          x="50.800304"
          y="156.37393"
-         id="tspan88"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan87"> - transform/object hierarchy
-</tspan></tspan><tspan
+         id="tspan17"> - transform/object hierarchy
+</tspan><tspan
          x="50.800304"
          y="163.04059"
-         id="tspan90"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan89"> - scene graph import from JSON (using my </tspan></tspan><tspan
+         id="tspan18"> - scene graph import from JSON (using my </tspan><tspan
          x="50.800304"
          y="169.70725"
-         id="tspan92"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan91">own JSON deserialiser)
-</tspan></tspan><tspan
+         id="tspan19">own JSON deserialiser)
+</tspan><tspan
          x="50.800304"
          y="176.3739"
-         id="tspan94"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan93"> - (unfinished) frustrum culling using object </tspan></tspan><tspan
+         id="tspan20"> - (unfinished) frustrum culling using object </tspan><tspan
          x="50.800304"
          y="183.04056"
-         id="tspan96"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan95">bounding boxes
-</tspan></tspan><tspan
+         id="tspan21">bounding boxes
+</tspan><tspan
          x="50.800304"
          y="189.70722"
-         id="tspan98"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan97"> - object sorting by shader to minimise context </tspan></tspan><tspan
+         id="tspan22"> - object sorting by shader to minimise context </tspan><tspan
          x="50.800304"
          y="196.37387"
-         id="tspan100"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan99">switching
-</tspan></tspan><tspan
+         id="tspan23">switching
+</tspan><tspan
          x="50.800304"
          y="203.04053"
-         id="tspan102"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan101"> - window resizing
-</tspan></tspan><tspan
+         id="tspan24"> - window resizing
+</tspan><tspan
          x="50.800304"
          y="209.70719"
-         id="tspan104"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan103"> - gizmos and bounding boxes for objects
-</tspan></tspan><tspan
+         id="tspan25"> - gizmos and bounding boxes for objects
+</tspan><tspan
          x="50.800304"
          y="216.37384"
-         id="tspan106"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan105"> - (unfinished) ability to select and move objects </tspan></tspan><tspan
+         id="tspan26"> - ability to select and move/rotate/scale objects </tspan><tspan
          x="50.800304"
          y="223.0405"
-         id="tspan108"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan107">at runtime
-</tspan></tspan><tspan
+         id="tspan27">in the scene at runtime
+</tspan><tspan
          x="50.800304"
          y="229.70716"
-         id="tspan110"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan109"> - (unfinished) PBR-based primary shader
-</tspan></tspan><tspan
+         id="tspan28"> - PBR-based primary shader
+</tspan><tspan
          x="50.800304"
          y="236.37381"
-         id="tspan112"><tspan
-           style="stop-color:#000000;stop-opacity:1"
-           id="tspan111"> - (unfinished) ray traced ambient occlusion</tspan></tspan></text>
+         id="tspan29"> - screen space ambient occlusion</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4px;line-height:1.05;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#e5a812;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;opacity:1;vector-effect:none;-inkscape-stroke:none;stop-opacity:1"
@@ -226,11 +170,11 @@
        xml:space="preserve"
        style="font-size:12px;line-height:1.25;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#f1e7fa;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
        x="6.955863"
-       y="27.622652"
+       y="21.986694"
        id="text10345-3-8"><tspan
          sodipodi:role="line"
          x="6.955863"
-         y="27.622652"
+         y="21.986694"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variation-settings:normal;fill:#f1e7fa;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
          id="tspan15651-6">Graphics Framework</tspan></text>
     <path
@@ -238,6 +182,29 @@
        d="M 8.3879723,254.36077 H 118.63705"
        id="path1266"
        sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;line-height:1.25;font-family:'Adelphe Floreal';-inkscape-font-specification:'Adelphe Floreal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;white-space:pre;inline-size:113.822;display:inline;opacity:1;vector-effect:none;fill:#f1e7fa;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       x="9.7297983"
+       y="229.34525"
+       id="text9"
+       transform="translate(-2.6409452,0.13899716)"><tspan
+         x="9.7297983"
+         y="229.34525"
+         id="tspan31"><tspan
+           style="baseline-shift:baseline;vector-effect:none;stop-color:#000000;stop-opacity:1"
+           id="tspan30">press TAB to switch to debug fly </tspan></tspan><tspan
+         x="9.7297983"
+         y="239.34525"
+         id="tspan33"><tspan
+           style="baseline-shift:baseline;vector-effect:none;stop-color:#000000;stop-opacity:1"
+           id="tspan32">mode, and V to toggle VSync!
+</tspan></tspan><tspan
+         x="9.7297983"
+         y="249.34525"
+         id="tspan35"><tspan
+           style="baseline-shift:baseline;vector-effect:none;stop-color:#000000;stop-opacity:1"
+           id="tspan34">see the README for more info!</tspan></tspan></text>
   </g>
   <g
      inkscape:label="icos:z18.50:x90.00:x0.00:z0.00:x0.00:x0.00"

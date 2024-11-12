@@ -14,6 +14,8 @@ You can use the number keys (not the numpad) 1-6 to view different render passes
 5. Sharpened post processing
 6. Ambient occlusion pass
 
+Press V to toggle VSync.
+
 When you've had enough of looking around the scene on foot, you can **press TAB to enter debug/fly mode.**
 
 When in debug/fly mode, you can move up and down (relative to the camera) using Q/E. **Hold shift to move faster.** You can use TAB to go back to walk mode (walk mode camera position is preserved).
@@ -58,8 +60,8 @@ Also while in this mode, you can actually edit the scene! First, click to select
 - object shader and material sorting to minimise context switches required
 - viewport resizing at runtime
 - simple object manipulation with user input
+- screen space ambient occlusion, using maths from [https://learnopengl.com/Advanced-Lighting/SSAO]
 - (INCOMPLETE) frustrum culling based on object bounding boxes
-- (INCOMPLETE) ambient occlusion using compute shaders
 
 ## Credits
 Every part of the project is created by me, aside from:

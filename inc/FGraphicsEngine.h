@@ -87,6 +87,7 @@ public:
 
 	FOutputMode output_mode = POST_PROCESS;
 	bool draw_gizmos = false;				// toggles drawing object axes and bounding box for debug
+	bool enable_vsync = true;				// toggles vsync, obviously
 
 private:
 	FApplication* application								= nullptr;	// reference to the owning application
