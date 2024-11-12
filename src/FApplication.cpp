@@ -30,6 +30,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PostQuitMessage(0);
         break;
 
+    case WM_MOVE:
     case WM_SIZE:
         if (application == nullptr) break;
         if (application->getWindow() != hWnd) break;

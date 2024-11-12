@@ -57,6 +57,7 @@ public:
 	inline HWND getWindow() { return window_handle; }
 	inline FGraphicsEngine* getEngine() { return engine; }
 	inline bool isFocused() { return GetFocus() == window_handle; }
+	inline void clearFocus() { SetFocus(info_window_handle); }
 
 	// set the text content of the stats window
 	void updateStats(std::wstring str);

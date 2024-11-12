@@ -45,6 +45,11 @@ void SurrealDemoScene::update(float delta_time)
 		if (GetAsyncKeyState('4') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SCENE_DEPTH;
 		if (GetAsyncKeyState('5') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 		if (GetAsyncKeyState('6') & 0xF000) owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::AMBIENT_OCCLUSION;
+		if (GetAsyncKeyState(VK_ESCAPE) & 0x0001)
+		{
+			owner->clearFocus();
+			return;
+		}
 
 		if (interaction_mode == 0)
 		{
@@ -196,7 +201,7 @@ XMFLOAT2 SurrealDemoScene::getMouseDeltaAndReset()
 
 	POINT cursor;
 	GetCursorPos(&cursor);
-	XMFLOAT2 window_center = XMFLOAT2(owner->getX() + (owner->getWidth() / 2.0f), owner->getY() + (owner->getHeight() / 2.0f));
+	XMFLOAT2 window_center = XMFLOAT2(floor(owner->getX() + (owner->getWidth() / 2.0f)), floor(owner->getY() + (owner->getHeight() / 2.0f)));
 	XMFLOAT2 clip_pos = XMFLOAT2(cursor.x - window_center.x, window_center.y - cursor.y);
 
 #ifdef VIRTUAL_MACHINE_DEV_ENV
@@ -205,7 +210,7 @@ XMFLOAT2 SurrealDemoScene::getMouseDeltaAndReset()
 	return XMFLOAT2(delta.x / (owner->getWidth() / 2), delta.y / (owner->getWidth() / 2));
 #else
 	if (owner->isFocused())
-		SetCursorPos(window_center.x, window_center.y);
+		SetCursorPos((int)window_center.x, (int)window_center.y);
 	return XMFLOAT2(clip_pos.x / owner->getWidth(), clip_pos.y / owner->getWidth());
 #endif
 }
