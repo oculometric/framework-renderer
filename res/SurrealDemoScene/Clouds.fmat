@@ -1,10 +1,31 @@
 {
 	"shader": "res/Clouds.hlsl",
+	"textures": [ "res/SurrealDemoScene/cloud_atlas.dds" ],
 	"uniforms": [
 		{
-			"param": "scale",
-			"value": [ 1, 0.42, 0, 1 ],
-			"type": "float4"
+			"param": "cell_size",
+			"value": 0.5,
+			"type": "float"
+		},
+		{
+			"param": "individual_size",
+			"value": 0.79,
+			"type": "float"
+		},
+		{
+			"param": "shape",
+			"value": 1.545,
+			"type": "float"
+		},
+		{
+			"param": "sky_colour",
+			"value": [ 0.118928, 0.296763, 0.626454 ],
+			"type": "float3"
+		},
+		{
+			"param": "iterations",
+			"value": 24,
+			"type": "int"
 		}
 	]
 }

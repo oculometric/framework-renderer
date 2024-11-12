@@ -18,8 +18,8 @@
       { "path": "res/SurrealDemoScene/TripodLamp.fmat" },
       { "path": "res/SurrealDemoScene/Wood.fmat" },
       { "path": "res/monitor.fmat" },
-      { "path": "res/SurrealDemoScene/OrreryGold.fmat" }
-      //{ "path": "res/SurrealDemoScene/Clouds.fmat" }
+      { "path": "res/SurrealDemoScene/OrreryGold.fmat" },
+      { "path": "res/SurrealDemoScene/Clouds.fmat" }
     ]
   },
   "objects": [

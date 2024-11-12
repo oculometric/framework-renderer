@@ -171,7 +171,7 @@ void SurrealDemoScene::update(float delta_time)
 				interaction_mode = 0;
 			}
 
-			active_object->transform.rotate(active_camera->transform.getForward(), mouse_delta.x * 90.0f, active_object->transform.getPosition());
+			active_object->transform.rotate(active_camera->transform.getForward(), mouse_delta.x * -90.0f, active_object->transform.getPosition());
 		}
 		else if (interaction_mode == 3)
 		{

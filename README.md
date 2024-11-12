@@ -14,7 +14,7 @@ You can use the number keys (not the numpad) 1-6 to view different render passes
 5. Sharpened post processing
 6. Ambient occlusion pass
 
-Press V to toggle VSync.
+Press V to toggle VSync. Press ESC to release the mouse.
 
 When you've had enough of looking around the scene on foot, you can **press TAB to enter debug/fly mode.**
 
