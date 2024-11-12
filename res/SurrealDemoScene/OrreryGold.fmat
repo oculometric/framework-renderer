@@ -1,0 +1,22 @@
+{
+	"shader": "res/PhysicalShader.hlsl",
+	"textures": [
+	],
+	"uniforms": [
+		{
+			"param": "base_colour",
+			"value": [ 1, 0.82, 0.54, 1 ],
+			"type": "float4"
+		},
+		{
+			"param": "roughness_factor",
+			"value": 0.25,
+			"type": "float"
+		},
+		{
+			"param": "metallic_factor",
+			"value": 0.99,
+			"type": "float"
+		}
+	]
+}

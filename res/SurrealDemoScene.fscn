@@ -17,7 +17,8 @@
       { "path": "res/SurrealDemoScene/Landscape.fmat" },
       { "path": "res/SurrealDemoScene/TripodLamp.fmat" },
       { "path": "res/SurrealDemoScene/Wood.fmat" },
-      { "path": "res/monitor.fmat" }
+      { "path": "res/monitor.fmat" },
+      { "path": "res/SurrealDemoScene/OrreryGold.fmat" }
       //{ "path": "res/SurrealDemoScene/Clouds.fmat" }
     ]
   },
@@ -168,30 +169,35 @@
           "name": "orrery_base",
           "data": "res/SurrealDemoScene/orrery_base.obj",
           "position": [ 0, 0, 1.4 ],
+          "material": "res/SurrealDemoScene/OrreryGold.fmat",
           "children": [
             {
               "class": "mesh",
               "name": "orrery_planet_a",
               "data": "res/SurrealDemoScene/orrery_orbiter_a.obj",
-              "position": [ 0, 0, -0.08 ]
+              "position": [ 0, 0, -0.08 ],
+              "material": "res/SurrealDemoScene/OrreryGold.fmat"
             },
             {
               "class": "mesh",
               "name": "orrery_planet_b",
               "data": "res/SurrealDemoScene/orrery_orbiter_b.obj",
-              "position": [ 0, 0, -0.08 ]
+              "position": [ 0, 0, -0.08 ],
+              "material": "res/SurrealDemoScene/OrreryGold.fmat"
             },
             {
               "class": "mesh",
               "name": "orrery_mid",
               "data": "res/SurrealDemoScene/orrery_mid.obj",
               "position": [ 0, 0, 0.88 ],
+              "material": "res/SurrealDemoScene/OrreryGold.fmat",
               "children": [
                 {
                   "class": "mesh",
                   "name": "orrery_core",
                   "data": "res/SurrealDemoScene/orrery_core.obj",
-                  "position": [ 0, 0, 0 ]
+                  "position": [ 0, 0, 0 ],
+                  "material": "res/SurrealDemoScene/OrreryGold.fmat"
                 }
               ]
             }
