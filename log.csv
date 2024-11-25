@@ -1,0 +1,154 @@
+hash|author|date|commit message
+5b88f13|jmac-lin-oculo|2024-11-25|made minor corrections to reflective report
+b16c035|Jacob Costen|2024-11-12|reflective report finished
+74c7744|Jacob Costen|2024-11-12|added demo images
+6a428fe|Jacob Costen|2024-11-12|finally, finally added cloud shader
+413865e|Jacob Costen|2024-11-12|allowed mouse to be released with esc
+7c4ad73|Jacob Costen|2024-11-12|gave the orrery its own material
+c270c81|Jacob Costen|2024-11-12|added vsync option and updated the ingame sign and readme
+b60a9a3|Jacob Costen|2024-11-11|fixed a problem where the normal pass could not have negative values
+e05cadd|Jacob Costen|2024-11-11|improved tangent generation in AO shader
+c58952f|Jacob Costen|2024-11-11|finished the UML diagram
+437b95f|Jacob Costen|2024-11-11|added lots more references to reflective report
+8b51dc2|Jacob Costen|2024-11-10|attempted to fix problems with ambient occlusion
+0404ec9|jmac-vin-oculo|2024-11-10|worked on ambient occlusion implementation
+e72d65d|jmac-vin-oculo|2024-11-10|finalized PBR material
+6b0e923|jmac-vin-oculo|2024-11-10|added object manipulation mechanic
+1f514bd|jmac-lin-oculo|2024-11-09|added comments to header files
+da304f1|Jacob Costen|2024-11-09|improved bounding box intersection checkgin
+b98d217|Jacob Costen|2024-11-08|added the computer monitor into surreal demo scene
+babbb97|Jacob Costen|2024-11-08|wrote most of the reflective report, and mostly finished the UML diagram
+8ec41e8|Jacob Costen|2024-11-08|more work on class diagram
+60629da|Jacob Costen|2024-11-08|made most of the UML diagram
+5455971|jmac-lin-oculo|2024-11-07|updated readme
+aa1a172|jmac-vin-oculo|2024-11-06|fixed minor things in post processor and demo scene
+ce0e508|jmac-vin-oculo|2024-11-06|fixed colour rounding in post process shader, and an issue with shadows on the light demo
+f14bf34|jmac-vin-oculo|2024-11-06|added displacement to sand
+3d569e9|jmac-vin-oculo|2024-11-06|finished the light demo
+c970bbc|jmac-lin-oculo|2024-11-06|convert wood textude
+ad11ec3|jmac-lin-oculo|2024-11-06|updated lamp export
+a51fcf0|jmac-vin-oculo|2024-11-06|added tripod lamps into scene
+abedf77|jmac-vin-oculo|2024-11-06|updated post processor
+26d2ef6|jmac-lin-oculo|2024-11-06|create new skybox
+237202c|jmac-vin-oculo|2024-11-06|added scene statistics window
+b291d17|Jacob Costen|2024-11-06|imported nearly all the of the demo scene, worked on stats window
+acc55cf|Jacob Costen|2024-11-06|imported more of the scene (orrery, info panel, blend demo)
+03d2ee8|Jacob Costen|2024-11-06|fixed mouse locking, worked on scene import
+186db44|jmac-lin-oculo|2024-11-06|exported more models and textures
+23d570b|jmac-vin-oculo|2024-11-05|reimplemented selection to surreal demo scene
+d0adc96|jmac-vin-oculo|2024-11-05|added mouse-based control of camera
+9860f9b|jmac-vin-oculo|2024-11-05|fixed fogging in post process
+aa633af|jmac-vin-oculo|2024-11-05|added ability to toggle gizmos
+b804679|jmac-vin-oculo|2024-11-05|implemented triplanar mapping
+fa4ab27|jmac-vin-oculo|2024-11-05|added fly and walk camera toggle
+b1af856|Jacob Costen|2024-11-05|started bringing demo scene across
+45af7cf|Jacob Costen|2024-11-05|started exporting scene
+e160df2|Jacob Costen|2024-11-05|added ability to exclude objects from shadow casting
+1c60b3e|jmac-lin-oculo|2024-11-05|designed the demo scene in blender
+2496128|Jacob Costen|2024-11-04|wrote ascii post process shader
+300b876|Jacob Costen|2024-11-04|added charset resource for post processing
+bee5ffb|Jacob Costen|2024-11-04|fog control is now possible from the scene file
+e8bf7b4|Jacob Costen|2024-11-04|fixed shadow mapping for directional and spot lights
+180aa06|Jacob Costen|2024-11-03|yet more shadow mapping work
+ee10a77|Jacob Costen|2024-11-02|progress on lighting
+4475202|Jacob Costen|2024-11-01|progress on shadow mapping
+d4d071b|Jacob Costen|2024-11-01|worked on shadow mapping
+818b700|Jacob Costen|2024-10-30|worked on demo scene
+34a4b6e|Jacob Costen|2024-10-30|fixed a stupid minor thing with rotations and frame-0 delta-time issue
+1055ec4|Jacob Costen|2024-10-30|fixed a json parsing bug and an issue where nullptrs would be thrown if the scene was null
+1458066|Jacob Costen|2024-10-30|implemented point and spot lights
+0afa700|Jacob Costen|2024-10-30|worked on PBR shader
+19cd656|Jacob Costen|2024-10-30|fixed depth buffer weirdness and added fog
+ee544e0|Jacob Costen|2024-10-30|added delta time stuff to window title bar
+093d0fd|Jacob Costen|2024-10-29|uncapped the fps and we hit 488! on my shitty laptop too
+f62551b|Jacob Costen|2024-10-29|i have wasted literally two hours trying to get visual studio to just do profiling. that's literally it. it just gives no data. i wasted two hours reorganising the project and rebuilding the project and it was completely pointless. fuck this software
+d05299c|Jacob Costen|2024-10-29|Update FrameworkRenderer.vcxproj
+842a5da|Jacob Costen|2024-10-29|reorganised the entire project
+f655261|Jacob Costen|2024-10-29|fixed two tiny compile issues (release mode)
+a3c6d8c|Jacob Costen|2024-10-29|new transform system is (almost) fully implemented
+11801cd|Jacob Costen|2024-10-29|allowed the window to be resizable
+ebb0a2f|Jacob Costen|2024-10-29|made progress on new transform system
+c8a6fc2|Jacob Costen|2024-10-29|removed need to list meshes in scene, added ambient light parameter
+9006a5b|Jacob Costen|2024-10-29|fixed cleanup of dangling objects
+4ee62cc|Jacob Costen|2024-10-29|improved usability of the json-scene system, and implemented alpha blending/dithering in the PBR shader
+098888b|jmac-lin-oculo|2024-10-29|add dds for blend
+f2c9ab5|Jacob Costen|2024-10-29|config change
+b484147|Jacob Costen|2024-10-29|worked on getting dithered alpha working
+7625183|Jacob Costen|2024-10-29|prevented post process texture sampler from wrapping
+81248d9|Jacob Costen|2024-10-29|box-intersection and depth-based picking now implemented
+1c76d44|Jacob Costen|2024-10-29|fixed a post process bug and worked on box-picking
+6bb27bd|Jacob Costen|2024-10-28|worked on new Transform class
+0ae33e8|Jacob Costen|2024-10-28|added a gizmo, and accompanying shader
+d6761ad|Jacob Costen|2024-10-28|implemented a system to sort objects and reduce context switches
+8289749|Jacob Costen|2024-10-28|fixed a bug with transforming the light direction
+9423f58|Jacob Costen|2024-10-28|implemented light as scene object
+5ff6e35|Jacob Costen|2024-10-27|mostly implemented frustrum culling
+9fb613c|Jacob Costen|2024-10-27|switched the handedness and fixed all the minusing of coordinates
+8309b63|Jacob Costen|2024-10-27|refactored 3D engine code away from application code
+81aca8d|Jacob Costen|2024-10-27|fixed a bug with normal maps in PBR material
+d03eaa2|Jacob Costen|2024-10-27|fixed a bug with the specular highlight on the PBR material
+fe977b1|Jacob Costen|2024-10-27|cleaned up several TODOs
+8db7573|Jacob Costen|2024-10-27|fixed the broken everything, moved common constants into their own buffer
+c138eb2|Jacob Costen|2024-10-27|totally broke the entire pipeline
+502442f|Jacob Costen|2024-10-25|started work on new demo scene
+ab31f83|jmac-lin-oculo|2024-10-25|Merge remote-tracking branch 'refs/remotes/origin/master'
+eebacda|jmac-lin-oculo|2024-10-25|add planet demo object
+8d2f085|Jacob Costen|2024-10-25|wrote a PBR type shader
+9d120f1|Jacob Costen|2024-10-25|fixed a bug with lighting and normals due to obj swizzling
+7f8792b|Jacob Costen|2024-10-25|implemented skybox in post-processing shader, fixed a bug in the reflection system
+6bf3465|Jacob Costen|2024-10-24|modified the monitor material
+ea23ef2|Jacob Costen|2024-10-24|I FIXED THE FUCKING TANGENTS
+cf969d9|Jacob Costen|2024-10-24|wasted a long time failing to get normal mapping working
+f6b9919|jmac-lin-oculo|2024-10-24|added another demo object
+4b2cc20|jmac-lin-oculo|2024-10-24|reexported models
+f15e7fc|Jacob Costen|2024-10-24|removed my library submodule
+4b13b3d|Jacob Costen|2024-10-23|experimented with fixing tangetns
+9da0742|Jacob Costen|2024-10-23|properly cleaned up application data
+80cd773|Jacob Costen|2024-10-23|new json-based scene and material loading system is now fully implemented
+3fb7478|Jacob Costen|2024-10-22|worked further on object/scene loading
+c4a8eb3|Jacob Costen|2024-10-22|began work on direct scene parsing from json tree
+a25cb35|Jacob Costen|2024-10-22|finished basic JSON parser
+6517312|Jacob Costen|2024-10-22|compelted JSON reduce function
+c1039a4|Jacob Costen|2024-10-22|began work on JSON parser and scene file structure
+3f4c8b1|Jacob Costen|2024-10-22|enabled post processing including access to colour, normal, depth buffers
+78e3923|Jacob Costen|2024-10-22|worked on getting normal mapping working
+9bab548|Jacob Costen|2024-10-22|fixed a problem where meshes were flipped in the X direction
+3e8a0e3|Jacob Costen|2024-10-21|attempted to get a post processing shader working
+5beedba|Jacob Costen|2024-10-21|re-implemented light passthrough for new shader system
+7b4f7a5|Jacob Costen|2024-10-19|updated something about the project
+b8dad8c|Jacob Costen|2024-10-19|removed old deprecated mesh files
+d9e48b7|Jacob Costen|2024-10-19|implemented system for reading arbitrary shaders, and materials, and managing them as resources
+4b44670|Jacob Costen|2024-10-18|developed a resource manager which manages resources
+20c001e|Jacob Costen|2024-10-17|worked more on tangent calculation and normal mapping
+8cd5a01|Jacob Costen|2024-10-17|wrote prototype tangent calculation function
+efa48a1|Jacob Costen|2024-10-16|fixed specular shading issue, added texture support, improved material/shader system
+c0c0ad8|Jacob Costen|2024-10-15|fixed more compiler warnings
+bc405a9|Jacob Costen|2024-10-15|experimented with adding framerate limiting code
+1353351|Jacob Costen|2024-10-15|attempted to solve the flickering issue
+2b00ad1|Jacob Costen|2024-10-15|began to write code for supporting swapping shaders
+b136e49|Jacob Costen|2024-10-15|added a teapot to the demo scene
+1f8954d|Jacob Costen|2024-10-15|wrote a shiny new OBJ loader which supports vertex splitting to preserve smoothing groups
+5497cfa|Jacob Costen|2024-10-15|fixed various compiler warnings relating to casts and unused parameters
+77d0b65|Jacob Costen|2024-10-15|cleaned up mesh data representation
+4426ada|Jacob Costen|2024-10-15|implemented phong shading
+8d6f456|Jacob Costen|2024-10-14|model loading now works using my own library
+b360493|Jacob Costen|2024-10-09|experimented with the shader and added an icosahedron
+136d0d3|Jacob Costen|2024-10-08|fixed a bug where the camera aspect ratio would not be correct
+5e9a415|Jacob Costen|2024-10-08|fixed a bug where nothing would render due to incorrect buffer sizing
+d2967f3|Jacob Costen|2024-10-08|added mesh-object system
+966f202|Jacob Costen|2024-10-07|changes
+bb5be83|Jacob Costen|2024-10-05|camera controls are now relative to facing direciton
+ad284d0|Jacob Costen|2024-10-05|corrected a bug where the view transform was being applied inversely
+33a2f45|Jacob Costen|2024-10-02|rewrote camera system
+77702d4|Jacob Costen|2024-10-02|started adding FCamera
+e497434|Jacob Costen|2024-10-02|restructured FScene and improved solar system
+9658987|Jacob Costen|2024-10-02|Merge branch 'master' of https://github.com/StaffsUniGames/gdev50038-artefact-oculometric
+ec24e0e|Jacob Costen|2024-10-02|actually enabled the depth buffer for real (reference was missing)
+d5edfd6|Jacob Costen|2024-10-02|fully implemented transform and parent functions in scene tree, enabled depth buffer
+60f7467|Jacob Costen|2024-10-02|created a scene tree
+8faddd4|Jacob Costen|2024-10-02|add ability to move cube
+97a9374|Jacob Costen|2024-10-01|Update README.md
+9c03d05|Jacob Costen|2024-10-01|added sample models
+0549dd0|Jacob Costen|2024-10-01|refactored naming convention, implemented ability to rotate cube
+8ddaef8|Jacob Costen|2024-10-01|added cube and debug rasteriser state
+0b5c4be|github-classroom[bot]|2024-08-27|Initial commit
