@@ -94,13 +94,8 @@ scene created using Blender.
 \newline
 \includegraphics{/mnt/REPOSITORY/Repository-of-Things/Coding/C/gdev50038-artefact-oculometric/UML_b.png}\\
 The artefact supports point, spot, and directional lights (up to 8
-simultaneously) and shadow maps for spot/directional lights. Meshes are
-shaded with a PBR shader including albedo and normal mapping, and the
-artefact makes use of solid and wireframe rasterisers and triangle and
-line assembler modes. The artefact makes use of the full-screen-quad
-technique to implement post-processing, and supports multiple render
-passes (colour, normal, depth, SSAO). The artefact also allows for
-resizing of the window/viewport. During drawing, scene objects are
+simultaneously, though this can be increased trivially) and shadow maps for spot/directional lights. Meshes are
+shaded with a physically-based shader including albedo, normal mapping, roughness and metallic inputs, and the artefact makes use of both solid and wireframe rasterisers and both triangle and line assembler modes. The artefact makes use of the full-screen-quad technique to implement post-processing, and supports multiple render passes (colour, normal, depth, SSAO). The artefact also allows for resizing of the window/viewport, updating the various screen buffers accordingly. During drawing, scene objects are
 sorted according to the shader used, to minimise the required context
 switches. When debug view is enabled, object axes and bounding boxes are
 drawn. These features are implemented via the \texttt{FGraphicsEngine}
@@ -108,7 +103,7 @@ class.
 
 The post-processing shader includes a sharpening filter, and a
 sophisticated ASCII-art shader inspired by a YouTube video by Acerola
-(Gunnell (2024))\textsuperscript{{[}1{]}}. It also features an
+(Gunnell (2024))\textsuperscript{{[}1{]}} which reduces the colour palette and uses ASCII characters as a matrix for dithering between neighbouring colours. It also features an
 implementation of depth-based fog and a skybox. SSAO is performed in a
 separate pass by a dedicated shader.
 
@@ -117,16 +112,16 @@ provides a thorough implementation of physically based rendering
 according to the mathematical formulae described by de Vries
 (2016)\textsuperscript{{[}2{]}}.
 
-The artefact is built around a scene graph model, where a collection of
-objects (empty, mesh, light, camera are supported) are organised
+The engine is built around a scene graph, where a collection of
+objects (empty, mesh, light, camera are all supported) are organised
 hierarchically using per-object transforms, similar to the
 \texttt{Transform} class provided by Unity (Unity
 (2024))\textsuperscript{{[}3{]}}. Transforms have parents and children,
 and may be transformed (translation, rotation, scaling) in both local
-and world space, implemented by the \texttt{FTransform} class. The
+and world space, implemented by functions inside the \texttt{FTransform} class. This class also stores the world and local transform matrices of the object eliminating the need for these to be recalculated for rendering or transformation. The
 \texttt{FScene} class manages objects, and provides functionality (start
 and update) which can be overridden by subclasses to create custom
-scenes (see \texttt{SurrealDemoScene}, \texttt{MyScene}, etc).
+scenes (see \texttt{SurrealDemoScene}, \texttt{MyScene}, etc). It also provides functionality to create a list of objects to be created when the scene initialises, which is necessary for JSON loading.
 
 Scenes may be stored on disk as JSON, which is deserialized at runtime.
 Required assets are loaded as needed. Materials may also be configured
@@ -155,7 +150,7 @@ effects (Magdics, et al. (2013))\textsuperscript{{[}4{]}}. The artefact
 closely follows this implementation, including the use of multiple
 render passes: colour, normal, depth, and SSAO buffers are exposed to
 the post-processing shader. The post-processing shader showcases an
-interesting stylised ASCII-art effect, as well as a sharpen filter. It
+interesting stylised ASCII-art effect, as well as a sharpen filter. The former uses ASCII letters as a dithering mask to blend between colours in a reduced colour palette. This shader
 is where the fog and skybox are drawn, based on the values in the depth
 buffer, eliminating the need for per-object fog or a separate skybox
 object. However, the current post-processing shader does not demonstrate
@@ -165,7 +160,7 @@ of the two triangles for a quad, a single triangle may be drawn which
 overfills the screen. This would improve the performance of the
 post-processing shader, but timing statistics show that the current
 shader has an extremely trivial performance cost (compared with drawing
-meshes).\\
+mesh objects).\\
 \begin{figure}[H]
 \includegraphics{/mnt/REPOSITORY/Repository-of-Things/Coding/C/gdev50038-artefact-oculometric/ascii_postprocess.png}
 \caption{\label{fig:figure1} ASCII post-processing shader demo.}
@@ -186,11 +181,11 @@ transform the normal map colour value (in tangent space) into a 3D
 vector (in world space). This new normal is then used for lighting
 calculations instead of the normal given by the vertex data.
 Implementing this technique requires the provision of tangents, which
-are calculated by the mesh reading code at load time according to the
+are calculated by the mesh reading code at load time in my custom OBJ model loader, according to the
 algorithm described by Lengyel (2001)\textsuperscript{{[}6{]}}. This
 technique provides excellent surface detail and improves realism,
 however this additional calculation noticeably increases the time
-required to load large meshes, and this could be improved.
+required to load large meshes, and this is something which could be improved.
 
 \begin{figure}[H]
 \includegraphics{/mnt/REPOSITORY/Repository-of-Things/Coding/C/gdev50038-artefact-oculometric/shadow_mapping.png}
@@ -204,7 +199,7 @@ scene is rendered from the perspective of each light, treating the light
 as a camera, and the resulting depth buffer is stored in a texture. This
 technique and its advantages are described by Everitt, Rege, and
 Cebenoyan (2001)\textsuperscript{{[}7{]}}. Later, when individual
-objects are rendered, this texture is sampled, and the value compared
+objects are rendered, this texture is sampled, and the value is compared
 with the depth of the current geometry relative to the light. If the
 depth of the geometry is greater than the value in the texture, then the
 geometry must be shadowed. The artefact implements this technique by
@@ -220,7 +215,7 @@ positioned according to where the user wishes the shadow to have an
 effect. Dimitrov (2007)\textsuperscript{{[}8{]}} presents a way to
 resolve this by using multiple tiers of shadow maps (cascades) for
 directional lights, and by adjusting the position of these cascades
-according to the camera position to improve quality.\\
+according to the camera position to improve quality. Another limitation is that the artefact does not support blending/blurring to soften the jagged edges of shadows, a feature which most graphics engines offer which improves the visual look of mapped shadows and emulates the natural spread of lights which have non-zero source radius.\\
 
 Another feature the artefact implements is screen space ambient
 occlusion (SSAO). This effect involves sampling the depth and normal
@@ -231,7 +226,7 @@ depth buffer, the sample is treated as occluded. The ambient occlusion
 value is then provided by counting the number of samples which were not
 occluded. This implementation is based loosely on that described by Luna
 (2012)\textsuperscript{{[}9{]}}. An alteration made in the artefact is
-the use of a dithering matrix to compute random tangents/bitangents,
+the use of an ordered dithering matrix to compute random tangents/bitangents,
 giving AO an even, dithered look. The ambient occlusion values are
 output to a separate render target which is referenced by the
 post-processing shader.\\
@@ -274,7 +269,7 @@ The sample scene skybox makes use of NASAs 2020 Deep Star Maps
 (\url{https://svs.gsfc.nasa.gov/4851/} NASA/Goddard Space Flight Center
 Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC. Constellation
 figures based on those developed for the IAU by Alan MacRobert of Sky
-and Telescope magazine (Roger Sinnott and Rick Fienberg)).
+and Telescope magazine (Roger Sinnott and Rick Fienberg)). All textures and models are my own work, aside from the teapot and monkey models, which are included with Blender.
 
 \hypertarget{bibliography}{%
 \subsection{Bibliography}\label{bibliography}}
