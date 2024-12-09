@@ -826,7 +826,7 @@ void FGraphicsEngine::draw()
     chrono::steady_clock::time_point b = chrono::high_resolution_clock::now();
     time_clear = ((chrono::duration<float>)(b - a)).count();
 
-    if (getScene() && getScene()->active_camera)
+    if (getScene() != nullptr && getScene()->active_camera != nullptr)
     {
         renderShadowMaps();
 
@@ -910,7 +910,7 @@ void FGraphicsEngine::draw()
     // update stats window
     XMFLOAT3 forward = XMFLOAT3(0,0,0);
     int objects = 0;
-    if (getScene() != nullptr)
+    if (getScene() != nullptr && getScene()->active_camera != nullptr)
     {
         forward = getScene()->active_camera->getOwner()->transform.getForward();
         objects = static_cast<int>(getScene()->all_objects.size());

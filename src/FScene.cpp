@@ -29,7 +29,18 @@ void FScene::addObject(FObject* o, FObject* parent)
 		parent->transform.addChild(&(o->transform));
 	}
 
-	if (o->getType() == FObjectType::LIGHT) all_lights.push_back((FLight*)o);
+	// FIXME: convert this to a map/set (ie unique elements)
+	FLight* l = o->getComponent<FLight>();
+	if (l != nullptr) all_lights.push_back(l);
+}
+
+FObject* FScene::findObjectWithName(std::string str)
+{
+	for (FObject* obj : all_objects)
+		if (obj->name == str)
+			return obj;
+
+	return nullptr;
 }
 
 void FScene::finalizePreload()
@@ -43,34 +54,39 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 {
 	FResourceManager* rm = FResourceManager::get();
 
-	FObject* obj;
+	FObject* obj = new FObject();
+	obj->name = o.name;
+	obj->transform = FTransform();
+
 	switch (o.object_type)
 	{
-	case FObjectType::MESH:
+	case FComponentType::MESH:
 	{
-		FMesh* me = new FMesh();
+		FMesh* me = new FMesh(obj);
 		if (o.data_name != "") me->setData(rm->loadMesh(o.data_name));
 		if (o.material_name != "") me->setMaterial(rm->getMaterial(o.material_name));
 		me->cast_shadow = o.cast_shadow;
-		obj = me;
+
+		obj->addComponent(me);
 		break;
 	}
-	case FObjectType::CAMERA:
+	case FComponentType::CAMERA:
 	{
-		FCamera* cam = new FCamera();
+		FCamera* cam = new FCamera(obj);
 		if (o.float1 > 0) cam->aspect_ratio = o.float1;
 		if (o.float2 > 0) cam->field_of_view = o.float2;
 		if (o.float3 > 0) cam->near_clip = o.float3;
 		if (o.float4 > 0) cam->far_clip = o.float4;
 
 		cam->updateProjectionMatrix();
-		obj = cam;
+
+		obj->addComponent(cam);
 		active_camera = cam;
 		break;
 	}
-	case FObjectType::LIGHT:
+	case FComponentType::LIGHT:
 	{
-		FLight* light = new FLight();
+		FLight* light = new FLight(obj);
 		light->angle = o.angle;
 		light->strength = o.strength;
 		light->colour = o.colour;
@@ -78,15 +94,13 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		else if (o.data_name == "spot") light->type = FLight::FLightType::SPOT;
 		else if (o.data_name == "point") light->type = FLight::FLightType::POINT;
 
-		obj = light;
+		obj->addComponent(light);
 		break;
 	}
 	default:
 		obj = new FObject();
 		break;
 	}
-	obj->name = o.name;
-	obj->transform = FTransform();
 	
 	addObject(obj, parent);
 
@@ -145,24 +159,24 @@ bool operator>>(const FJsonElement& a, FObjectPreload& other)
 	string object_class = (*obj)["class"].s_val;
 	if (object_class == "mesh")
 	{
-		other.object_type = FObjectType::MESH;
+		other.object_type = FComponentType::MESH;
 		if (obj->has("data", JSTRING)) other.data_name = (*obj)["data"].s_val;
 		if (obj->has("material", JSTRING)) other.material_name = (*obj)["material"].s_val;
 		if (obj->has("cast_shadow", JFLOAT)) other.cast_shadow = (*obj)["cast_shadow"].f_val > 0.0f;
 	}
 	else if (object_class == "camera")
 	{
-		other.object_type = FObjectType::CAMERA;
+		other.object_type = FComponentType::CAMERA;
 		if (obj->has("aspect_ratio", JFLOAT)) other.float1 = (*obj)["aspect_ratio"].f_val;
 		if (obj->has("field_of_view", JFLOAT)) other.float2 = (*obj)["field_of_view"].f_val;
 		if (obj->has("near_clip", JFLOAT)) other.float3 = (*obj)["near_clip"].f_val;
 		if (obj->has("far_clip", JFLOAT)) other.float4 = (*obj)["far_clip"].f_val;
 	}
 	else if (object_class == "empty")
-		other.object_type = FObjectType::EMPTY;
+		other.object_type = FComponentType::BLANK;
 	else if (object_class == "light")
 	{
-		other.object_type = FObjectType::LIGHT;
+		other.object_type = FComponentType::LIGHT;
 		if (obj->has("colour", JARRAY)) (*obj)["colour"] >> other.colour;
 		if (obj->has("strength", JFLOAT)) other.strength = (*obj)["strength"].f_val;
 		if (obj->has("angle", JFLOAT)) other.angle = (*obj)["angle"].f_val;

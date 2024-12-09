@@ -58,6 +58,8 @@ private:
 	FMaterial* material  = nullptr;	// material data to be used
 
 public:
+	using FComponent::FComponent;
+
 	inline FComponentType getType() { return FComponentType::MESH; }
 
 	// custom OBJ loading function

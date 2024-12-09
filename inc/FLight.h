@@ -43,6 +43,8 @@ public:
 	float angle = 45.0f; // in degrees
 
 public:
+	using FComponent::FComponent;
+
 	inline FComponentType getType() { return FComponentType::LIGHT; }
 	
 	void convertToData(FLightData* data);	// constructs a light data configuration from the light object

@@ -7,6 +7,7 @@
 
 #include "FObject.h"
 #include "FLight.h"
+#include "FComponent.h"
 
 class FApplication;
 
@@ -15,7 +16,7 @@ using namespace DirectX;
 // represents preload parameters for an object, while being loaded from JSON. necessary due to the order in which objects, meshes, materials, textures, etc are loaded as resources
 struct FObjectPreload
 {
-	FObjectType object_type = FObjectType::EMPTY;
+	FComponentType object_type = FComponentType::BLANK;
 	std::string name = "";
 	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 rotation = XMFLOAT3(0, 0, 0);
@@ -65,7 +66,7 @@ public:
 	FScene(FScene&& other) = delete;
 
 	void addObject(FObject* o, FObject* parent);			// add an object to the scene graph
-	FObject* findObjectWithName(std::string name);			// find the first object within the scene graph, with the specified name
+	FObject* findObjectWithName(std::string str);			// find the first object within the scene graph, with the specified name
 
 	void finalizePreload();									// realize all the objects present in the preload array
 	inline void queueForPreload(FObjectPreload& o) { preload_array.push_back(o); }
@@ -75,13 +76,3 @@ public:
 private:
 	void finalizeObject(FObjectPreload& o, FObject* parent);// realize an object preload structure into an actual object and add it to the scene as appropriate
 };
-
-template<typename T>
-inline T* FScene::findObjectWithName(std::string name)
-{
-	for (FObject* obj : all_objects)
-		if (obj->name == name)
-			return (T*)obj;
-
-	return nullptr;
-}

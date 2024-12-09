@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="inc\DDSTextureLoader.h" />
     <ClInclude Include="inc\FApplication.h" />
+    <ClInclude Include="inc\FComponent.h" />
     <ClInclude Include="inc\FDebug.h" />
     <ClInclude Include="inc\FGraphicsEngine.h" />
     <ClInclude Include="inc\FJsonParser.h" />

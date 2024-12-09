@@ -41,6 +41,8 @@ public:
 	float far_clip = 100.0f;		// far clipping distance
 
 public:
+	using FComponent::FComponent;
+
 	inline FComponentType getType() { return FComponentType::CAMERA; }
 
 	void updateProjectionMatrix();

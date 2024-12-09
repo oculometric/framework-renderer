@@ -75,6 +75,9 @@
     <ClInclude Include="inc\SurrealDemoScene.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="inc\FComponent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
