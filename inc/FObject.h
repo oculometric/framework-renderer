@@ -2,47 +2,42 @@
 
 #include <DirectXMath.h>
 #include <string>
+#include <unordered_set>
 
 #include "FTransform.h"
+#include "FComponent.h"
 
 using namespace DirectX;
-
-enum FObjectType
-{
-	EMPTY,
-	CAMERA,
-	MESH,
-	LIGHT
-};
 
 // base object class implementing common properties across all objects
 class FObject
 {
 public:
-	std::string name = "Object";	// name for the object, to make debugging easier
-	FTransform transform;			// transform component which handles position/rotation/scale of the object, and scene hierarchy (parenthood, childhood)
+	std::string name = "Object";				// name for the object, to make debugging easier
+	FTransform transform;						// transform component which handles position/rotation/scale of the object, and scene hierarchy (parenthood, childhood)
+	std::unordered_set<FComponent*> components;	// set containing components which exist on this game object
 
 public:
 	inline FObject() { };
 
-	inline virtual FObjectType getType() { return FObjectType::EMPTY; }
-};
+	template <class T>
+	inline T* getComponent()					// returns a component of the specified type
+	{
+		static_assert(std::is_base_of<FComponent, T>::value, "T is not a FComponent type");
+		T tmp;
+		for (FComponent* c : components)
+		{
+			if (c->getType() == tmp.getType())
+				return (T*)c;
+		}
+	}
 
-// camera object type
-class FCamera : public FObject
-{
-private:
-	XMFLOAT4X4 projection_matrix = XMFLOAT4X4();
+	inline void addComponent(FComponent* comp)	// adds a new component to the GameObject
+	{
+		// if the component already has an owner, don't add it
+		if (comp->getOwner() != nullptr) return;
 
-public:
-	float aspect_ratio = 1.0f;		// X width over Y height
-	float field_of_view = 90.0f;	// horizontal angle of view for the camera
-	float near_clip = 0.01f;		// near clipping distance
-	float far_clip = 100.0f;		// far clipping distance
-
-public:
-	inline FObjectType getType() { return FObjectType::CAMERA; }
-
-	void updateProjectionMatrix();
-	inline XMFLOAT4X4 getProjectionMatrix() const { return projection_matrix; }
+		components.insert(comp);
+		comp->owner = this;
+	}
 };

@@ -7,9 +7,9 @@
 class MyScene : public FScene
 {
 private:
-	FMesh* a;
-	FMesh* b;
-	FMesh* c;
+	FObject* a;
+	FObject* b;
+	FObject* c;
 
 public:
 	using FScene::FScene;

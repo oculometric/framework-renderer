@@ -15,8 +15,8 @@ private:
 	bool fly_mode = false;
 	float current_speed = 0.0f;
 
-	FCamera* walk_cam;
-	FCamera* fly_cam;
+	FObject* walk_cam;
+	FObject* fly_cam;
 
 	int interaction_mode = 0;
 	XMFLOAT4X4 original_transform;

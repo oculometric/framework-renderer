@@ -13,9 +13,9 @@ using namespace std;
 void MyScene::start()
 {
 	// 99% of the initialisation is now done from the config file! see MyScene.json
-	a = findObjectWithName<FMesh>("a");
-	b = findObjectWithName<FMesh>("sphere");
-	c = findObjectWithName<FMesh>("c");
+	a = findObjectWithName("a");
+	b = findObjectWithName("sphere");
+	c = findObjectWithName("c");
 }
 
 void MyScene::update(float delta_time)
@@ -35,7 +35,7 @@ void MyScene::update(float delta_time)
 
 		FDebug::console(to_string(owner->getEngine()->output_mode));
 
-		XMFLOAT4X4 camera_transform = active_camera->transform.getTransform();
+		XMFLOAT4X4 camera_transform = active_camera->getOwner()->transform.getTransform();
 		XMFLOAT4 camera_motion = XMFLOAT4
 		(
 			(float)((GetAsyncKeyState('D') & 0xF000) - (GetAsyncKeyState('A') & 0xF000)),
@@ -49,8 +49,8 @@ void MyScene::update(float delta_time)
 		FLOAT up_down = (float)(((GetAsyncKeyState(VK_UP) & 0xF000) > 0) - ((GetAsyncKeyState(VK_DOWN) & 0xF000) > 0));
 		FLOAT left_right = (float)(((GetAsyncKeyState(VK_LEFT) & 0xF000) > 0) - ((GetAsyncKeyState(VK_RIGHT) & 0xF000) > 0));
 
-		active_camera->transform.rotate(XMFLOAT3(0, 0, 1), left_right * 60.0f * delta_time, active_camera->transform.getPosition());
-		active_camera->transform.rotate(active_camera->transform.getRight(), up_down * 60.0f * delta_time, active_camera->transform.getPosition());
+		active_camera->getOwner()->transform.rotate(XMFLOAT3(0, 0, 1), left_right * 60.0f * delta_time, active_camera->getOwner()->transform.getPosition());
+		active_camera->getOwner()->transform.rotate(active_camera->getOwner()->transform.getRight(), up_down * 60.0f * delta_time, active_camera->getOwner()->transform.getPosition());
 
 		XMFLOAT3 delta;
 		XMStoreFloat3
@@ -62,7 +62,7 @@ void MyScene::update(float delta_time)
 				XMLoadFloat4x4(&camera_transform)
 			)
 		);
-		active_camera->transform.translate(delta);
+		active_camera->getOwner()->transform.translate(delta);
 
 		if (active_object)
 		{

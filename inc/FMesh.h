@@ -3,7 +3,7 @@
 #include <d3d11_4.h>
 #include <string>
 
-#include "FObject.h"
+#include "FComponent.h"
 #include "FTexture.h"
 #include "FMaterial.h"
 
@@ -47,8 +47,8 @@ private:
 	ID3D11Buffer* index_buffer_ptr  = nullptr;
 };
 
-// object type which contains a mesh which will be drawn
-class FMesh : public FObject
+// component type which contains a mesh which will be drawn
+class FMesh : public FComponent
 {
 public:
 	bool cast_shadow = true;		// toggles whether this mesh is included in the shadow mapping pass
@@ -58,7 +58,7 @@ private:
 	FMaterial* material  = nullptr;	// material data to be used
 
 public:
-	inline FObjectType getType() { return FObjectType::MESH; }
+	inline FComponentType getType() { return FComponentType::MESH; }
 
 	// custom OBJ loading function
 	static FMeshData* loadMesh(std::string path);

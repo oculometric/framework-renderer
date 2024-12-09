@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FObject.h"
+#include "FComponent.h"
 
 #define NUM_LIGHTS 8		// number of lights which can render simultaneously
 #define LIGHTMAP_SIZE 2048	// size of the shadow map texture for each light
@@ -20,7 +20,7 @@ struct FLightData
 };
 
 // an object type which behaves as a light
-class FLight : public FObject
+class FLight : public FComponent
 {
 public:
 	enum FLightType
@@ -43,7 +43,7 @@ public:
 	float angle = 45.0f; // in degrees
 
 public:
-	inline FObjectType getType() { return FObjectType::LIGHT; }
+	inline FComponentType getType() { return FComponentType::LIGHT; }
 	
 	void convertToData(FLightData* data);	// constructs a light data configuration from the light object
 	XMFLOAT4X4 getProjectionMatrix();		// returns the projection matrix for the light, treating it as a camera

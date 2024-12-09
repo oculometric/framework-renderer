@@ -5,8 +5,8 @@
 
 void PlanetScene::start()
 {
-	ship_root = findObjectWithName<FObject>("ship_root");
-	sun = findObjectWithName<FLight>("sun");
+	ship_root = findObjectWithName("ship_root");
+	sun = findObjectWithName("sun");
 }
 
 void PlanetScene::update(float delta_time)

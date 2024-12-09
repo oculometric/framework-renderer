@@ -842,7 +842,7 @@ void FGraphicsEngine::draw()
         getScene()->active_camera->aspect_ratio = getAspectRatio();
         getScene()->active_camera->updateProjectionMatrix();
         XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
-        XMFLOAT4X4 view_matrix_inv = getScene()->active_camera->transform.getTransform();
+        XMFLOAT4X4 view_matrix_inv = getScene()->active_camera->getOwner()->transform.getTransform();
         common_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
         common_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
         common_buffer_data->view_matrix_inv = XMMatrixTranspose(XMLoadFloat4x4(&view_matrix_inv));
@@ -876,9 +876,12 @@ void FGraphicsEngine::draw()
         vector<FMesh*> batch;
         batch.reserve(getScene()->all_objects.size());
         for (FObject* obj : getScene()->all_objects)
-            if (obj->getType() == FObjectType::MESH)
-                if (frustrumCull(projection_matrix, view_matrix_inv, ((FMesh*)obj)->getWorldSpaceBounds()))
-                    batch.push_back((FMesh*)obj);
+        {
+            FMesh* msh = obj->getComponent<FMesh>();
+            if (msh != nullptr)
+                if (frustrumCull(projection_matrix, view_matrix_inv, msh->getWorldSpaceBounds()))
+                    batch.push_back(msh);
+        }
 
         // sort the objects for batching, so we have fewer context/state switches
         sortForBatching(batch);
@@ -909,7 +912,7 @@ void FGraphicsEngine::draw()
     int objects = 0;
     if (getScene() != nullptr)
     {
-        forward = getScene()->active_camera->transform.getForward();
+        forward = getScene()->active_camera->getOwner()->transform.getForward();
         objects = static_cast<int>(getScene()->all_objects.size());
     }
 
@@ -974,7 +977,7 @@ void FGraphicsEngine::drawObject(FMesh* object)
     }
 
     // store data to the constant buffer that is shared between all shaders
-    XMFLOAT4X4 object_matrix = object->transform.getTransform();
+    XMFLOAT4X4 object_matrix = object->getOwner()->transform.getTransform();
     common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
 
     D3D11_MAPPED_SUBRESOURCE common_buffer_resource;
@@ -1058,7 +1061,7 @@ void FGraphicsEngine::performPostprocessing()
 
     // update uniform buffer contents
     XMFLOAT4X4 projection_matrix = getScene()->active_camera->getProjectionMatrix();
-    XMFLOAT4X4 view_matrix = getScene()->active_camera->transform.getTransform();
+    XMFLOAT4X4 view_matrix = getScene()->active_camera->getOwner()->transform.getTransform();
     FPostProcessConstantData* pp_uniform_buffer_data = (FPostProcessConstantData*)uniform_buffer_data;
     pp_uniform_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
     pp_uniform_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix)));
@@ -1163,7 +1166,7 @@ void FGraphicsEngine::drawGizmos()
 
     for (FObject* object : getScene()->all_objects)
     {
-        if (object == getScene()->active_camera) continue;
+        if (object == getScene()->active_camera->getOwner()) continue;
         XMFLOAT4X4 object_matrix = object->transform.getTransform();
         common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
 
@@ -1176,8 +1179,8 @@ void FGraphicsEngine::drawGizmos()
     }
 
     if (getScene()->active_object == nullptr) return;
-    if (getScene()->active_object->getType() != FObjectType::MESH) return;
-    FMesh* mesh = (FMesh*)getScene()->active_object;
+    FMesh* mesh = getScene()->active_object->getComponent<FMesh>();
+    if (mesh == nullptr) return;
 
     // draw a bounding box for the selected object
     getContext()->IASetVertexBuffers(0, 1, &box_vertex_buffer, &stride, &offset);
@@ -1226,16 +1229,17 @@ void FGraphicsEngine::renderShadowMaps()
         getContext()->ClearDepthStencilView(shadow_map_view[light_index], D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
         XMFLOAT4X4 projection_matrix = light->getProjectionMatrix();
-        XMFLOAT4X4 view_matrix_inv = light->transform.getTransform();
+        XMFLOAT4X4 view_matrix_inv = light->getOwner()->transform.getTransform();
         shadow_buffer_data->projection_matrix = XMMatrixTranspose(XMLoadFloat4x4(&projection_matrix));
         shadow_buffer_data->view_matrix = XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_inv)));
 
         for (FObject* obj : getScene()->all_objects)
         {
-            if (obj->getType() != FObjectType::MESH) continue;
-            if (!((FMesh*)obj)->cast_shadow) continue;
+            FMesh* msh = obj->getComponent<FMesh>();
+            if (msh == nullptr) continue;
+            if (!msh->cast_shadow) continue;
 
-            FMeshData* data = ((FMesh*)obj)->getData();
+            FMeshData* data = msh->getData();
             getContext()->IASetVertexBuffers(0, 1, &data->vertex_buffer_ptr, &stride, &offset);
             getContext()->IASetIndexBuffer(data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
 

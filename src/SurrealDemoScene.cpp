@@ -7,22 +7,23 @@
 #include "FApplication.h"
 #include "FDebug.h"
 #include "FGraphicsEngine.h"
+#include "FComponent.h"
 
 using namespace std;
 
 void SurrealDemoScene::start()
 {
-	orrery_base = findObjectWithName<FObject>("orrery_base");
-	orrery_mid = findObjectWithName<FObject>("orrery_mid");
-	orrery_planet_a = findObjectWithName<FObject>("orrery_planet_a");
-	orrery_planet_b = findObjectWithName<FObject>("orrery_planet_b");
-	orrery_core = findObjectWithName<FObject>("orrery_core");
+	orrery_base = findObjectWithName("orrery_base");
+	orrery_mid = findObjectWithName("orrery_mid");
+	orrery_planet_a = findObjectWithName("orrery_planet_a");
+	orrery_planet_b = findObjectWithName("orrery_planet_b");
+	orrery_core = findObjectWithName("orrery_core");
 
-	monitor = findObjectWithName<FObject>("monitor");
+	monitor = findObjectWithName("monitor");
 
-	fly_cam = findObjectWithName<FCamera>("fly_cam");
-	walk_cam = findObjectWithName<FCamera>("walk_cam");
-	active_camera = fly_mode ? fly_cam : walk_cam;
+	fly_cam = findObjectWithName("fly_cam");
+	walk_cam = findObjectWithName("walk_cam");
+	active_camera = (fly_mode ? fly_cam : walk_cam)->getComponent<FCamera>();
 
 	getMouseDeltaAndReset();
 }
@@ -60,7 +61,7 @@ void SurrealDemoScene::update(float delta_time)
 			{
 				fly_mode = !fly_mode;
 				owner->getEngine()->draw_gizmos = fly_mode;
-				active_camera = fly_mode ? fly_cam : walk_cam;
+				active_camera = (fly_mode ? fly_cam : walk_cam)->getComponent<FCamera>();
 			}
 
 			// if in fly mode, and an object is selected, we can enter transform modes
@@ -86,7 +87,7 @@ void SurrealDemoScene::update(float delta_time)
 				}
 			}
 
-			XMFLOAT4X4 camera_transform = active_camera->transform.getTransform();
+			XMFLOAT4X4 camera_transform = active_camera->getOwner()->transform.getTransform();
 			// camera-local motion vector based on input, which we will transform into world space using the camera's transform
 			XMFLOAT4 camera_motion = XMFLOAT4
 			(
@@ -107,8 +108,8 @@ void SurrealDemoScene::update(float delta_time)
 			FLOAT up_down = mouse_delta.y * 80.0f;
 			FLOAT left_right = mouse_delta.x * -80.0f;
 
-			active_camera->transform.rotate(XMFLOAT3(0, 0, 1), left_right * 60.0f * delta_time, active_camera->transform.getPosition());
-			active_camera->transform.rotate(active_camera->transform.getRight(), up_down * 60.0f * delta_time, active_camera->transform.getPosition());
+			active_camera->getOwner()->transform.rotate(XMFLOAT3(0, 0, 1), left_right * 60.0f * delta_time, active_camera->getOwner()->transform.getPosition());
+			active_camera->getOwner()->transform.rotate(active_camera->getOwner()->transform.getRight(), up_down * 60.0f * delta_time, active_camera->getOwner()->transform.getPosition());
 
 			XMFLOAT3 delta;
 			if (fly_mode)
@@ -127,7 +128,7 @@ void SurrealDemoScene::update(float delta_time)
 			}
 			else
 			{
-				XMFLOAT3 right = active_camera->transform.getRight();
+				XMFLOAT3 right = active_camera->getOwner()->transform.getRight();
 				camera_motion.y = 0;
 				XMStoreFloat4(&camera_motion, XMVector3Normalize(XMLoadFloat4(&camera_motion)));
 				XMStoreFloat3
@@ -137,7 +138,7 @@ void SurrealDemoScene::update(float delta_time)
 					(XMLoadFloat3(&right) * camera_motion.x)) * delta_time * real_speed
 				);
 			}
-			active_camera->transform.translate(delta);
+			active_camera->getOwner()->transform.translate(delta);
 		}
 		else if (interaction_mode == 1)
 		{
@@ -152,8 +153,8 @@ void SurrealDemoScene::update(float delta_time)
 				interaction_mode = 0;
 			}
 
-			XMFLOAT3 x = active_camera->transform.getRight();
-			XMFLOAT3 y = active_camera->transform.getUp();
+			XMFLOAT3 x = active_camera->getOwner()->transform.getRight();
+			XMFLOAT3 y = active_camera->getOwner()->transform.getUp();
 			XMFLOAT3 direction = XMFLOAT3((x.x * mouse_delta.x) + (y.x * mouse_delta.y), (x.y * mouse_delta.x) + (y.y * mouse_delta.y), (x.z * mouse_delta.x) + (y.z * mouse_delta.y));
 			direction = XMFLOAT3(direction.x * 4.0f, direction.y * 4.0f, direction.z * 4.0f);
 			active_object->transform.translate(direction);
@@ -171,7 +172,7 @@ void SurrealDemoScene::update(float delta_time)
 				interaction_mode = 0;
 			}
 
-			active_object->transform.rotate(active_camera->transform.getForward(), mouse_delta.x * -90.0f, active_object->transform.getPosition());
+			active_object->transform.rotate(active_camera->getOwner()->transform.getForward(), mouse_delta.x * -90.0f, active_object->transform.getPosition());
 		}
 		else if (interaction_mode == 3)
 		{
@@ -226,7 +227,7 @@ void SurrealDemoScene::selectUnderMouse()
 		XMFLOAT2 screen_pos = XMFLOAT2((float)(p.x - r.left) / (float)(r.right - r.left), (float)(p.y - r.top) / (float)(r.bottom - r.top));
 		XMFLOAT4 clip_pos = XMFLOAT4(screen_pos.x * 2.0f - 1.0f, (screen_pos.y * 2.0f - 1.0f) * -1.0f, 0, 1);
 		XMFLOAT4X4 proj = active_camera->getProjectionMatrix();
-		XMFLOAT4X4 view = active_camera->transform.getTransform();
+		XMFLOAT4X4 view = active_camera->getOwner()->transform.getTransform();
 		XMFLOAT3 world_direction;
 		XMStoreFloat3
 		(
@@ -252,8 +253,9 @@ void SurrealDemoScene::selectUnderMouse()
 
 		for (FObject* obj : all_objects)
 		{
-			if (obj->getType() != FObjectType::MESH) continue;
-			FMesh* m = (FMesh*)obj;
+			FMesh* m = obj->getComponent<FMesh>();
+			if (m == nullptr) continue;
+
 			FBoundingBox box = m->getWorldSpaceBounds();
 
 			float tmin;

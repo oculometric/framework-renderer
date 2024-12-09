@@ -65,8 +65,7 @@ public:
 	FScene(FScene&& other) = delete;
 
 	void addObject(FObject* o, FObject* parent);			// add an object to the scene graph
-	template <typename T>
-	T* findObjectWithName(std::string name);				// find the first object within the scene graph, with the specified name (cast to the specified type)
+	FObject* findObjectWithName(std::string name);			// find the first object within the scene graph, with the specified name
 
 	void finalizePreload();									// realize all the objects present in the preload array
 	inline void queueForPreload(FObjectPreload& o) { preload_array.push_back(o); }

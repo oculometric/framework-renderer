@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include "FObject.h"
+
 using namespace std;
 
 struct FFaceCorner { uint16_t co; uint16_t uv; uint16_t vn; };
@@ -276,7 +278,7 @@ FBoundingBox FMesh::getWorldSpaceBounds()
     };
 
     FBoundingBox world_bounds = FBoundingBox{ };
-    XMFLOAT4X4 world = transform.getTransform();
+    XMFLOAT4X4 world = owner->transform.getTransform();
     XMMATRIX world_matrix = XMLoadFloat4x4(&world);
     bool is_first = true;
     for (XMFLOAT4 v : corners)
