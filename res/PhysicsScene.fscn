@@ -1,0 +1,56 @@
+{
+  "name": "Physics demo scene",
+  "objects": [
+    {
+      "class": "mesh",
+	  "name": "cube_1",
+	  "data": "res/cube.obj",
+	  "position": [ -1, 5, 1 ]
+    },
+	{
+      "class": "mesh",
+	  "name": "cube_2",
+	  "data": "res/cube.obj",
+	  "position": [ 1, 5, 1 ]
+    },
+	{
+      "class": "mesh",
+	  "name": "cube_3",
+	  "data": "res/cube.obj",
+	  "position": [ 3, 5, 1 ]
+    },
+	{
+      "class": "mesh",
+	  "name": "cube_4",
+	  "data": "res/cube.obj",
+	  "position": [ 5, 5, 1 ]
+    },
+	{
+      "class": "mesh",
+	  "name": "sphere",
+	  "data": "res/sphere.obj",
+	  "position": [ -5, 5, 1 ]
+    },
+	{
+	  "class": "mesh",
+	  "name": "plane",
+	  "data": "res/plane.obj",
+	  "scale": [ 12, 12, 1 ]
+	}
+	{
+	  "class": "camera",
+	  "name": "camera",
+	  "position": [ 0, 0, 1.55 ],
+	  "rotation": [ 90, 0, 0 ]
+	},
+	{
+	  "class": "light",
+	  "name": "light",
+	  "type": "directional"
+	  "colour": [ 1, 1, 1 ],
+	  "strength": 1,
+	  "rotation": [ 10, 25, 0 ]
+	}
+  ],
+  "ambient_light": [ 0.02, 0.02, 0.02 ]
+}
