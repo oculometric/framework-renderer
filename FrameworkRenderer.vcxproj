@@ -33,8 +33,10 @@
     <ClInclude Include="inc\FScene.h" />
     <ClInclude Include="inc\FTexture.h" />
     <ClInclude Include="inc\FTransform.h" />
+    <ClInclude Include="inc\FVector.h" />
     <ClInclude Include="inc\Gizmo.h" />
     <ClInclude Include="inc\MyScene.h" />
+    <ClInclude Include="inc\PhysicsScene.h" />
     <ClInclude Include="inc\PlanetScene.h" />
     <ClInclude Include="inc\ShadowDemoScene.h" />
     <ClInclude Include="inc\SurrealDemoScene.h" />
@@ -53,6 +55,7 @@
     <None Include="res\BlueBlend.fmat" />
     <None Include="res\monitor.fmat" />
     <None Include="res\MyScene.fscn" />
+    <None Include="res\PhysicsScene.fscn" />
     <None Include="res\placeholder.fmat" />
     <None Include="res\PlanetScene.fscn" />
   </ItemGroup>
@@ -139,6 +142,7 @@
     <ClCompile Include="src\FTransform.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MyScene.cpp" />
+    <ClCompile Include="src\PhysicsScene.cpp" />
     <ClCompile Include="src\PlanetScene.cpp" />
     <ClCompile Include="src\ShadowDemoScene.cpp" />
     <ClCompile Include="src\SurrealDemoScene.cpp" />

@@ -67,6 +67,7 @@ public:
 
 	void addObject(FObject* o, FObject* parent);			// add an object to the scene graph
 	FObject* findObjectWithName(std::string str);			// find the first object within the scene graph, with the specified name
+	void selectUnderMouse();								// selects the objects currently under the mouse cursor, based on bounding-box-ray intersections
 
 	void finalizePreload();									// realize all the objects present in the preload array
 	inline void queueForPreload(FObjectPreload& o) { preload_array.push_back(o); }

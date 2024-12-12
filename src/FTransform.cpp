@@ -2,7 +2,7 @@
 
 #include "FObject.h"
 
-void FTransform::setLocalEuler(XMFLOAT3 e)
+void FTransform::setLocalEuler(FVector e)
 {
 	XMStoreFloat4x4(&local_to_parent,
 		XMMatrixIdentity()
@@ -16,15 +16,15 @@ void FTransform::setLocalEuler(XMFLOAT3 e)
 	updateWorldFromLocal();
 }
 
-XMFLOAT3 FTransform::getScale() const
+FVector FTransform::getScale() const
 {
 	XMVECTOR s; XMVECTOR _1; XMVECTOR _2;
 	XMMatrixDecompose(&s, &_1, &_2, XMLoadFloat4x4(&local_to_world));
-	XMFLOAT3 world_scale; XMStoreFloat3(&world_scale, s);
+	FVector world_scale; XMStoreFloat3(&world_scale, s);
 	return world_scale;
 }
 
-void FTransform::translate(XMFLOAT3 v)
+void FTransform::translate(FVector v)
 {
 	XMMATRIX translation = XMMatrixTranslationFromVector(XMLoadFloat3(&v));
 	XMStoreFloat4x4(&local_to_world, XMLoadFloat4x4(&local_to_world) * translation);
@@ -33,7 +33,7 @@ void FTransform::translate(XMFLOAT3 v)
 	updateParamsFromLocal();
 }
 
-void FTransform::rotate(XMFLOAT3 axis, float angle, XMFLOAT3 about)
+void FTransform::rotate(FVector axis, float angle, FVector about)
 {
 	XMMATRIX translation = XMMatrixTranslationFromVector(XMLoadFloat3(&about));
 	XMMATRIX rotation = XMMatrixRotationAxis(XMLoadFloat3(&axis), XMConvertToRadians(angle));
@@ -43,7 +43,7 @@ void FTransform::rotate(XMFLOAT3 axis, float angle, XMFLOAT3 about)
 	updateParamsFromLocal();
 }
 
-void FTransform::scale(XMFLOAT3 s, XMFLOAT3 about)
+void FTransform::scale(FVector s, FVector about)
 {
 	XMMATRIX translation = XMMatrixTranslationFromVector(XMLoadFloat3(&about));
 	XMMATRIX scale = XMMatrixScalingFromVector(XMLoadFloat3(&s));
@@ -55,9 +55,9 @@ void FTransform::scale(XMFLOAT3 s, XMFLOAT3 about)
 
 void FTransform::reset()
 {
-	local_position = XMFLOAT3(0,0,0);
+	local_position = FVector(0,0,0);
 	local_quaternion = XMFLOAT4(0,0,1,0);
-	local_scale = XMFLOAT3(1,1,1);
+	local_scale = FVector(1,1,1);
 
 	updateLocalFromParams();
 	updateWorldFromLocal();
@@ -180,12 +180,12 @@ void FTransform::setTransform(XMFLOAT4X4 t)
 	updateParamsFromLocal();
 }
 
-XMFLOAT3 FTransform::getPosition() const
+FVector FTransform::getPosition() const
 {
-	return XMFLOAT3(local_to_world._41, local_to_world._42, local_to_world._43);
+	return FVector(local_to_world._41, local_to_world._42, local_to_world._43);
 }
 
-void FTransform::setPosition(XMFLOAT3 p)
+void FTransform::setPosition(FVector p)
 {
 	local_to_world._41 = p.x;
 	local_to_world._42 = p.y;
@@ -209,8 +209,8 @@ XMFLOAT4 FTransform::getQuaternion() const
 
 void FTransform::setQuaternion(XMFLOAT4 q)
 {
-	XMFLOAT3 p = getPosition();
-	XMFLOAT3 s = getScale();
+	FVector p = getPosition();
+	FVector s = getScale();
 
 	XMStoreFloat4x4(&local_to_world,
 		XMMatrixIdentity()

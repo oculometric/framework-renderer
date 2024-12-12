@@ -78,6 +78,12 @@
     <ClInclude Include="inc\FComponent.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="inc\PhysicsScene.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FVector.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
@@ -235,6 +241,9 @@
     <None Include="res\Clouds.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="res\PhysicsScene.fscn">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp">
@@ -286,6 +295,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\SurrealDemoScene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsScene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
