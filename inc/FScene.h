@@ -38,9 +38,10 @@ struct FObjectPreload
 class FScene
 {
 	friend class FGraphicsEngine;
+	friend class FPhysicsEngine;
 
 public:
-	FCamera* active_camera = nullptr;						// camera which should be used for rendering
+	FCameraComponent* active_camera = nullptr;						// camera which should be used for rendering
 	FObject* active_object = nullptr;						// object which is currently active (selected, etc)
 	std::string name = "Scene";								// name of the scene, useful for debugging and display
 	XMFLOAT3 ambient_light = XMFLOAT3(0, 0, 0);				// ambient light colour for the scene world

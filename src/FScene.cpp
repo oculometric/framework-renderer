@@ -129,7 +129,7 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 	}
 	case FComponentType::CAMERA:
 	{
-		FCamera* cam = new FCamera(obj);
+		FCameraComponent* cam = new FCameraComponent(obj);
 		if (o.float1 > 0) cam->aspect_ratio = o.float1;
 		if (o.float2 > 0) cam->field_of_view = o.float2;
 		if (o.float3 > 0) cam->near_clip = o.float3;

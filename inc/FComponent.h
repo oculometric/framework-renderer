@@ -11,7 +11,8 @@ enum FComponentType
 	BLANK,
 	CAMERA,
 	MESH,
-	LIGHT
+	LIGHT,
+	PHYSICS
 };
 
 class FComponent
@@ -29,7 +30,7 @@ protected:
 };
 
 // camera component
-class FCamera : public FComponent
+class FCameraComponent : public FComponent
 {
 private:
 	XMFLOAT4X4 projection_matrix = XMFLOAT4X4();

@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "FGraphicsEngine.h"
+#include "FPhysicsEngine.h"
 #include "FJsonParser.h"
 #include "FScene.h"
 #include "FResourceManager.h"
@@ -66,6 +67,8 @@ HRESULT FApplication::initialise(HINSTANCE hInstance, int nShowCmd)
     updateWindowSize();
 
     time_keeper = chrono::high_resolution_clock::now();
+
+    physics_engine = new FPhysicsEngine(this);
 
     return hr;
 }
@@ -188,6 +191,7 @@ void FApplication::draw()
 
 FApplication::~FApplication()
 {
+    delete physics_engine;
     delete engine;
 
     if (immediate_context) immediate_context->Release();

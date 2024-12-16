@@ -7,6 +7,7 @@
 
 #include "FScene.h"
 
+class FPhysicsEngine;
 class FGraphicsEngine;
 
 // manages the windows, devices, timekeeping, and graphics engine
@@ -34,6 +35,8 @@ private:
 
 	// reference to the graphics engine
 	FGraphicsEngine* engine							= nullptr;
+	// reference to the physics engine
+	FPhysicsEngine* physics_engine					= nullptr;
 
 public:
 	FScene* scene = nullptr;				// active scene

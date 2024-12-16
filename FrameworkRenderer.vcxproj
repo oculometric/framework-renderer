@@ -29,6 +29,8 @@
     <ClInclude Include="inc\FMaterial.h" />
     <ClInclude Include="inc\FMesh.h" />
     <ClInclude Include="inc\FObject.h" />
+    <ClInclude Include="inc\FPhysicsComponent.h" />
+    <ClInclude Include="inc\FPhysicsEngine.h" />
     <ClInclude Include="inc\FResourceManager.h" />
     <ClInclude Include="inc\FScene.h" />
     <ClInclude Include="inc\FTexture.h" />
@@ -137,6 +139,7 @@
     <ClCompile Include="src\FLight.cpp" />
     <ClCompile Include="src\FMaterial.cpp" />
     <ClCompile Include="src\FMesh.cpp" />
+    <ClCompile Include="src\FPhysicsEngine.cpp" />
     <ClCompile Include="src\FResourceManager.cpp" />
     <ClCompile Include="src\FScene.cpp" />
     <ClCompile Include="src\FTransform.cpp" />

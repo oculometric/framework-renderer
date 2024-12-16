@@ -23,7 +23,7 @@ void SurrealDemoScene::start()
 
 	fly_cam = findObjectWithName("fly_cam");
 	walk_cam = findObjectWithName("walk_cam");
-	active_camera = (fly_mode ? fly_cam : walk_cam)->getComponent<FCamera>();
+	active_camera = (fly_mode ? fly_cam : walk_cam)->getComponent<FCameraComponent>();
 
 	getMouseDeltaAndReset();
 }
@@ -61,7 +61,7 @@ void SurrealDemoScene::update(float delta_time)
 			{
 				fly_mode = !fly_mode;
 				owner->getEngine()->draw_gizmos = fly_mode;
-				active_camera = (fly_mode ? fly_cam : walk_cam)->getComponent<FCamera>();
+				active_camera = (fly_mode ? fly_cam : walk_cam)->getComponent<FCameraComponent>();
 			}
 
 			// if in fly mode, and an object is selected, we can enter transform modes
