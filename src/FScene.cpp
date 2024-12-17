@@ -155,7 +155,6 @@ void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
 		break;
 	}
 	default:
-		obj = new FObject();
 		break;
 	}
 	

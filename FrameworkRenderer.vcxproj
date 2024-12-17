@@ -39,7 +39,6 @@
     <ClInclude Include="inc\Gizmo.h" />
     <ClInclude Include="inc\MyScene.h" />
     <ClInclude Include="inc\PhysicsScene.h" />
-    <ClInclude Include="inc\PlanetScene.h" />
     <ClInclude Include="inc\ShadowDemoScene.h" />
     <ClInclude Include="inc\SurrealDemoScene.h" />
   </ItemGroup>
@@ -59,7 +58,6 @@
     <None Include="res\MyScene.fscn" />
     <None Include="res\PhysicsScene.fscn" />
     <None Include="res\placeholder.fmat" />
-    <None Include="res\PlanetScene.fscn" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Common.hlsl">
@@ -146,7 +144,6 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MyScene.cpp" />
     <ClCompile Include="src\PhysicsScene.cpp" />
-    <ClCompile Include="src\PlanetScene.cpp" />
     <ClCompile Include="src\ShadowDemoScene.cpp" />
     <ClCompile Include="src\SurrealDemoScene.cpp" />
   </ItemGroup>

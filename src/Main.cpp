@@ -1,11 +1,30 @@
 #include <windows.h>
+#include <string>
+#include <map>
 
 #include "FApplication.h"
-#include "PlanetScene.h"
 #include "ShadowDemoScene.h"
 #include "SurrealDemoScene.h"
 #include "PhysicsScene.h"
 #include "MyScene.h"
+
+template <typename T>
+inline FScene* make(FApplication* app, std::string path) { return new T(app, path); }
+
+typedef FScene* (*FSceneFactory)(FApplication*, std::string);
+
+std::map<std::string, FSceneFactory> scene_index = 
+{
+	{ "MyScene", make<MyScene> }, 
+	{ "ShadowDemo", make<ShadowDemoScene> },
+	{ "SurrealDemoScene", make<SurrealDemoScene> },
+	{ "PhysicsScene", make<PhysicsScene> }
+};
+
+FScene* newSceneWithName(std::string name, FApplication* app)
+{
+	return scene_index[name](app, "res/" + name + ".fscn");
+}
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -19,11 +38,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return -1;
 	}
 
-	//application.scene = new PlanetScene(&application, "res/PlanetScene.fscn");
-	//application.scene = new MyScene(&application, "res/MyScene.fscn");
-	//application.scene = new ShadowDemoScene(&application, "res/ShadowDemo.fscn");
-	//application.scene = new SurrealDemoScene(&application, "res/SurrealDemoScene.fscn");
-	application.scene = new PhysicsScene(&application, "res/PhysicsScene.fscn");
+	application.scene = newSceneWithName("ShadowDemo", &application);
 	application.scene->finalizePreload();
 	application.scene->start();
 

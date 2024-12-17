@@ -19,6 +19,9 @@
     <Filter Include="Resources\Textures">
       <UniqueIdentifier>{7550ec67-fb5a-40cb-8d23-7851b146eeba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Materials">
+      <UniqueIdentifier>{076b55e6-57fc-48b9-829d-bb334fd88105}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\DDSTextureLoader.h">
@@ -64,9 +67,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="inc\MyScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\PlanetScene.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="inc\ShadowDemoScene.h">
@@ -118,19 +118,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\BlueBlend.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\monitor.fmat">
-      <Filter>Resources</Filter>
-    </None>
     <None Include="res\MyScene.fscn">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\placeholder.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\PlanetScene.fscn">
       <Filter>Resources</Filter>
     </None>
     <None Include="res\Common.hlsl">
@@ -187,68 +175,77 @@
     <None Include="res\SurrealDemoScene.fscn">
       <Filter>Resources</Filter>
     </None>
-    <None Include="res\SurrealDemoScene\WhitePlaster.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\BlackBricks.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Marble.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\PlanetA.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\PlanetC.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Earth.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\PlanetB.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\PalmFrond.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\InfoPanel.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\BlendDemo.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Wireframe.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Clouds.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Sand.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Landscape.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\TripodLamp.fmat">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="res\SurrealDemoScene\Wood.fmat">
-      <Filter>Resources</Filter>
-    </None>
     <None Include="res\Sand.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\AmbientOcclusion.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="res\SurrealDemoScene\OrreryGold.fmat">
-      <Filter>Resources</Filter>
-    </None>
     <None Include="res\Clouds.hlsl">
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="res\PhysicsScene.fscn">
       <Filter>Resources</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\BlackBricks.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\BlendDemo.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\BlueBlend.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Clouds.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Earth.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\InfoPanel.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Landscape.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Marble.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\monitor.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\OrreryGold.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PalmFrond.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\placeholder.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PlanetA.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PlanetB.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\PlanetC.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Wood.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\TripodLamp.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\WhitePlaster.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Wireframe.fmat">
+      <Filter>Resources\Materials</Filter>
+    </None>
+    <None Include="res\SurrealDemoScene\Sand.fmat">
+      <Filter>Resources\Materials</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -292,9 +289,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\MyScene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PlanetScene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\ShadowDemoScene.cpp">

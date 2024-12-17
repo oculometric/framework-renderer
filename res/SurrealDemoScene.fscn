@@ -1,6 +1,6 @@
 {
   "name": "DX11 Framework Demo Scene",
-  "assets": {
+  "assets": { // TODO: convert this file to new component config
     "materials": [
       { "path": "res/SurrealDemoScene/BlackBricks.fmat" },
       { "path": "res/SurrealDemoScene/WhitePlaster.fmat" },

@@ -1,62 +1,84 @@
 {
 	"name": "shadow demo scene",
 	"objects": [
-		//{
-		//	"class": "mesh",
-		//	"data": "res/suzanne.obj",
-		//	"position": [ 0, 0, 3 ]
-		//},
 		{
-			"class": "mesh",
-			"data": "res/sphere.obj",
-			"position": [ 0, 0, 3 ]
+			"position": [ 0, 0, 3 ],
+			"components": [
+				{
+					"class": "mesh",
+					"data": "res/suzanne.obj"
+				}
+			]
 		},
 		{
-			"class": "mesh",
-			"data": "res/uvcube.obj",
-			"scale": [ 8, 8, 1 ]
+			"scale": [ 8, 8, 1 ],
+			"components": [
+				{
+					"class": "mesh",
+					"data": "res/uvcube.obj"
+				}
+			]
 		},
 		{
-			"class": "camera",
 			"name": "camera",
 			"position": [ 0, 0, 5.0 ],
-			"rotation": [ 90, 0, 0 ]
+			"rotation": [ 90, 0, 0 ],
+			"components": [
+				{
+					"class": "camera"
+				}
+			]
 		},
 		{
-			"class": "light",
 			"position": [ 1, 0, 6.0 ],
-			"type": "spot",
-			"angle": 45,
-			"colour": [ 1, 0, 0 ],
-			"strength": 10
+			"components": [
+				{
+					"class": "light",
+					"type": "spot",
+					"strength": 10,
+					"colour": [ 1, 0, 0 ],
+					"angle": 45
+				}
+			]
 		},
 		{
-			"class": "light",
 			"position": [ -0.707, 0.707, 6.0 ],
-			"type": "spot",
-			"angle": 45,
-			"colour": [ 0, 1, 0 ],
-			"strength": 10
+			"components": [
+				{
+					"class": "light",
+					"type": "spot",
+					"strength": 10,
+					"colour": [ 0, 1, 0 ],
+					"angle": 45
+				}
+			]
 		},
 		{
-			"class": "light",
 			"position": [ -0.707, -0.707, 6.0 ],
-			"type": "spot",
-			"angle": 45,
-			"colour": [ 0, 0, 1 ],
-			"strength": 10
+			"components": [
+				{
+					"class": "light",
+					"type": "spot",
+					"strength": 10,
+					"colour": [ 0, 0, 1 ],
+					"angle": 45
+				}
+			]
 		},
 		{
-			"class": "empty",
 			"name": "spinner",
 			"children": [
 				{
-					"class": "light",
 					"position": [ 0, -2, 6.0 ],
-					"type": "directional",
 					"rotation": [ 30, 0, 0 ],
-					"colour": [ 1, 1, 1 ],
-					"strength": 0.5
+					"components": [
+						{
+							"class": "light",
+							"type": "directional",
+							"strength": 0.5,
+							"colour": [ 1, 1, 1 ]
+						}
+					]
 				}
 			]
 		}
