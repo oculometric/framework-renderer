@@ -1,88 +1,88 @@
 {
-	"name": "shadow demo scene",
-	"objects": [
-		{
-			"position": [ 0, 0, 3 ],
-			"components": [
-				{
-					"class": "mesh",
-					"data": "res/suzanne.obj"
-				}
-			]
-		},
-		{
-			"scale": [ 8, 8, 1 ],
-			"components": [
-				{
-					"class": "mesh",
-					"data": "res/uvcube.obj"
-				}
-			]
-		},
-		{
-			"name": "camera",
-			"position": [ 0, 0, 5.0 ],
-			"rotation": [ 90, 0, 0 ],
-			"components": [
-				{
-					"class": "camera"
-				}
-			]
-		},
-		{
-			"position": [ 1, 0, 6.0 ],
-			"components": [
-				{
-					"class": "light",
-					"type": "spot",
-					"strength": 10,
-					"colour": [ 1, 0, 0 ],
-					"angle": 45
-				}
-			]
-		},
-		{
-			"position": [ -0.707, 0.707, 6.0 ],
-			"components": [
-				{
-					"class": "light",
-					"type": "spot",
-					"strength": 10,
-					"colour": [ 0, 1, 0 ],
-					"angle": 45
-				}
-			]
-		},
-		{
-			"position": [ -0.707, -0.707, 6.0 ],
-			"components": [
-				{
-					"class": "light",
-					"type": "spot",
-					"strength": 10,
-					"colour": [ 0, 0, 1 ],
-					"angle": 45
-				}
-			]
-		},
-		{
-			"name": "spinner",
-			"children": [
-				{
-					"position": [ 0, -2, 6.0 ],
-					"rotation": [ 30, 0, 0 ],
-					"components": [
-						{
-							"class": "light",
-							"type": "directional",
-							"strength": 0.5,
-							"colour": [ 1, 1, 1 ]
-						}
-					]
-				}
-			]
-		}
+  "name": "shadow demo scene",
+  "objects": [
+    {
+      "position": [ 0, 0, 3 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/suzanne.obj"
+        }
+      ]
+    },
+    {
+      "scale": [ 8, 8, 1 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/uvcube.obj"
+        }
+      ]
+    },
+    {
+      "name": "camera",
+      "position": [ 0, 0, 5.0 ],
+      "rotation": [ 90, 0, 0 ],
+      "components": [
+        {
+          "class": "camera"
+        }
+      ]
+    },
+    {
+      "position": [ 1, 0, 6.0 ],
+      "components": [
+        {
+          "class": "light",
+          "type": "spot",
+          "strength": 10,
+          "colour": [ 1, 0, 0 ],
+          "angle": 45
+        }
+      ]
+    },
+    {
+      "position": [ -0.707, 0.707, 6.0 ],
+      "components": [
+        {
+          "class": "light",
+          "type": "spot",
+          "strength": 10,
+          "colour": [ 0, 1, 0 ],
+          "angle": 45
+        }
+      ]
+    },
+    {
+      "position": [ -0.707, -0.707, 6.0 ],
+      "components": [
+        {
+          "class": "light",
+          "type": "spot",
+          "strength": 10,
+          "colour": [ 0, 0, 1 ],
+          "angle": 45
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "children": [
+        {
+          "position": [ 0, -2, 6.0 ],
+          "rotation": [ 30, 0, 0 ],
+          "components": [
+            {
+              "class": "light",
+              "type": "directional",
+              "strength": 0.5,
+              "colour": [ 1, 1, 1 ]
+            }
+          ]
+        }
+      ]
+    }
 
-	],
-	"ambient_light": [ 0.02, 0.02, 0.02 ]
+  ],
+  "ambient_light": [ 0.02, 0.02, 0.02 ]
 }

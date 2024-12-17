@@ -1,6 +1,6 @@
 {
   "name": "DX11 Framework Demo Scene",
-  "assets": { // TODO: convert this file to new component config
+  "assets": {
     "materials": [
       { "path": "res/SurrealDemoScene/BlackBricks.fmat" },
       { "path": "res/SurrealDemoScene/WhitePlaster.fmat" },
@@ -24,180 +24,284 @@
   },
   "objects": [
     {
-      "class": "camera",
       "name": "walk_cam",
       "position": [ 0, -9.4, 1.56 ],
       "rotation": [ 90, 0, 180 ],
-      "field_of_view": 49.5,
-      "far_clip": 1000
+      "components": [
+        {
+          "class": "camera",
+          "field_of_view": 49.5,
+          "far_clip": 1000
+        }
+      ]
     },
     {
-      "class": "camera",
       "name": "fly_cam",
       "position": [ 0, -14.4, 8 ],
       "rotation": [ 45, 0, 180 ],
-      "field_of_view": 49.5,
-      "far_clip": 1000
-    },
-    {
-      "class": "light",
-      "name": "sun",
-      "type": "directional",
-      "colour": [ 1.000, 0.837, 0.740 ],
-      "position": [ -2, -22, 7 ],
-      "strength": 4,
-      "rotation": [ -30, -27.2, 0 ]
-    },
-    {
-      "class": "mesh",
-      "name": "walls",
-      "data": "res/SurrealDemoScene/museum_walls.obj",
-      "material": "res/SurrealDemoScene/BlackBricks.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/museum_panels.obj",
-      "material": "res/SurrealDemoScene/WhitePlaster.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/medium_pedestal.obj",
-      "position": [ -5, -17, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/medium_pedestal.obj",
-      "position": [ -6.5, -17, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/medium_pedestal.obj",
-      "position": [ 2.5, -30, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat",
-      "children": [
+      "components": [
         {
-          "class": "mesh",
-          "data": "res/SurrealDemoScene/planet.obj",
-          "position": [ 0, 0, 1.8 ],
-          "rotation": [ 0, 0, 15 ],
-          "material": "res/SurrealDemoScene/PlanetA.fmat"
+          "class": "camera",
+          "field_of_view": 49.5,
+          "far_clip": 1000
         }
       ]
     },
     {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/medium_pedestal.obj",
-      "position": [ 2.5, -32, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat",
-      "children": [
+      "name": "sun",
+      "position": [ -2, -22, 7 ],
+      "rotation": [ -30, -27.2, 0 ],
+      "components": [
+        {
+          "class": "light",
+          "type": "directional",
+          "strength": 4,
+          "colour": [ 1.000, 0.837, 0.740 ]
+        }
+      ]
+    },
+    {
+      "name": "walls",
+      "components": [
         {
           "class": "mesh",
-          "data": "res/SurrealDemoScene/planet.obj",
+          "data": "res/SurrealDemoScene/museum_walls.obj",
+          "material": "res/SurrealDemoScene/BlackBricks.fmat"
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/museum_panels.obj",
+          "material": "res/SurrealDemoScene/WhitePlaster.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ -5, -17, -0.058 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/medium_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ -6.5, -17, -0.058 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/medium_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ 2.5, -30, -0.058 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/medium_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ],
+      "children": [
+        {
+          "position": [ 0, 0, 1.8 ],
+          "rotation": [ 0, 0, 15 ],
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/SurrealDemoScene/planet.obj",
+              "material": "res/SurrealDemoScene/PlanetA.fmat"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "position": [ 2.5, -32, -0.058 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/medium_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ],
+      "children": [
+        {
           "position": [ 0, 0, 1.8 ],
           "rotation": [ 0, 0, 85 ],
-          "material": "res/SurrealDemoScene/PlanetB.fmat"
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/SurrealDemoScene/planet.obj",
+              "material": "res/SurrealDemoScene/PlanetB.fmat"
+            }
+          ]
         }
       ]
     },
     {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/medium_pedestal.obj",
       "position": [ 2.5, -34, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat",
-      "children": [
+      "components": [
         {
           "class": "mesh",
-          "data": "res/SurrealDemoScene/planet.obj",
+          "data": "res/SurrealDemoScene/medium_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ],
+      "children": [
+        {
           "position": [ 0, 0, 1.8 ],
           "rotation": [ 0, 0, 15 ],
-          "material": "res/SurrealDemoScene/PlanetC.fmat"
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/SurrealDemoScene/planet.obj",
+              "material": "res/SurrealDemoScene/PlanetC.fmat"
+            }
+          ]
         }
       ]
     },
     {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/planter_base.obj",
       "position": [ 1.56, -13.57, -0.09 ],
-      "material": "res/SurrealDemoScene/Marble.fmat",
-      "children": [
+      "components": [
         {
           "class": "mesh",
-          "data": "res/SurrealDemoScene/planter_earth.obj",
+          "data": "res/SurrealDemoScene/planter_base.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ],
+      "children": [
+        {
           "position": [ 0, 0, 0 ],
-          "material": "res/SurrealDemoScene/Earth.fmat"
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/SurrealDemoScene/planter_earth.obj",
+              "material": "res/SurrealDemoScene/Earth.fmat"
+            }
+          ]
         },
         {
-          "class": "mesh",
-          "data": "res/SurrealDemoScene/palm.obj",
           "position": [ 0, 0, 0.86 ],
-          "material": "res/SurrealDemoScene/PalmFrond.fmat"
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/SurrealDemoScene/palm.obj",
+              "material": "res/SurrealDemoScene/PalmFrond.fmat"
+            }
+          ]
         }
       ]
     },
     {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/wireframes.obj",
-      "material": "res/SurrealDemoScene/Wireframe.fmat",
-      "cast_shadow": 0
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/artefacts.obj"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/info_panel.obj",
-      "position": [ 0, -28.5, 0 ],
-      "material": "res/SurrealDemoScene/InfoPanel.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/blend_demo.obj",
-      "position": [ 0, 0, 0 ],
-      "material": "res/SurrealDemoScene/BlendDemo.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/extended_pedestal.obj",
-      "position": [ -4, -34, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat",
-      "children": [
+      "components": [
         {
           "class": "mesh",
+          "data": "res/SurrealDemoScene/wireframes.obj",
+          "material": "res/SurrealDemoScene/Wireframe.fmat",
+          "cast_shadow": 0
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/artefacts.obj"
+        }
+      ]
+    },
+    {
+      "position": [ 0, -28.5, 0 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/info_panel.obj",
+          "material": "res/SurrealDemoScene/InfoPanel.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ 0, 0, 0 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/blend_demo.obj",
+          "material": "res/SurrealDemoScene/BlendDemo.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ -4, -34, -0.058 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/extended_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ],
+      "children": [
+        {
           "name": "orrery_base",
-          "data": "res/SurrealDemoScene/orrery_base.obj",
           "position": [ 0, 0, 1.4 ],
-          "material": "res/SurrealDemoScene/OrreryGold.fmat",
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/SurrealDemoScene/orrery_base.obj",
+              "material": "res/SurrealDemoScene/OrreryGold.fmat"
+            }
+          ],
           "children": [
             {
-              "class": "mesh",
               "name": "orrery_planet_a",
-              "data": "res/SurrealDemoScene/orrery_orbiter_a.obj",
               "position": [ 0, 0, -0.08 ],
-              "material": "res/SurrealDemoScene/OrreryGold.fmat"
-            },
-            {
-              "class": "mesh",
-              "name": "orrery_planet_b",
-              "data": "res/SurrealDemoScene/orrery_orbiter_b.obj",
-              "position": [ 0, 0, -0.08 ],
-              "material": "res/SurrealDemoScene/OrreryGold.fmat"
-            },
-            {
-              "class": "mesh",
-              "name": "orrery_mid",
-              "data": "res/SurrealDemoScene/orrery_mid.obj",
-              "position": [ 0, 0, 0.88 ],
-              "material": "res/SurrealDemoScene/OrreryGold.fmat",
-              "children": [
+              "components": [
                 {
                   "class": "mesh",
-                  "name": "orrery_core",
-                  "data": "res/SurrealDemoScene/orrery_core.obj",
-                  "position": [ 0, 0, 0 ],
+                  "data": "res/SurrealDemoScene/orrery_orbiter_a.obj",
                   "material": "res/SurrealDemoScene/OrreryGold.fmat"
+                }
+              ]
+            },
+            {
+              "name": "orrery_planet_b",
+              "position": [ 0, 0, -0.08 ],
+              "components": [
+                {
+                  "class": "mesh",
+                  "data": "res/SurrealDemoScene/orrery_orbiter_b.obj",
+                  "material": "res/SurrealDemoScene/OrreryGold.fmat"
+                }
+              ]
+            },
+            {
+              "name": "orrery_mid",
+              "position": [ 0, 0, 0.88 ],
+              "components": [
+                {
+                  "class": "mesh",
+                  "data": "res/SurrealDemoScene/orrery_mid.obj",
+                  "material": "res/SurrealDemoScene/OrreryGold.fmat"
+                }
+              ],
+              "children": [
+                {
+                  "name": "orrery_core",
+                  "position": [ 0, 0, 0 ],
+                  "components": [
+                    {
+                      "class": "mesh",
+                      "data": "res/SurrealDemoScene/orrery_core.obj",
+                      "material": "res/SurrealDemoScene/OrreryGold.fmat"
+                    }
+                  ]
                 }
               ]
             }
@@ -206,107 +310,163 @@
       ]
     },
     {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/cloud_panel.obj",
       "position": [ 9.35, -21, 0 ],
-      "material": "res/SurrealDemoScene/Clouds.fmat"
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/sand.obj",
-      "material": "res/SurrealDemoScene/Sand.fmat",
-      "position": [ 0, 0, -0.1 ]
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/landscape.obj",
-      "material": "res/SurrealDemoScene/Landscape.fmat",
-      "rotation": [ 0, 0, 180 ]
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/landscape.obj",
-      "material": "res/SurrealDemoScene/Landscape.fmat",
-      "rotation": [ 0, 0, 90 ]
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/landscape.obj",
-      "material": "res/SurrealDemoScene/Landscape.fmat",
-      "rotation": [ 0, 0, 0.1 ]
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/landscape.obj",
-      "material": "res/SurrealDemoScene/Landscape.fmat",
-      "rotation": [ 0, 0, -90 ]
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/lamp_a.obj",
-      "material": "res/SurrealDemoScene/TripodLamp.fmat",
-      "position": [ 0, 0, 0 ],
-      "cast_shadow": 0
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/lamp_b.obj",
-      "material": "res/SurrealDemoScene/Wood.fmat",
-      "position": [ 0, 0, 0 ],
-      "cast_shadow": 0
-    },
-    {
-      "class": "light",
-      "type": "spot",
-      "angle": 20,
-      "colour": [ 1, 0, 0 ],
-      "strength": 10,
-      "rotation": [ 77.338, -125.505, -65.92 ],
-      "position": [ -1.708, -21.477, 1.572 ],
-      "scale": [ 1, 1, -1 ]
-    },
-    {
-      "class": "light",
-      "type": "spot",
-      "angle": 20,
-      "colour": [ 0, 1, 0 ],
-      "strength": 10,
-      "rotation": [ 131.310, -99.015, -128.15 ],
-      "position": [ -1.535, -22.429, 1.741 ],
-      "scale": [ 1, 1, -1 ]
-    },
-    {
-      "class": "light",
-      "type": "spot",
-      "angle": 20,
-      "colour": [ 0, 0, 1 ],
-      "strength": 10,
-      "rotation": [ 77.338, -125.705, -92.958 ],
-      "position": [ -1.818, -23.618, 1.572 ],
-      "scale": [ 1, 1, -1 ]
-    },
-    {
-      "class": "mesh",
-      "data": "res/SurrealDemoScene/medium_pedestal.obj",
-      "position": [ 9.5, -24, -0.058 ],
-      "material": "res/SurrealDemoScene/Marble.fmat",
-      "children": [
+      "components": [
         {
           "class": "mesh",
-          "name": "monitor",
-          "data": "res/monitor.obj",
-          "position": [ 0, 0, 1.4 ],
-          "rotation": [ -10, 20, -85 ],
-          "material": "res/monitor.fmat"
-        },
+          "data": "res/SurrealDemoScene/cloud_panel.obj",
+          "material": "res/SurrealDemoScene/Clouds.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ 0, 0, -0.1 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/sand.obj",
+          "material": "res/SurrealDemoScene/Sand.fmat"
+        }
+      ]
+    },
+    {
+      "rotation": [ 0, 0, 180 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/landscape.obj",
+          "material": "res/SurrealDemoScene/Landscape.fmat"
+        }
+      ]
+    },
+    {
+      "rotation": [ 0, 0, 90 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/landscape.obj",
+          "material": "res/SurrealDemoScene/Landscape.fmat"
+        }
+      ]
+    },
+    {
+      "rotation": [ 0, 0, 0.1 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/landscape.obj",
+          "material": "res/SurrealDemoScene/Landscape.fmat"
+        }
+      ]
+    },
+    {
+      "rotation": [ 0, 0, -90 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/landscape.obj",
+          "material": "res/SurrealDemoScene/Landscape.fmat"
+        }
+      ]
+    },
+    {
+      "position": [ 0, 0, 0 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/lamp_a.obj",
+          "material": "res/SurrealDemoScene/TripodLamp.fmat",
+          "cast_shadow": 0
+        }
+      ]
+    },
+    {
+      "position": [ 0, 0, 0 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/lamp_b.obj",
+          "material": "res/SurrealDemoScene/Wood.fmat",
+          "cast_shadow": 0
+        }
+      ]
+    },
+    {
+      "rotation": [ 77.338, -125.505, -65.92 ],
+      "position": [ -1.708, -21.477, 1.572 ],
+      "scale": [ 1, 1, -1 ],
+      "components": [
         {
           "class": "light",
           "type": "spot",
-          "angle": 40,
-          "strength": 3,
-          "colour": [ 1, 0, 1 ],
+          "strength": 10,
+          "colour": [ 1, 0, 0 ],
+          "angle": 20
+        }
+      ]
+    },
+    {
+      "rotation": [ 131.310, -99.015, -128.15 ],
+      "position": [ -1.535, -22.429, 1.741 ],
+      "scale": [ 1, 1, -1 ],
+      "components": [
+        {
+          "class": "light",
+          "type": "spot",
+          "strength": 10,
+          "colour": [ 0, 1, 0 ],
+          "angle": 20
+        }
+      ]
+    },
+    {
+      "rotation": [ 77.338, -125.705, -92.958 ],
+      "position": [ -1.818, -23.618, 1.572 ],
+      "scale": [ 1, 1, -1 ],
+      "components": [
+        {
+          "class": "light",
+          "type": "spot",
+          "strength": 10,
+          "colour": [ 0, 0, 1 ],
+          "angle": 20
+        }
+      ]
+    },
+    {
+      "position": [ 9.5, -24, -0.058 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/SurrealDemoScene/medium_pedestal.obj",
+          "material": "res/SurrealDemoScene/Marble.fmat"
+        }
+      ],
+      "children": [
+        {
+          "name": "monitor",
+          "position": [ 0, 0, 1.4 ],
+          "rotation": [ -10, 20, -85 ],
+          "components": [
+            {
+              "class": "mesh",
+              "data": "res/monitor.obj",
+              "material": "res/monitor.fmat"
+            }
+          ]
+        },
+        {
           "position": [ 0.8, 1.0, 2.8 ],
-          "rotation": [ -45, 0, -20 ]
+          "rotation": [ -45, 0, -20 ],
+          "components": [
+            {
+              "class": "light",
+              "type": "spot",
+              "strength": 3,
+              "colour": [ 1, 0, 1 ],
+              "angle": 40
+            }
+          ]
         }
       ]
     }
