@@ -5,6 +5,11 @@
     "files.associations": {
         "string": "cpp",
         "format": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "chrono": "cpp",
+        "text_encoding": "cpp",
+        "typeinfo": "cpp"
     }
 }

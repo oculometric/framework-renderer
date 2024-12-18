@@ -25,14 +25,15 @@ void FScene::addObject(FObject* o, FObject* parent)
 	}
 	else
 	{
-		if (all_objects.count(parent) == 0) return;
-		all_objects.insert(o);
 		parent->transform.addChild(&(o->transform));
+		all_objects.insert(o);
 	}
 
-	// FIXME: convert this to a map/set (ie unique elements)
 	FLight* l = o->getComponent<FLight>();
-	if (l != nullptr) all_lights.push_back(l);
+	if (l != nullptr) all_lights.insert(l);
+
+	FCameraComponent* c = o->getComponent<FCameraComponent>();
+	if (c != nullptr) active_camera = c;
 }
 
 FObject* FScene::findObjectWithName(std::string str)
@@ -98,72 +99,4 @@ void FScene::selectUnderMouse()
 
 		active_object = closest;
 	}
-}
-
-void FScene::finalizePreload()
-{
-	for (FObjectPreload o : preload_array)
-		finalizeObject(o, nullptr);
-	preload_array.clear();
-}
-
-void FScene::finalizeObject(FObjectPreload& o, FObject* parent)
-{
-	FResourceManager* rm = FResourceManager::get();
-
-	FObject* obj = new FObject();
-	obj->name = o.name;
-	obj->transform = FTransform();
-
-	switch (o.object_type)
-	{
-	case FComponentType::MESH:
-	{
-		FMesh* me = new FMesh(obj);
-		if (o.data_name != "") me->setData(rm->loadMesh(o.data_name));
-		if (o.material_name != "") me->setMaterial(rm->getMaterial(o.material_name));
-		me->cast_shadow = o.cast_shadow;
-
-		obj->addComponent(me);
-		break;
-	}
-	case FComponentType::CAMERA:
-	{
-		FCameraComponent* cam = new FCameraComponent(obj);
-		if (o.float1 > 0) cam->aspect_ratio = o.float1;
-		if (o.float2 > 0) cam->field_of_view = o.float2;
-		if (o.float3 > 0) cam->near_clip = o.float3;
-		if (o.float4 > 0) cam->far_clip = o.float4;
-
-		cam->updateProjectionMatrix();
-
-		obj->addComponent(cam);
-		active_camera = cam;
-		break;
-	}
-	case FComponentType::LIGHT:
-	{
-		FLight* light = new FLight(obj);
-		light->angle = o.angle;
-		light->strength = o.strength;
-		light->colour = o.colour;
-		if (o.data_name == "directional") light->type = FLight::FLightType::DIRECTIONAL;
-		else if (o.data_name == "spot") light->type = FLight::FLightType::SPOT;
-		else if (o.data_name == "point") light->type = FLight::FLightType::POINT;
-
-		obj->addComponent(light);
-		break;
-	}
-	default:
-		break;
-	}
-	
-	addObject(obj, parent);
-
-	obj->transform.setLocalPosition(o.position);
-	obj->transform.setLocalEuler(o.rotation);
-	obj->transform.setLocalScale(o.scale);
-	
-	for (FObjectPreload c : o.children)
-		finalizeObject(c, obj);
 }

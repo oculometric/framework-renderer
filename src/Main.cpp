@@ -39,7 +39,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 
 	application.scene = newSceneWithName("ShadowDemo", &application);
-	application.scene->finalizePreload();
 	application.scene->start();
 
 	// Main message loop

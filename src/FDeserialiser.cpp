@@ -9,7 +9,6 @@
 
 using namespace std;
 
-// TODO: put these in the header file
 bool operator>>(const FJsonElement& a, XMFLOAT3& other)
 {
 	if (a.type != JARRAY) return false;
@@ -47,7 +46,7 @@ bool operator>>(const FJsonElement& a, XMINT3& other)
 	return true;
 }
 
-bool operator>>(const FJsonElement& a, FComponent*& other, const FObject* object)
+bool deserialiseComponent(const FJsonElement& a, FComponent*& other, const FObject* object)
 {
     if (a.type != JOBJECT) return false;
 
@@ -57,6 +56,7 @@ bool operator>>(const FJsonElement& a, FComponent*& other, const FObject* object
     if (obj == nullptr) return false;
     if (!obj->has("class", JSTRING)) return false;
     if (other != nullptr) delete other;
+	if (object == nullptr) return false;
 
 	string object_class = (*obj)["class"].s_val;
 	if (object_class == "mesh")
@@ -64,7 +64,7 @@ bool operator>>(const FJsonElement& a, FComponent*& other, const FObject* object
         FMesh* other_mesh = new FMesh(object);
 		other = other_mesh;
 		if (obj->has("data", JSTRING)) other_mesh->loadMesh((*obj)["data"].s_val);
-		if (obj->has("material", JSTRING)) other_mesh->setMaterial(rm->getMaterial((*obj)["material"].s_val));
+		if (obj->has("material", JSTRING)) other_mesh->setMaterial(rm->loadMaterial((*obj)["material"].s_val));
 		if (obj->has("cast_shadow", JFLOAT)) other_mesh->cast_shadow = (*obj)["cast_shadow"].f_val > 0.0f;
 	}
 	else if (object_class == "camera")
@@ -75,6 +75,7 @@ bool operator>>(const FJsonElement& a, FComponent*& other, const FObject* object
 		if (obj->has("field_of_view", JFLOAT)) other_camera->field_of_view = (*obj)["field_of_view"].f_val;
 		if (obj->has("near_clip", JFLOAT)) other_camera->near_clip = (*obj)["near_clip"].f_val;
 		if (obj->has("far_clip", JFLOAT)) other_camera->far_clip = (*obj)["far_clip"].f_val;
+		other_camera->updateProjectionMatrix();
 	}
 	else if (object_class == "empty")
 		other = new FComponent(object);
@@ -103,13 +104,14 @@ bool operator>>(const FJsonElement& a, FComponent*& other, const FObject* object
     return true;
 }
 
-// TODO: remove the preload
-bool operator>>(const FJsonElement& a, FObject* other)
+bool deserialiseObject(const FJsonElement& a, FObject*& other, const FScene* scene)
 {
 	if (a.type != JOBJECT) return false;
 
 	FJsonObject* obj = a.o_val;
 	if (obj == nullptr) return false;
+	if (other == nullptr) return false;
+	if (scene == nullptr) return false;
 
     XMFLOAT3 tmp;
 
@@ -118,66 +120,49 @@ bool operator>>(const FJsonElement& a, FObject* other)
 	if (obj->has("rotation", JARRAY)) { (*obj)["rotation"] >> tmp; other->transform.setLocalEuler(tmp); }
 	if (obj->has("scale", JARRAY)) { (*obj)["scale"] >> tmp; other->transform.setLocalScale(tmp); }
 
-    // TODO: load components
+	if (obj->has("components", JARRAY))
+	{
+		vector<FJsonElement> comps = (*obj)["components"].a_val;
+		for (FJsonElement comp : comps)
+		{
+			FComponent* comp = nullptr;
+			if (deserialiseComponent(comp, comp, other))
+				other->addComponent(comp);
+		}
+	}
 
 	if (obj->has("children", JARRAY))
 	{
-		vector<FJsonElement> cs = (*obj)["children"].a_val;
-		for (FJsonElement c : cs)
+		vector<FJsonElement> childs = (*obj)["children"].a_val;
+		for (FJsonElement child : childs)
 		{
-			FObjectPreload fop;
-			if (c >> fop)
-				other.children.push_back(fop);
+			FObject* child_object = new FObject();
+			if (deserialiseObject(child, child_object))
+				scene->addObject(child_object, other);
 		}
 	}
 
 	return true;
 }
 
-
-// TODO: remove the preload
-bool operator>>(const FJsonElement& a, FScene& other)
+bool deserialiseScene(const FJsonElement& a, FScene* other)
 {
 	if (a.type != JOBJECT) return false;
+
+	if (other == nullptr) return;
 
 	FResourceManager* rm = FResourceManager::get();
 
 	FJsonObject* scene_obj = a.o_val;
 	if (scene_obj == nullptr) return false;
 	if (scene_obj->has("name", JSTRING)) other.name = (*scene_obj)["name"].s_val;
-	if (scene_obj->has("assets", JOBJECT))
-	{
-		FJsonObject* asset_block = (*scene_obj)["assets"].o_val;
-		if (asset_block->has("materials", JARRAY))
-		{
-			vector<FJsonElement> material_array = (*asset_block)["materials"].a_val;
-			for (FJsonElement material : material_array)
-			{
-				if (material.type == JOBJECT && material.o_val != nullptr)
-				{
-					if (material.o_val->has("path", JSTRING))
-					{
-						string path = (*material.o_val)["path"].s_val;
-						FJsonBlob material_blob(path);
-						FJsonElement mat_root = material_blob.getRoot();
-						if (mat_root.type == JOBJECT && mat_root.o_val != nullptr)
-						{
-							FMaterialPreload mp;
-							mat_root >> mp;
-							rm->createMaterial(path, mp);
-						}
-					}
-				}
-			}
-		}
-	}
 	if (scene_obj->has("objects", JARRAY))
 	{
 		for (FJsonElement obj : (*scene_obj)["objects"].a_val)
 		{
-			FObjectPreload o;
-			obj >> o;
-			other.queueForPreload(o);
+			FObject* object = new FObject();
+			if (deserialiseObject(obj, object, other))
+				scene->addObject(object, nullptr);
 		}
 	}
 	if (scene_obj->has("ambient_light", JARRAY))

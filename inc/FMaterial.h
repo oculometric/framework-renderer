@@ -74,17 +74,6 @@ struct FMaterialParameter
 	inline FMaterialParameter(XMINT3 arg)     { type = FShaderUniformType::I3; i3 = arg; }
 };
 
-// contains data about how to construct a material. this is needed due to the initialisation order of shaders, textures, meshes and materials
-struct FMaterialPreload
-{
-	std::string shader;						// path to the shader to use
-	// map of parameter names to parameter values
-	std::map<std::string, FMaterialParameter> parameters;
-	std::vector<std::string> textures;		// list of texture paths
-	bool wireframe = false;					// whether the shader should use wireframe values
-	FCullMode culling = FCullMode::BACK;	// culling mode for the shader to use
-};
-
 // encapsulates a material and its parameters, shader, and textures
 class FMaterial
 {

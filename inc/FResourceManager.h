@@ -60,9 +60,8 @@ public:
 	FShader*   loadShader(std::string path, bool wireframe, FCullMode culling);
 	bool       unloadShader(FShader* res);			// unload a loaded shader
 
-	// construct a material according to a set of preload parameters, with a name (usually the file path) to reference it by
-	FMaterial* createMaterial(std::string name, FMaterialPreload mp);
-	FMaterial* getMaterial(std::string name);		// get a material with a specified name (usually the file path)
+	// load a material according to its definition in a file, or just return a reference to it if already loaded
+	FMaterial* loadMaterial(std::string name);
 	bool	   unloadMaterial(FMaterial* mat);		// unload a loaded material
 
 	~FResourceManager();

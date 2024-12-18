@@ -272,15 +272,8 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     }
 
     // load placeholder material
-    FJsonBlob material_blob("res/placeholder.fmat");
-    FJsonElement mat_root = material_blob.getRoot();
-    if (mat_root.type == JOBJECT && mat_root.o_val != nullptr)
-    {
-        FMaterialPreload mp;
-        mat_root >> mp;
-        placeholder_material = FResourceManager::get()->createMaterial("res/placeholder.mat", mp);
-    }
-    else
+    placeholder_material = FResourceManager::get()->loadMaterial("res/placeholder.mat");
+    if (placeholder_material == nullptr)
     {
         FDebug::dialog("failed to load placeholder.fmat!");
         return E_FAIL;

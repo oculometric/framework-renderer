@@ -33,7 +33,7 @@ public:
 
 protected:
 	std::unordered_set<FObject*> all_objects;				// list of all objects in the scene. order does not matter
-	std::vector<FLight*> all_lights;						// list of all the scene lights
+	std::unordered_set<FLight*> all_lights;						// list of all the scene lights
 
 	FObject root;											// root object of the scene, which all objects are children of
 	FApplication* owner = nullptr;							// owning application, used to access the application state and graphics engine
@@ -51,11 +51,6 @@ public:
 	FObject* findObjectWithName(std::string str);			// find the first object within the scene graph, with the specified name
 	void selectUnderMouse();								// selects the objects currently under the mouse cursor, based on bounding-box-ray intersections
 
-	void finalizePreload();									// realize all the objects present in the preload array
-	inline void queueForPreload(FObjectPreload& o) { preload_array.push_back(o); }
 	inline virtual void start() { }							// virtual method called when a scene starts, just after the preload array has been realized
 	inline virtual void update(float delta_time) { (delta_time); } // virtual method called every time a frame is rendered
-
-private:
-	void finalizeObject(FObjectPreload& o, FObject* parent);// realize an object preload structure into an actual object and add it to the scene as appropriate
 };

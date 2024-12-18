@@ -5,6 +5,7 @@
 #include "FMesh.h"
 #include "FGraphicsEngine.h"
 #include "FDebug.h"
+#include "FJsonParser.h"
 
 using namespace std;
 
@@ -115,14 +116,94 @@ bool FResourceManager::unloadShader(FShader* res)
 	return unload(res);
 }
 
-FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
+FMaterial* FResourceManager::loadMaterial(string name)
 {
 	FResource descriptor{ name, FResourceType::MATERIAL };
 	if (registry.count(descriptor) > 0)
 		return (FMaterial*)(registry[descriptor]);
 
+	FJsonBlob material_blob(name);
+	FJsonElement a = material_blob.getRoot();
+	if (a.type != JOBJECT) return nullptr;
+	if (a.o_val == nullptr) return nullptr;
+
+	vector<string> textures;
+	string shader_name;
+	map<string, FMaterialParameter> parameters;
+	bool wireframe = false;
+	FCullMode culling = FCullMode::BACK;
+	FJsonObject* obj = a.o_val;
+
+	if (obj->has("shader", JSTRING)) shader_name = (*obj)["shader"].s_val;
+	else return nullptr;
+	if (obj->has("textures", JARRAY))
+	{
+		vector<FJsonElement> texs = (*obj)["textures"].a_val;
+		for (FJsonElement t : texs)
+			if (t.type == JSTRING) textures.push_back(t.s_val);
+	}
+	if (obj->has("uniforms", JARRAY))
+	{
+		for (FJsonElement el : (*obj)["uniforms"].a_val)
+		{
+			if (el.type != JOBJECT || el.o_val == nullptr) continue;
+			FJsonObject* eobj = el.o_val;
+			if (!eobj->has("type", JSTRING) || !eobj->has("param", JSTRING)) continue;
+			
+			FMaterialParameter param;
+
+			string type = (*eobj)["type"].s_val;
+			string name = (*eobj)["param"].s_val;
+			if (eobj->elements.count("value") < 1) continue;
+			FJsonElement value = (*eobj)["value"];
+
+			if (type == "int")
+			{
+				if (value.type != JFLOAT) continue;
+				param = FMaterialParameter((INT)value.f_val);
+			}
+			else if (type == "float")
+			{
+				if (value.type != JFLOAT) continue;
+				param = FMaterialParameter((FLOAT)value.f_val);
+			}
+			else if (type == "int3")
+			{
+				if (value.type != JARRAY) continue;
+				XMINT3 i; value >> i;
+				param = FMaterialParameter(i);
+			}
+			else if (type == "float3")
+			{
+				if (value.type != JARRAY) continue;
+				XMFLOAT3 f; value >> f;
+				param = FMaterialParameter(f);
+			}
+			else if (type == "float4")
+			{
+				if (value.type != JARRAY) continue;
+				XMFLOAT4 f; value >> f;
+				param = FMaterialParameter(f);
+			}
+
+			parameters.insert_or_assign(name, param);
+		}
+	}
+	if (obj->has("wireframe", JFLOAT))
+		wireframe = (*obj)["wireframe"].f_val > 0.0f;
+	if (obj->has("culling", JSTRING))
+	{
+		string c = (*obj)["culling"].s_val;
+		if (c == "FRONT")
+			culling = FCullMode::FRONT;
+		else if (c == "OFF")
+			culling = FCullMode::OFF;
+		else
+			culling = FCullMode::BACK;
+	}
+
 	FShader* shader = nullptr;
-	shader = loadShader(mp.shader, mp.wireframe, mp.culling);
+	shader = loadShader(shader_name, wireframe, culling);
 	if (shader == nullptr)
 	{
 		FDebug::dialog("unable to load material: " + name);
@@ -131,9 +212,9 @@ FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 
 	FMaterial* res = new FMaterial();
 	res->shader = shader;
-	res->parameters = mp.parameters;
+	res->parameters = parameters;
 	size_t i = 0;
-	for (string tex_name : mp.textures)
+	for (string tex_name : textures)
 	{
 		if (tex_name.empty()) { i++; continue; }
 
@@ -144,15 +225,6 @@ FMaterial* FResourceManager::createMaterial(string name, FMaterialPreload mp)
 	registry.insert_or_assign(descriptor, (void*)res);
 
 	return res;
-}
-
-FMaterial* FResourceManager::getMaterial(string name)
-{
-	FResource descriptor{ name, FResourceType::MATERIAL };
-	if (registry.count(descriptor) > 0)
-		return (FMaterial*)(registry[descriptor]);
-
-	return nullptr;
 }
 
 bool FResourceManager::unloadMaterial(FMaterial* mat)
