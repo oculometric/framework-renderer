@@ -9,30 +9,11 @@
 #include "FLight.h"
 #include "FComponent.h"
 
+#include "FDeserialiser.h"
+
 class FApplication;
 
 using namespace DirectX;
-
-// represents preload parameters for an object, while being loaded from JSON. necessary due to the order in which objects, meshes, materials, textures, etc are loaded as resources
-struct FObjectPreload
-{
-	FComponentType object_type = FComponentType::BLANK;
-	std::string name = "";
-	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 rotation = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 scale = XMFLOAT3(1, 1, 1);
-	std::vector<FObjectPreload> children;
-	std::string data_name = "";
-	std::string material_name = "";
-	float float1 = 0;
-	float float2 = 0;
-	float float3 = 0;
-	float float4 = 0;
-	XMFLOAT3 colour = XMFLOAT3(0,0,0);
-	float strength = 1;
-	float angle = 45;
-	bool cast_shadow = true;
-};
 
 // encapsulates a scene environment
 class FScene

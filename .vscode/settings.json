@@ -1,0 +1,10 @@
+{
+    "C_Cpp.default.includePath": [
+        "${WORKSPACE}/inc"
+    ],
+    "files.associations": {
+        "string": "cpp",
+        "format": "cpp",
+        "new": "cpp"
+    }
+}
