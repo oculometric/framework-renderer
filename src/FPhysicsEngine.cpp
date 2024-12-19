@@ -5,6 +5,10 @@
 
 #include <thread>
 
+#define AIR_DENSITY 1.29f
+#define DRAG_COEFFICIENT 0.45f
+#define LAMINAR_THRESHOLD 1.0f
+
 using namespace std;
 using namespace chrono;
 
@@ -39,8 +43,19 @@ void FPhysicsEngine::physicsTick(float delta_time)
 		if (!comp) continue;
 
 		vector<FVector> forces = comp->getAndClearAccumulator();
+		
+		// apply gravitational force
 		forces.push_back(gravity * comp->getMass());
-		// TODO: add drag, friction forces
+
+		// apply drag force
+		float s = 0.5f * AIR_DENSITY * DRAG_COEFFICIENT; // TODO: multiplied by cross sectional area
+		FVector v = comp->getVelocity();
+		float k = magnitude(v) > LAMINAR_THRESHOLD ? 2.0f : 1.0f;
+		FVector f_d = v * -s * powf(magnitude(v), k);
+		forces.push_back(f_d);
+
+		// apply friction force
+		// TODO: friction force
 
 		FVector resultant_force = FVector(0, 0, 0);
 		for (FVector f : forces) resultant_force = resultant_force + f;
