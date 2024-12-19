@@ -1,27 +1,5 @@
 {
   "name": "DX11 Framework Demo Scene",
-  "assets": {
-    "materials": [
-      { "path": "res/SurrealDemoScene/BlackBricks.fmat" },
-      { "path": "res/SurrealDemoScene/WhitePlaster.fmat" },
-      { "path": "res/SurrealDemoScene/PlanetA.fmat" },
-      { "path": "res/SurrealDemoScene/PlanetB.fmat" },
-      { "path": "res/SurrealDemoScene/PlanetC.fmat" },
-      { "path": "res/SurrealDemoScene/Marble.fmat" },
-      { "path": "res/SurrealDemoScene/Earth.fmat" },
-      { "path": "res/SurrealDemoScene/PalmFrond.fmat" },
-      { "path": "res/SurrealDemoScene/Wireframe.fmat" },
-      { "path": "res/SurrealDemoScene/InfoPanel.fmat" },
-      { "path": "res/SurrealDemoScene/BlendDemo.fmat" },
-      { "path": "res/SurrealDemoScene/Sand.fmat" },
-      { "path": "res/SurrealDemoScene/Landscape.fmat" },
-      { "path": "res/SurrealDemoScene/TripodLamp.fmat" },
-      { "path": "res/SurrealDemoScene/Wood.fmat" },
-      { "path": "res/monitor.fmat" },
-      { "path": "res/SurrealDemoScene/OrreryGold.fmat" },
-      { "path": "res/SurrealDemoScene/Clouds.fmat" }
-    ]
-  },
   "objects": [
     {
       "name": "walk_cam",
@@ -62,6 +40,7 @@
     },
     {
       "name": "walls",
+      "position": [ 0, 0, 0 ],
       "components": [
         {
           "class": "mesh",
@@ -71,6 +50,7 @@
       ]
     },
     {
+      "position": [ 0, 0, 0 ],
       "components": [
         {
           "class": "mesh",
@@ -201,6 +181,7 @@
       ]
     },
     {
+      "position": [ 0, 0, 0 ],
       "components": [
         {
           "class": "mesh",
@@ -211,6 +192,7 @@
       ]
     },
     {
+      "position": [ 0, 0, 0 ],
       "components": [
         {
           "class": "mesh",

@@ -14,8 +14,6 @@ void PhysicsScene::start()
 	cube_a = findObjectWithName("cube_1");
 	cube_b = findObjectWithName("cube_2");
 
-	cube_a->addComponent(new FPhysicsComponent(cube_a));
-
 	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 	owner->getEngine()->draw_gizmos = true;
 }

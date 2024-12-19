@@ -82,7 +82,7 @@ static pair<XMFLOAT3, XMFLOAT3> computeTangent(XMFLOAT3 co_a, XMFLOAT3 co_b, XMF
     return ret;
 }
 
-FMeshData* FMesh::loadMesh(string path)
+FMesh* FMeshComponent::loadMesh(string path)
 {
     ifstream file;
     file.open(path);
@@ -146,7 +146,7 @@ FMeshData* FMesh::loadMesh(string path)
     // this allows us to tell when we should split a vertex (i.e. if it has already been used by another face corner but which had a different normal and/or a different uv)
     vector<vector<FFaceCornerReference>> fc_normal_uses(tmp_co.size(), vector<FFaceCornerReference>());
 
-    FMeshData* mesh_data = new FMeshData();
+    FMesh* mesh_data = new FMesh();
 
     for (FFaceCorner fc : tmp_fc)
     {
@@ -231,7 +231,7 @@ FMeshData* FMesh::loadMesh(string path)
 	return mesh_data;
 }
 
-bool FMesh::intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XMFLOAT3 ray_direction, float& tmin, float& tmax)
+bool FMeshComponent::intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XMFLOAT3 ray_direction, float& tmin, float& tmax)
 {
     // based closely on https://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
     float mins[3] = { bb.min_corner.x, bb.min_corner.y, bb.min_corner.z };
@@ -259,7 +259,7 @@ bool FMesh::intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XM
     return !failed;
 }
 
-FBoundingBox FMesh::getWorldSpaceBounds()
+FBoundingBox FMeshComponent::getWorldSpaceBounds()
 {
     XMFLOAT3 mi = mesh_data->bounds.min_corner;
     XMFLOAT3 ma = mesh_data->bounds.max_corner;

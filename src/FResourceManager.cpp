@@ -51,15 +51,15 @@ bool FResourceManager::unloadTexture(FTexture* res)
 	return unload(res);
 }
 
-FMeshData* FResourceManager::loadMesh(string path)
+FMesh* FResourceManager::loadMesh(string path)
 {
 	FResource descriptor{ path, FResourceType::MESH_DATA };
 	if (registry.count(descriptor) > 0)
-		return (FMeshData*)(registry[descriptor]);
+		return (FMesh*)(registry[descriptor]);
 
 	string fixed_path = path;
 	for (int i = 0; i < fixed_path.size(); i++) if (fixed_path[i] == '/') fixed_path[i] = '\\';
-	FMeshData* res = FMesh::loadMesh(path);
+	FMesh* res = FMeshComponent::loadMesh(path);
 	if (application->registerMesh(res))
 		registry.insert_or_assign(descriptor, (void*)res);
 	else
@@ -72,7 +72,7 @@ FMeshData* FResourceManager::loadMesh(string path)
 	return res;
 }
 
-bool FResourceManager::unloadMesh(FMeshData* res)
+bool FResourceManager::unloadMesh(FMesh* res)
 {
 	if (res == nullptr) return false;
 
@@ -245,7 +245,7 @@ FResourceManager::~FResourceManager()
 		switch (res_pair.first.type)
 		{
 		case FResourceType::TEXTURE:   unloadTexture((FTexture*)(res_pair.second)); break;
-		case FResourceType::MESH_DATA: unloadMesh((FMeshData*)(res_pair.second)); break;
+		case FResourceType::MESH_DATA: unloadMesh((FMesh*)(res_pair.second)); break;
 		case FResourceType::SHADER:    unloadShader((FShader*)(res_pair.second)); break;
 		case FResourceType::MATERIAL:  unloadMaterial((FMaterial*)(res_pair.second)); break;
 		}

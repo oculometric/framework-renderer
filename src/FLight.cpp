@@ -2,7 +2,7 @@
 
 #include "FObject.h"
 
-void FLight::convertToData(FLightData* data)
+void FLightComponent::convertToData(FLightData* data)
 {
 	data->colour = colour;
 	data->strength = strength;
@@ -20,7 +20,7 @@ void FLight::convertToData(FLightData* data)
 	XMStoreFloat4x4(&data->matrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMLoadFloat4x4(&world_mat)) * XMLoadFloat4x4(&proj_mat)));
 }
 
-XMFLOAT4X4 FLight::getProjectionMatrix()
+XMFLOAT4X4 FLightComponent::getProjectionMatrix()
 {
 	// FIXME: this only works for spotlights and sorta for directional lights! uhhhh....
 	XMFLOAT4X4 projection_matrix = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };

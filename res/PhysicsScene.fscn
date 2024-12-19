@@ -8,6 +8,11 @@
         {
           "class": "mesh",
           "data": "res/cube.obj"
+        },
+        {
+          "class": "physics",
+          "mass": 2.5,
+          "velocity": [ 0, 0, 4 ]
         }
       ]
     },

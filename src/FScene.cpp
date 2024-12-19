@@ -29,7 +29,7 @@ void FScene::addObject(FObject* o, FObject* parent)
 		all_objects.insert(o);
 	}
 
-	FLight* l = o->getComponent<FLight>();
+	FLightComponent* l = o->getComponent<FLightComponent>();
 	if (l != nullptr) all_lights.insert(l);
 
 	FCameraComponent* c = o->getComponent<FCameraComponent>();
@@ -82,7 +82,7 @@ void FScene::selectUnderMouse()
 
 		for (FObject* obj : all_objects)
 		{
-			FMesh* m = obj->getComponent<FMesh>();
+			FMeshComponent* m = obj->getComponent<FMeshComponent>();
 			if (m == nullptr) continue;
 
 			FBoundingBox box = m->getWorldSpaceBounds();
@@ -90,7 +90,7 @@ void FScene::selectUnderMouse()
 			float tmin;
 			float tmax;
 
-			if (FMesh::intersectBoundingBox(box, origin, world_direction, tmin, tmax) && tmin < dist)
+			if (FMeshComponent::intersectBoundingBox(box, origin, world_direction, tmin, tmax) && tmin < dist)
 			{
 				closest = obj;
 				dist = tmin;

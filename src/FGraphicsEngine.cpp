@@ -426,7 +426,7 @@ void FGraphicsEngine::resizeRenderTargets()
     application->needs_viewport_resize = false;
 }
 
-bool FGraphicsEngine::registerMesh(FMeshData* mesh_data)
+bool FGraphicsEngine::registerMesh(FMesh* mesh_data)
 {
     HRESULT hr = S_OK;
 
@@ -453,7 +453,7 @@ bool FGraphicsEngine::registerMesh(FMeshData* mesh_data)
     return true;
 }
 
-void FGraphicsEngine::unregisterMesh(FMeshData* mesh_data)
+void FGraphicsEngine::unregisterMesh(FMesh* mesh_data)
 {
     if (mesh_data == nullptr) return;
 
@@ -678,7 +678,7 @@ bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, F
         float tmin; float tmax;
         XMFLOAT3 ray_origin = XMFLOAT3(ray_origins[j].x, ray_origins[j].y, ray_origins[j].z);
         XMFLOAT3 ray_direction = XMFLOAT3(ray_ends[j].x - ray_origin.x, ray_ends[j].y - ray_origin.y, ray_ends[j].z - ray_origin.z);
-        if (FMesh::intersectBoundingBox(view_box, ray_origin, ray_origin, tmin, tmax))
+        if (FMeshComponent::intersectBoundingBox(view_box, ray_origin, ray_origin, tmin, tmax))
             return true;
     }
 
@@ -696,14 +696,14 @@ bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, F
         XMFLOAT3 ws_direction; XMStoreFloat3(&ws_direction, ws_directionv);
 
         float tmin; float tmax;
-        if (FMesh::intersectBoundingBox(bounds, ws_origin, ws_direction, tmin, tmax))
+        if (FMeshComponent::intersectBoundingBox(bounds, ws_origin, ws_direction, tmin, tmax))
             return true;
     }
 
     return false;
 }
 
-void FGraphicsEngine::sortForBatching(vector<FMesh*>& objects)
+void FGraphicsEngine::sortForBatching(vector<FMeshComponent*>& objects)
 {
     if (objects.size() < 3) return;
 
@@ -713,8 +713,8 @@ void FGraphicsEngine::sortForBatching(vector<FMesh*>& objects)
         switched = false;
         for (int i = 0; i < objects.size() - 1; i++)
         {
-            FMesh* o1 = objects[i];
-            FMesh* o2 = objects[i + 1];
+            FMeshComponent* o1 = objects[i];
+            FMeshComponent* o2 = objects[i + 1];
             
             FMaterial* m1 = o1->getMaterial();
             FShader* s1 = m1 == nullptr ? nullptr : m1->shader;
@@ -844,7 +844,7 @@ void FGraphicsEngine::draw()
 
         // gather lights
         int i = 0;
-        for (FLight* light : getScene()->all_lights)
+        for (FLightComponent* light : getScene()->all_lights)
         {
             lights++;
             light->convertToData(common_buffer_data->lights + i);
@@ -866,11 +866,11 @@ void FGraphicsEngine::draw()
         time_uniforms = ((chrono::duration<float>)(b - a)).count();
 
         // extract all the objects we actually care about (no point sorting things we're going to discard)
-        vector<FMesh*> batch;
+        vector<FMeshComponent*> batch;
         batch.reserve(getScene()->all_objects.size());
         for (FObject* obj : getScene()->all_objects)
         {
-            FMesh* msh = obj->getComponent<FMesh>();
+            FMeshComponent* msh = obj->getComponent<FMeshComponent>();
             if (msh != nullptr && msh->getData() != nullptr)
                 if (frustrumCull(projection_matrix, view_matrix_inv, msh->getWorldSpaceBounds()))
                     batch.push_back(msh);
@@ -883,7 +883,7 @@ void FGraphicsEngine::draw()
         time_batching = ((chrono::duration<float>)(a - b)).count();
 
         // draw the objects
-        for (FMesh* mo : batch)
+        for (FMeshComponent* mo : batch)
             drawObject(mo);
 
         b = chrono::high_resolution_clock::now();
@@ -938,13 +938,13 @@ void FGraphicsEngine::draw()
     swap_chain->Present(0, enable_vsync ? 0 : DXGI_PRESENT_ALLOW_TEARING);
 }
 
-void FGraphicsEngine::drawObject(FMesh* object)
+void FGraphicsEngine::drawObject(FMeshComponent* object)
 {
     meshes++;
 
     // check if the object we have is valid and a mesh
-    FMesh* mesh_object = object;
-    FMeshData* mesh_data = mesh_object->getData();
+    FMeshComponent* mesh_object = object;
+    FMesh* mesh_data = mesh_object->getData();
     if (!mesh_data) return;
     if (!mesh_data->index_buffer_ptr || !mesh_data->vertex_buffer_ptr) return;
 
@@ -1172,7 +1172,7 @@ void FGraphicsEngine::drawGizmos()
     }
 
     if (getScene()->active_object == nullptr) return;
-    FMesh* mesh = getScene()->active_object->getComponent<FMesh>();
+    FMeshComponent* mesh = getScene()->active_object->getComponent<FMeshComponent>();
     if (mesh == nullptr) return;
 
     // draw a bounding box for the selected object
@@ -1215,9 +1215,9 @@ void FGraphicsEngine::renderShadowMaps()
     D3D11_MAPPED_SUBRESOURCE shadow_buffer_resource;
 
     int light_index = 0;
-    for (FLight* light : getScene()->all_lights)
+    for (FLightComponent* light : getScene()->all_lights)
     {
-        if (light->type == FLight::FLightType::POINT) { light_index++; continue; } // TODO: shadow maps for point lights
+        if (light->type == FLightComponent::FLightType::POINT) { light_index++; continue; } // TODO: shadow maps for point lights
         getContext()->OMSetRenderTargets(0, nullptr, shadow_map_view[light_index]);
         getContext()->ClearDepthStencilView(shadow_map_view[light_index], D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -1228,11 +1228,11 @@ void FGraphicsEngine::renderShadowMaps()
 
         for (FObject* obj : getScene()->all_objects)
         {
-            FMesh* msh = obj->getComponent<FMesh>();
+            FMeshComponent* msh = obj->getComponent<FMeshComponent>();
             if (msh == nullptr) continue;
             if (!msh->cast_shadow) continue;
 
-            FMeshData* data = msh->getData();
+            FMesh* data = msh->getData();
             if (data == nullptr) continue;
             getContext()->IASetVertexBuffers(0, 1, &data->vertex_buffer_ptr, &stride, &offset);
             getContext()->IASetIndexBuffer(data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);

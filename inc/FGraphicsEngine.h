@@ -135,7 +135,7 @@ private:
 	ID3D11Buffer* box_vertex_buffer							= nullptr;	// vertex+index buffers for a cube, used for drawing bounding boxes
 	ID3D11Buffer* box_index_buffer							= nullptr;
 
-	FMeshData* active_mesh									= nullptr;	// currently bound vertex/index buffer data
+	FMesh* active_mesh									= nullptr;	// currently bound vertex/index buffer data
 	FShader* active_shader									= nullptr;	// currently bound shader
 	FMaterial* active_material								= nullptr;	// currently bound material
 	void* uniform_buffer_data								= nullptr;	// pointer to memory block used to stage constant buffer data for passing to the GPU
@@ -169,14 +169,14 @@ private:
 	// returns whether or not an object should be drawn, based on whether or not its bounding box intersects with the view frustrum
 	bool frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, FBoundingBox bounds);
 	// sorts objects according to their associated shader and returns only those which are meshes
-	void sortForBatching(std::vector<FMesh*>& objects);
-	void drawObject(FMesh* object);				// draws a mesh object to the intermediate framebuffer
+	void sortForBatching(std::vector<FMeshComponent*>& objects);
+	void drawObject(FMeshComponent* object);				// draws a mesh object to the intermediate framebuffer
 	void performPostprocessing();				// renders the post-processing shader. this should only be called after all drawObject calls have been made
 	void drawGizmos();							// draws debug gizmos. this should always be called after performPostprocessing
 	void renderShadowMaps();					// renders the first NUM_LIGHTS lights in the scene to shadow map textures. this should be called before any drawObject calls are made
 
-	bool registerMesh(FMeshData* mesh_data);	// uploads a mesh's index and vertex buffers to the GPU, returning true for success
-	void unregisterMesh(FMeshData* mesh_data);	// unloads a mesh's index and vertex buffer data from the GPU
+	bool registerMesh(FMesh* mesh_data);	// uploads a mesh's index and vertex buffers to the GPU, returning true for success
+	void unregisterMesh(FMesh* mesh_data);	// unloads a mesh's index and vertex buffer data from the GPU
 
 	FTexture* registerTexture(std::wstring path);	// loads a texture from a path, and returns it (or null if failure)
 	void unregisterTexture(FTexture* texture);		// unloads a texture from the GPU

@@ -9,7 +9,7 @@
 class FApplication;
 class FGraphicsEngine;
 class FTexture;
-class FMeshData;
+class FMesh;
 class FShader;
 class FResourceManager;
 
@@ -53,8 +53,8 @@ public:
 	FTexture*  loadTexture(std::string path);		// load a texture, from a path, or just return a reference to it if already loaded
 	bool       unloadTexture(FTexture* res);		// unload a loaded texture
 
-	FMeshData* loadMesh(std::string path);			// load a mesh, from a path, or just return a reference to it if already loaded
-	bool       unloadMesh(FMeshData* res);			// unload a loaded mesh
+	FMesh* loadMesh(std::string path);			// load a mesh, from a path, or just return a reference to it if already loaded
+	bool       unloadMesh(FMesh* res);			// unload a loaded mesh
 
 	// load a shader, and configure it with parameters, from a path, or just return a reference to it if already loaded
 	FShader*   loadShader(std::string path, bool wireframe, FCullMode culling);

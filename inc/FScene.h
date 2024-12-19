@@ -33,7 +33,7 @@ public:
 
 protected:
 	std::unordered_set<FObject*> all_objects;				// list of all objects in the scene. order does not matter
-	std::unordered_set<FLight*> all_lights;						// list of all the scene lights
+	std::unordered_set<FLightComponent*> all_lights;						// list of all the scene lights
 
 	FObject root;											// root object of the scene, which all objects are children of
 	FApplication* owner = nullptr;							// owning application, used to access the application state and graphics engine

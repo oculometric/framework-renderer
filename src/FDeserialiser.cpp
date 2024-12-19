@@ -3,6 +3,7 @@
 #include "FJsonParser.h"
 #include "FComponent.h"
 #include "FMesh.h"
+#include "FPhysicsComponent.h"
 #include "FObject.h"
 #include "FScene.h"
 #include "FResourceManager.h"
@@ -61,7 +62,7 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* ob
 	string object_class = (*obj)["class"].s_val;
 	if (object_class == "mesh")
 	{
-        FMesh* other_mesh = new FMesh(object);
+        FMeshComponent* other_mesh = new FMeshComponent(object);
 		other = other_mesh;
 		if (obj->has("data", JSTRING)) other_mesh->setData(rm->loadMesh((*obj)["data"].s_val));
 		if (obj->has("material", JSTRING)) other_mesh->setMaterial(rm->loadMaterial((*obj)["material"].s_val));
@@ -81,7 +82,7 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* ob
 		other = new FComponent((FObject*)object);
 	else if (object_class == "light")
 	{
-        FLight* other_light = new FLight(object);
+        FLightComponent* other_light = new FLightComponent(object);
 		other = other_light;
 		if (obj->has("colour", JARRAY)) (*obj)["colour"] >> other_light->colour;
 		if (obj->has("strength", JFLOAT)) other_light->strength = (*obj)["strength"].f_val;
@@ -90,13 +91,21 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* ob
         {
             string type = (*obj)["type"].s_val;
             if (type == "directional")
-                other_light->type = FLight::FLightType::DIRECTIONAL;
+                other_light->type = FLightComponent::FLightType::DIRECTIONAL;
             else if (type == "spot")
-                other_light->type = FLight::FLightType::SPOT;
+                other_light->type = FLightComponent::FLightType::SPOT;
             else if (type == "POINT")
-                other_light->type = FLight::FLightType::POINT;
+                other_light->type = FLightComponent::FLightType::POINT;
             else return false;
         }
+	}
+	else if (object_class == "physics")
+	{
+		FPhysicsComponent* other_physics = new FPhysicsComponent(object);
+		other = other_physics;
+
+		if (obj->has("mass", JFLOAT)) other_physics->setMass((*obj)["mass"].f_val);
+		if (obj->has("velocity", JARRAY)) { FVector v; (*obj)["velocity"] >> v; other_physics->setVelocity(v); }
 	}
 	else
 		return false;
@@ -117,6 +126,7 @@ bool deserialiseObject(const FJsonElement& a, FObject*& other, FScene* scene)
 
 	if (obj->has("name", JSTRING)) other->name = (*obj)["name"].s_val;
 	if (obj->has("position", JARRAY)) { (*obj)["position"] >> tmp; other->transform.setLocalPosition(tmp); }
+	else other->transform.setLocalPosition(FVector(0, 0, 0));
 	if (obj->has("rotation", JARRAY)) { (*obj)["rotation"] >> tmp; other->transform.setLocalEuler(tmp); }
 	if (obj->has("scale", JARRAY)) { (*obj)["scale"] >> tmp; other->transform.setLocalScale(tmp); }
 
