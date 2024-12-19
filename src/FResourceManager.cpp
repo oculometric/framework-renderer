@@ -153,7 +153,7 @@ FMaterial* FResourceManager::loadMaterial(string name)
 			FMaterialParameter param;
 
 			string type = (*eobj)["type"].s_val;
-			string name = (*eobj)["param"].s_val;
+			string param_name = (*eobj)["param"].s_val;
 			if (eobj->elements.count("value") < 1) continue;
 			FJsonElement value = (*eobj)["value"];
 
@@ -186,7 +186,7 @@ FMaterial* FResourceManager::loadMaterial(string name)
 				param = FMaterialParameter(f);
 			}
 
-			parameters.insert_or_assign(name, param);
+			parameters.insert_or_assign(param_name, param);
 		}
 	}
 	if (obj->has("wireframe", JFLOAT))

@@ -272,7 +272,7 @@ HRESULT FGraphicsEngine::loadDefaultResources()
     }
 
     // load placeholder material
-    placeholder_material = FResourceManager::get()->loadMaterial("res/placeholder.mat");
+    placeholder_material = FResourceManager::get()->loadMaterial("res/placeholder.fmat");
     if (placeholder_material == nullptr)
     {
         FDebug::dialog("failed to load placeholder.fmat!");
@@ -871,7 +871,7 @@ void FGraphicsEngine::draw()
         for (FObject* obj : getScene()->all_objects)
         {
             FMesh* msh = obj->getComponent<FMesh>();
-            if (msh != nullptr)
+            if (msh != nullptr && msh->getData() != nullptr)
                 if (frustrumCull(projection_matrix, view_matrix_inv, msh->getWorldSpaceBounds()))
                     batch.push_back(msh);
         }
@@ -1233,6 +1233,7 @@ void FGraphicsEngine::renderShadowMaps()
             if (!msh->cast_shadow) continue;
 
             FMeshData* data = msh->getData();
+            if (data == nullptr) continue;
             getContext()->IASetVertexBuffers(0, 1, &data->vertex_buffer_ptr, &stride, &offset);
             getContext()->IASetIndexBuffer(data->index_buffer_ptr, DXGI_FORMAT_R16_UINT, 0);
 

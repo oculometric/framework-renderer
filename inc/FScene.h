@@ -38,9 +38,6 @@ protected:
 	FObject root;											// root object of the scene, which all objects are children of
 	FApplication* owner = nullptr;							// owning application, used to access the application state and graphics engine
 
-private:
-	std::vector<FObjectPreload> preload_array;				// list of objects which have been deserialised from a JSON file and will be loaded for real when the scene initialises
-
 public:
 	FScene() = delete;
 	FScene(FApplication* application, std::string scene_file);

@@ -23,6 +23,7 @@
     <ClInclude Include="inc\FApplication.h" />
     <ClInclude Include="inc\FComponent.h" />
     <ClInclude Include="inc\FDebug.h" />
+    <ClInclude Include="inc\FDeserialiser.h" />
     <ClInclude Include="inc\FGraphicsEngine.h" />
     <ClInclude Include="inc\FJsonParser.h" />
     <ClInclude Include="inc\FLight.h" />
@@ -132,6 +133,7 @@
     <ClCompile Include="src\FApplication.cpp" />
     <ClCompile Include="src\FCamera.cpp" />
     <ClCompile Include="src\FDebug.cpp" />
+    <ClCompile Include="src\FDeserialiser.cpp" />
     <ClCompile Include="src\FGraphicsEngine.cpp" />
     <ClCompile Include="src\FJsonParser.cpp" />
     <ClCompile Include="src\FLight.cpp" />

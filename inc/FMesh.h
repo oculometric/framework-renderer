@@ -25,13 +25,13 @@ struct FBoundingBox
 };
 
 // structure for storing a mesh and its data
-class FMeshData
+class FMesh
 {
-	friend class FMesh;
+	friend class FMeshComponent;
 	friend class FGraphicsEngine;
 
 private:
-	inline FMeshData() { };
+	inline FMesh() { };
 
 	// per vertex data
 	std::vector<FVertex> vertices;
@@ -48,13 +48,13 @@ private:
 };
 
 // component type which contains a mesh which will be drawn
-class FMesh : public FComponent
+class FMeshComponent : public FComponent
 {
 public:
 	bool cast_shadow = true;		// toggles whether this mesh is included in the shadow mapping pass
 
 private:
-	FMeshData* mesh_data = nullptr;	// mesh data to be used
+	FMesh* mesh_data = nullptr;	// mesh data to be used
 	FMaterial* material  = nullptr;	// material data to be used
 
 public:
@@ -63,13 +63,13 @@ public:
 	inline FComponentType getType() { return FComponentType::MESH; }
 
 	// custom OBJ loading function
-	static FMeshData* loadMesh(std::string path);
+	static FMesh* loadMesh(std::string path);
 	
 	// tests whether a ray intersects with an axis-aligned bounding box
 	static bool intersectBoundingBox(const FBoundingBox& bb, XMFLOAT3 ray_origin, XMFLOAT3 ray_direction, float& tmin, float& tmax);
 
-	inline FMeshData* getData() { return mesh_data; }
-	inline void setData(FMeshData* data) { mesh_data = data; }
+	inline FMesh* getData() { return mesh_data; }
+	inline void setData(FMesh* data) { mesh_data = data; }
 	inline FMaterial* getMaterial() { return material; }
 	inline void setMaterial(FMaterial* mat) { material = mat; }
 	inline FBoundingBox getMeshBounds() { return mesh_data == nullptr ? FBoundingBox{ } : mesh_data->bounds; }

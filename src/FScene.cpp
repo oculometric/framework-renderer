@@ -1,16 +1,16 @@
 #include "FScene.h"
 
-#include "FJsonParser.h"
 #include "FMesh.h"
 #include "FResourceManager.h"
 #include "FGraphicsEngine.h"
+#include "FDeserialiser.h"
 
 using namespace std;
 
 FScene::FScene(FApplication* application, string scene_file)
 {
 	owner = application;
-	if (!scene_file.empty()) FJsonBlob(scene_file).getRoot() >> *this;
+	if (!scene_file.empty()) deserialiseScene(FJsonBlob(scene_file).getRoot(), this);
 }
 
 void FScene::addObject(FObject* o, FObject* parent)

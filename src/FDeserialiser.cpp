@@ -46,7 +46,7 @@ bool operator>>(const FJsonElement& a, XMINT3& other)
 	return true;
 }
 
-bool deserialiseComponent(const FJsonElement& a, FComponent*& other, const FObject* object)
+bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* object)
 {
     if (a.type != JOBJECT) return false;
 
@@ -63,7 +63,7 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, const FObje
 	{
         FMesh* other_mesh = new FMesh(object);
 		other = other_mesh;
-		if (obj->has("data", JSTRING)) other_mesh->loadMesh((*obj)["data"].s_val);
+		if (obj->has("data", JSTRING)) other_mesh->setData(rm->loadMesh((*obj)["data"].s_val));
 		if (obj->has("material", JSTRING)) other_mesh->setMaterial(rm->loadMaterial((*obj)["material"].s_val));
 		if (obj->has("cast_shadow", JFLOAT)) other_mesh->cast_shadow = (*obj)["cast_shadow"].f_val > 0.0f;
 	}
@@ -78,12 +78,12 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, const FObje
 		other_camera->updateProjectionMatrix();
 	}
 	else if (object_class == "empty")
-		other = new FComponent(object);
+		other = new FComponent((FObject*)object);
 	else if (object_class == "light")
 	{
         FLight* other_light = new FLight(object);
 		other = other_light;
-		if (obj->has("colour", JARRAY)) (*obj)["colour"] >> other_light.colour;
+		if (obj->has("colour", JARRAY)) (*obj)["colour"] >> other_light->colour;
 		if (obj->has("strength", JFLOAT)) other_light->strength = (*obj)["strength"].f_val;
 		if (obj->has("angle", JFLOAT)) other_light->angle = (*obj)["angle"].f_val;
 		if (obj->has("type", JSTRING))
@@ -104,7 +104,7 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, const FObje
     return true;
 }
 
-bool deserialiseObject(const FJsonElement& a, FObject*& other, const FScene* scene)
+bool deserialiseObject(const FJsonElement& a, FObject*& other, FScene* scene)
 {
 	if (a.type != JOBJECT) return false;
 
@@ -115,7 +115,7 @@ bool deserialiseObject(const FJsonElement& a, FObject*& other, const FScene* sce
 
     XMFLOAT3 tmp;
 
-	if (obj->has("name", JSTRING)) other.name = (*obj)["name"].s_val;
+	if (obj->has("name", JSTRING)) other->name = (*obj)["name"].s_val;
 	if (obj->has("position", JARRAY)) { (*obj)["position"] >> tmp; other->transform.setLocalPosition(tmp); }
 	if (obj->has("rotation", JARRAY)) { (*obj)["rotation"] >> tmp; other->transform.setLocalEuler(tmp); }
 	if (obj->has("scale", JARRAY)) { (*obj)["scale"] >> tmp; other->transform.setLocalScale(tmp); }
@@ -125,9 +125,9 @@ bool deserialiseObject(const FJsonElement& a, FObject*& other, const FScene* sce
 		vector<FJsonElement> comps = (*obj)["components"].a_val;
 		for (FJsonElement comp : comps)
 		{
-			FComponent* comp = nullptr;
-			if (deserialiseComponent(comp, comp, other))
-				other->addComponent(comp);
+			FComponent* c = nullptr;
+			if (deserialiseComponent(comp, c, other))
+				other->addComponent(c);
 		}
 	}
 
@@ -137,7 +137,7 @@ bool deserialiseObject(const FJsonElement& a, FObject*& other, const FScene* sce
 		for (FJsonElement child : childs)
 		{
 			FObject* child_object = new FObject();
-			if (deserialiseObject(child, child_object))
+			if (deserialiseObject(child, child_object, scene))
 				scene->addObject(child_object, other);
 		}
 	}
@@ -149,32 +149,30 @@ bool deserialiseScene(const FJsonElement& a, FScene* other)
 {
 	if (a.type != JOBJECT) return false;
 
-	if (other == nullptr) return;
-
-	FResourceManager* rm = FResourceManager::get();
+	if (other == nullptr) return false;
 
 	FJsonObject* scene_obj = a.o_val;
 	if (scene_obj == nullptr) return false;
-	if (scene_obj->has("name", JSTRING)) other.name = (*scene_obj)["name"].s_val;
+	if (scene_obj->has("name", JSTRING)) other->name = (*scene_obj)["name"].s_val;
 	if (scene_obj->has("objects", JARRAY))
 	{
 		for (FJsonElement obj : (*scene_obj)["objects"].a_val)
 		{
 			FObject* object = new FObject();
 			if (deserialiseObject(obj, object, other))
-				scene->addObject(object, nullptr);
+				other->addObject(object, nullptr);
 		}
 	}
 	if (scene_obj->has("ambient_light", JARRAY))
-		(*scene_obj)["ambient_light"] >> other.ambient_light;
+		(*scene_obj)["ambient_light"] >> other->ambient_light;
 	if (scene_obj->has("fog_colour", JARRAY))
-		(*scene_obj)["fog_colour"] >> other.fog_colour;
+		(*scene_obj)["fog_colour"] >> other->fog_colour;
 	if (scene_obj->has("fog_start", JFLOAT))
-		other.fog_start = (*scene_obj)["fog_start"].f_val;
+		other->fog_start = (*scene_obj)["fog_start"].f_val;
 	if (scene_obj->has("fog_end", JFLOAT))
-		other.fog_end = (*scene_obj)["fog_end"].f_val;
+		other->fog_end = (*scene_obj)["fog_end"].f_val;
 	if (scene_obj->has("fog_strength", JFLOAT))
-		other.fog_strength = (*scene_obj)["fog_strength"].f_val;
+		other->fog_strength = (*scene_obj)["fog_strength"].f_val;
 
 	return true;
 }

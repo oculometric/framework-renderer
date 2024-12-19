@@ -90,6 +90,9 @@
     <ClInclude Include="inc\FPhysicsComponent.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="inc\FDeserialiser.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">
@@ -301,6 +304,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FPhysicsEngine.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FDeserialiser.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

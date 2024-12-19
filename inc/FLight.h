@@ -20,7 +20,7 @@ struct FLightData
 };
 
 // an object type which behaves as a light
-class FLight : public FComponent
+class FLightComponent : public FComponent
 {
 public:
 	enum FLightType
