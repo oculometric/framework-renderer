@@ -53,11 +53,15 @@ void PhysicsScene::update(float delta_time)
 
 	if (!active_object) return;
 
-	XMFLOAT3 object_motion = XMFLOAT3
+	XMFLOAT3 object_force = XMFLOAT3
 	(
 		(float)(((GetAsyncKeyState('L') & 0xF000) > 0) - ((GetAsyncKeyState('J') & 0xF000) > 0)) * delta_time * 4.0f,
 		(float)(((GetAsyncKeyState('I') & 0xF000) > 0) - ((GetAsyncKeyState('K') & 0xF000) > 0)) * delta_time * 4.0f,
 		(float)(((GetAsyncKeyState('O') & 0xF000) > 0) - ((GetAsyncKeyState('U') & 0xF000) > 0)) * delta_time * 4.0f
 	);
-	active_object->transform.translate(object_motion);
+	FPhysicsComponent* comp = active_object->getComponent<FPhysicsComponent>();
+	if (comp)
+	{
+		comp->addForce(object_force);
+	}
 }

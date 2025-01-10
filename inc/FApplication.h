@@ -47,6 +47,8 @@ public:
 	HRESULT createWindowHandle(HINSTANCE hInstance, int nCmdShow);
 	HRESULT createD3DDevice();
 
+	static FApplication* get();
+
 	// getters for various properties/states
 	inline ID3D11DeviceContext* getContext() { return immediate_context; }
 	inline ID3D11Device* getDevice() { return device; }
@@ -59,6 +61,7 @@ public:
 	inline float getY() { return (float)window_y; }
 	inline HWND getWindow() { return window_handle; }
 	inline FGraphicsEngine* getEngine() { return engine; }
+	inline FPhysicsEngine* getPhysics() { return physics_engine; }
 	inline bool isFocused() { return GetFocus() == window_handle; }
 	inline void clearFocus() { SetFocus(info_window_handle); }
 

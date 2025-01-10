@@ -143,6 +143,11 @@ HRESULT FApplication::createD3DDevice()
     return S_OK;
 }
 
+static FApplication* FApplication::get()
+{
+    return application;
+}
+
 void FApplication::updateWindowSize()
 {
     RECT r;

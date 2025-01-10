@@ -4,6 +4,7 @@
 #include "FComponent.h"
 #include "FMesh.h"
 #include "FPhysicsComponent.h"
+#include "FParticlePhysicsComponent.h"
 #include "FObject.h"
 #include "FScene.h"
 #include "FResourceManager.h"
@@ -101,7 +102,7 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* ob
 	}
 	else if (object_class == "physics")
 	{
-		FPhysicsComponent* other_physics = new FPhysicsComponent(object);
+		FParticlePhysicsComponent* other_physics = new FParticlePhysicsComponent(object);
 		other = other_physics;
 
 		if (obj->has("mass", JFLOAT)) other_physics->setMass((*obj)["mass"].f_val);
