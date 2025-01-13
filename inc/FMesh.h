@@ -6,6 +6,7 @@
 #include "FComponent.h"
 #include "FTexture.h"
 #include "FMaterial.h"
+#include "FBoundingBox.h"
 
 // structure of a vertex, corresponds to the input layout used by all vertex shaders
 struct FVertex
@@ -15,13 +16,6 @@ struct FVertex
 	XMFLOAT3 normal   = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	XMFLOAT2 uv       = XMFLOAT2( 0.0f, 0.0f );
 	XMFLOAT3 tangent  = XMFLOAT3( 0.0f, 0.0f, 0.0f );
-};
-
-// structure for storing a bounding box
-struct FBoundingBox
-{
-	XMFLOAT3 max_corner = XMFLOAT3( 0,0,0 );
-	XMFLOAT3 min_corner = XMFLOAT3( 0,0,0 );
 };
 
 // structure for storing a mesh and its data

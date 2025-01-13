@@ -2,10 +2,11 @@
 
 #include "FComponent.h"
 #include "FVector.h"
+#include "FApplication.h"
 
 class FPhysicsEngine;
 
-abstract class FPhysicsComponent : public FComponent
+class FPhysicsComponent : public FComponent
 { // TODO: thread safety
 private:
 	FVector accumulated_forces;
@@ -20,7 +21,7 @@ private:
 
 public:
 	bool obeys_gravity = true;
-	float drag_coefficient = 0.45f;
+	float drag_coefficient = 0.05f;
 	float friction_coefficient = 0.3f;
 
 public:
@@ -36,7 +37,9 @@ public:
 	inline float getMass() { return mass; }
 	inline void setMass(float m) { mass = m; }
 
-	inline void addForce(FVector f) { accumulated_forces.push_back(f); }
+	inline void addForce(FVector f) { accumulated_forces = accumulated_forces + f; }
 
-	inline virtual void tick(float delta) { getOwner()->transform.translate(velocity * delta); }
+	inline virtual bool isCollideable() { return false; }
+
+	virtual void tick(float delta);
 };

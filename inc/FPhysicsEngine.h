@@ -15,7 +15,7 @@ private:
 	FApplication* application;
 
 public:
-	FVector gravity = FVector(0, 0, -9.81);
+	FVector gravity = FVector(0, 0, -9.81f);
 
 private:
 	float getDeltaTime();

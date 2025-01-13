@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\DDSTextureLoader.h" />
+    <ClInclude Include="inc\FAABBCollider.h" />
     <ClInclude Include="inc\FApplication.h" />
+    <ClInclude Include="inc\FBoundingBox.h" />
+    <ClInclude Include="inc\FCollider.h" />
     <ClInclude Include="inc\FComponent.h" />
     <ClInclude Include="inc\FDebug.h" />
     <ClInclude Include="inc\FDeserialiser.h" />
@@ -30,10 +33,13 @@
     <ClInclude Include="inc\FMaterial.h" />
     <ClInclude Include="inc\FMesh.h" />
     <ClInclude Include="inc\FObject.h" />
+    <ClInclude Include="inc\FParticlePhysicsComponent.h" />
     <ClInclude Include="inc\FPhysicsComponent.h" />
     <ClInclude Include="inc\FPhysicsEngine.h" />
     <ClInclude Include="inc\FResourceManager.h" />
+    <ClInclude Include="inc\FRigidBodyPhysicsComponent.h" />
     <ClInclude Include="inc\FScene.h" />
+    <ClInclude Include="inc\FSphereCollider.h" />
     <ClInclude Include="inc\FTexture.h" />
     <ClInclude Include="inc\FTransform.h" />
     <ClInclude Include="inc\FVector.h" />
@@ -130,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DDSTextureLoader.cpp" />
+    <ClCompile Include="src\FAABBCollider.cpp" />
     <ClCompile Include="src\FApplication.cpp" />
     <ClCompile Include="src\FCamera.cpp" />
     <ClCompile Include="src\FDebug.cpp" />
@@ -139,9 +146,11 @@
     <ClCompile Include="src\FLight.cpp" />
     <ClCompile Include="src\FMaterial.cpp" />
     <ClCompile Include="src\FMesh.cpp" />
+    <ClCompile Include="src\FPhysicsComponent.cpp" />
     <ClCompile Include="src\FPhysicsEngine.cpp" />
     <ClCompile Include="src\FResourceManager.cpp" />
     <ClCompile Include="src\FScene.cpp" />
+    <ClCompile Include="src\FSphereCollider.cpp" />
     <ClCompile Include="src\FTransform.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MyScene.cpp" />

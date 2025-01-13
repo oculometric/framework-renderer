@@ -22,76 +22,124 @@
     <Filter Include="Resources\Materials">
       <UniqueIdentifier>{076b55e6-57fc-48b9-829d-bb334fd88105}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\Graphics">
+      <UniqueIdentifier>{e6d477e8-90f6-4fba-8586-2c7dd2b07464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Components">
+      <UniqueIdentifier>{8802d2c7-0efa-44bf-8294-79964ef72cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Physics">
+      <UniqueIdentifier>{93e44a9c-5e36-4567-8b76-8ce681154818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Scenes">
+      <UniqueIdentifier>{d970579c-b7b8-41ad-997d-68843a9c951a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\World">
+      <UniqueIdentifier>{cca36939-93c8-4903-98d3-358707e73178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics">
+      <UniqueIdentifier>{149f2c8d-a8f8-4c39-b1b6-42dc5e819b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Components">
+      <UniqueIdentifier>{04f83e60-23cf-43a9-a014-4714e2bc622b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\World">
+      <UniqueIdentifier>{71aad336-2dd8-4086-904e-159cab8ba7c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scenes">
+      <UniqueIdentifier>{9da1e444-4fe1-4700-b7ff-8414ba117dfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Physics">
+      <UniqueIdentifier>{8b51ff6b-f955-4745-bc9a-161c0fefad68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\DDSTextureLoader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="inc\FApplication.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="inc\FDebug.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="inc\FGraphicsEngine.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="inc\FJsonParser.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FLight.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FMaterial.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FMesh.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FResourceManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FTexture.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FTransform.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\Gizmo.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\MyScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ShadowDemoScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\SurrealDemoScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FComponent.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\PhysicsScene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FVector.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FPhysicsEngine.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\FPhysicsComponent.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="inc\FDeserialiser.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FTexture.h">
+      <Filter>Headers\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DDSTextureLoader.h">
+      <Filter>Headers\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FGraphicsEngine.h">
+      <Filter>Headers\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FMaterial.h">
+      <Filter>Headers\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Gizmo.h">
+      <Filter>Headers\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FMesh.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FLight.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FPhysicsComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FCollider.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FPhysicsEngine.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FResourceManager.h">
+      <Filter>Headers\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FScene.h">
+      <Filter>Headers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FVector.h">
+      <Filter>Headers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FTransform.h">
+      <Filter>Headers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FObject.h">
+      <Filter>Headers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\MyScene.h">
+      <Filter>Headers\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\PhysicsScene.h">
+      <Filter>Headers\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ShadowDemoScene.h">
+      <Filter>Headers\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SurrealDemoScene.h">
+      <Filter>Headers\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FSphereCollider.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FAABBCollider.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FBoundingBox.h">
+      <Filter>Headers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FParticlePhysicsComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FRigidBodyPhysicsComponent.h">
+      <Filter>Headers\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,62 +300,71 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DDSTextureLoader.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\FApplication.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FCamera.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\FDebug.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\FGraphicsEngine.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\FJsonParser.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FLight.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FMaterial.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FMesh.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FResourceManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FScene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FTransform.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\MyScene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShadowDemoScene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SurrealDemoScene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PhysicsScene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FPhysicsEngine.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\FDeserialiser.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DDSTextureLoader.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FCamera.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FPhysicsComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FMesh.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FLight.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FMaterial.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FGraphicsEngine.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SurrealDemoScene.cpp">
+      <Filter>Source\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsScene.cpp">
+      <Filter>Source\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MyScene.cpp">
+      <Filter>Source\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowDemoScene.cpp">
+      <Filter>Source\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FResourceManager.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FTransform.cpp">
+      <Filter>Source\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FPhysicsEngine.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FScene.cpp">
+      <Filter>Source\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FSphereCollider.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FAABBCollider.cpp">
+      <Filter>Source\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

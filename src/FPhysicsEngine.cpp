@@ -37,6 +37,11 @@ void FPhysicsEngine::physicsTick(float delta_time)
 		FPhysicsComponent* comp = obj->getComponent<FPhysicsComponent>();
 		if (!comp) continue;
 
+		if (comp->isCollideable())
+		{
+			// TODO: actually test collisions
+		}
+
 		comp->tick(delta_time);
 	}
 }

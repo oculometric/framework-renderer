@@ -7,7 +7,7 @@ class FParticlePhysicsComponent : public FPhysicsComponent
 private:
 
 public:
-    using FComponent::FComponent;
+    using FPhysicsComponent::FPhysicsComponent;
 
 //	override void tick(float delta);
 };

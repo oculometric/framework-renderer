@@ -143,7 +143,7 @@ HRESULT FApplication::createD3DDevice()
     return S_OK;
 }
 
-static FApplication* FApplication::get()
+FApplication* FApplication::get()
 {
     return application;
 }

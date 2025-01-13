@@ -1,27 +1,27 @@
 #include "FPhysicsComponent.h"
 
+#include "FPhysicsEngine.h"
+
 #define AIR_DENSITY 1.29f
 #define LAMINAR_THRESHOLD 1.0f
 
 void FPhysicsComponent::tick(float delta)
 {
-    FVector total_force = getAndClearAccumulator();
-		
     // apply gravitational force
-    total_force += getEngine()->gravity * getMass();
+    addForce(getEngine()->gravity * getMass());
 
     // apply drag force
-    total_force += computeDragForce();
+    addForce(computeDragForce());
 
     // apply friction force
-    total_force += computeFrictionForce();
+    addForce(computeFrictionForce());
 
+    FVector total_force = getAndClearAccumulator();
     FVector acceleration = total_force / getMass();
 
-    FVector velocity = getVelocity() + (acceleration * delta_time);
-    setVelocity(velocity);
+    setVelocity(getVelocity() + (acceleration * delta));
 
-    FVector translation = velocity * delta_time;
+    FVector translation = getVelocity() * delta;
 
     // TODO: add an option to this function to leave children as they are (in world space)
     getOwner()->transform.translate(translation);
@@ -43,8 +43,8 @@ FVector FPhysicsComponent::computeFrictionForce()
 
     FVector coll_n; // TODO: find collision normal
     float f_mag = (coll_n ^ getVelocity()) * friction_coefficient;
-    float f_n = normalise(getVelocity() - (coll_n * (coll_n ^ getVelocity())));
-    FVector f = -f_mag * f_n;
+    FVector f_n = normalise(getVelocity() - (coll_n * (coll_n ^ getVelocity())));
+    FVector f = f_n * -f_mag;
 
     return f;
 }
