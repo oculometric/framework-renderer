@@ -8,6 +8,7 @@
 #include "FPhysicsComponent.h"
 #include "FRigidBodyPhysicsComponent.h"
 #include "FAABBCollider.h"
+#include "FSphereCollider.h"
 
 using namespace DirectX;
 
@@ -26,6 +27,12 @@ void PhysicsScene::start()
 	FAABBCollider* coll_p = new FAABBCollider(comp_p);
 	coll_p->setBounds(FBoundingBox(FVector(0, 0, -0.5), FVector(12, 12, 1)));
 	comp_p->setCollider(coll_p);
+
+	FObject* sphere = findObjectWithName("sphere");
+	FRigidBodyPhysicsComponent* comp_s = sphere->getComponent<FRigidBodyPhysicsComponent>();
+	FSphereCollider* coll_s = new FSphereCollider(comp_s);
+	coll_s->setRadius(1.0f);
+	comp_s->setCollider(coll_s);
 
 	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 	owner->getEngine()->draw_gizmos = true;

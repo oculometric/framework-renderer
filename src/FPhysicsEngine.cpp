@@ -48,9 +48,8 @@ void FPhysicsEngine::physicsTick(float delta_time)
 		{
 			if (!comps[j]->isCollideable()) continue;
 
-			FDebug::console("testing collision between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
 			if (comps[i]->getCollider()->checkCollision(comps[j]->getCollider()))
-				FDebug::dialog("collision detected!");
+				FDebug::dialog("collision detected between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
 		}
 	}
 

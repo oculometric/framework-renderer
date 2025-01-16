@@ -53,11 +53,16 @@
     },
     {
       "name": "sphere",
-      "position": [ -5, 5, 1 ],
+      "position": [ -5, 5, 2 ],
       "components": [
         {
           "class": "mesh",
           "data": "res/sphere.obj"
+        },
+        {
+          "class": "physics",
+          "mass": 5,
+          "gravity": 1
         }
       ]
     },
