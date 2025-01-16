@@ -226,7 +226,7 @@ FMesh* FMeshComponent::loadMesh(string path)
         min_c.z = min(v.position.z, min_c.z);
     }
 
-    mesh_data->bounds = FBoundingBox{ max_c, min_c };
+    mesh_data->bounds = FBoundingBox((max_c + min_c) / 2.0f, max_c - min_c);
 
 	return mesh_data;
 }
