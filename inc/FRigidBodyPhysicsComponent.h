@@ -1,7 +1,7 @@
 #pragma once
 
-#include "FPhysicsComponent.h";
-#include "FCollider.h";
+#include "FPhysicsComponent.h"
+#include "FCollider.h"
 
 class FRigidBodyPhysicsComponent : public FPhysicsComponent
 {
@@ -11,8 +11,8 @@ private:
 public:
 	using FPhysicsComponent::FPhysicsComponent;
 
-	inline FCollider* getCollider() { return collider; }
-	inline void setCollider(FCollider* col) { collider = col; }
+	inline FCollider* getCollider() override{ return collider; }
+	inline void setCollider(FCollider* col) override { collider = col; }
 
 	inline bool isCollideable() override { return collider != nullptr; }
 };

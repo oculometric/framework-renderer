@@ -8,7 +8,7 @@
 void FPhysicsComponent::tick(float delta)
 {
     // apply gravitational force
-    addForce(getEngine()->gravity * getMass());
+    if (obeys_gravity) addForce(getEngine()->gravity * getMass());
 
     // apply drag force
     addForce(computeDragForce());

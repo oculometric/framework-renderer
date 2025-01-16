@@ -5,9 +5,11 @@
 #include "FMesh.h"
 #include "FPhysicsComponent.h"
 #include "FParticlePhysicsComponent.h"
+#include "FRigidBodyPhysicsComponent.h"
 #include "FObject.h"
 #include "FScene.h"
 #include "FResourceManager.h"
+#include "FDebug.h"
 
 using namespace std;
 
@@ -102,11 +104,12 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* ob
 	}
 	else if (object_class == "physics")
 	{
-		FParticlePhysicsComponent* other_physics = new FParticlePhysicsComponent(object);
+		FRigidBodyPhysicsComponent* other_physics = new FRigidBodyPhysicsComponent(object);
 		other = other_physics;
 
 		if (obj->has("mass", JFLOAT)) other_physics->setMass((*obj)["mass"].f_val);
 		if (obj->has("velocity", JARRAY)) { FVector v; (*obj)["velocity"] >> v; other_physics->setVelocity(v); }
+		if (obj->has("gravity", JFLOAT)) { other_physics->obeys_gravity = (*obj)["gravity"].f_val > 0.0f; }
 	}
 	else
 		return false;

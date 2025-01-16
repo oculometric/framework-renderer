@@ -6,6 +6,8 @@
 #include "FDebug.h"
 #include "FGraphicsEngine.h"
 #include "FPhysicsComponent.h"
+#include "FRigidBodyPhysicsComponent.h"
+#include "FAABBCollider.h"
 
 using namespace DirectX;
 
@@ -13,6 +15,17 @@ void PhysicsScene::start()
 {
 	cube_a = findObjectWithName("cube_1");
 	cube_b = findObjectWithName("cube_2");
+
+	FRigidBodyPhysicsComponent* comp_a = cube_a->getComponent<FRigidBodyPhysicsComponent>();
+	FAABBCollider* coll_a = new FAABBCollider(comp_a);
+	coll_a->setBounds(FBoundingBox(FVector(0, 0, 0), FVector(1, 1, 1)));
+	comp_a->setCollider(coll_a);
+
+	FObject* plane = findObjectWithName("plane");
+	FRigidBodyPhysicsComponent* comp_p = plane->getComponent<FRigidBodyPhysicsComponent>();
+	FAABBCollider* coll_p = new FAABBCollider(comp_p);
+	coll_p->setBounds(FBoundingBox(FVector(0, 0, -0.5), FVector(12, 12, 1)));
+	comp_p->setCollider(coll_p);
 
 	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 	owner->getEngine()->draw_gizmos = true;

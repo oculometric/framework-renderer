@@ -2,6 +2,7 @@
 
 #include "FSphereCollider.h"
 #include "FPhysicsComponent.h"
+#include "FDebug.h"
 
 bool FAABBCollider::checkCollisionSphere(FSphereCollider* other)
 {
@@ -20,6 +21,10 @@ bool FAABBCollider::checkCollisionBox(FAABBCollider* other)
 	FBoundingBox bb = other->getBounds();
 	bb.max_corner = bb.max_corner + ob;
 	bb.min_corner = bb.min_corner + ob;
+
+	return (ba.min_corner.x <= bb.max_corner.x && ba.max_corner.x >= bb.min_corner.x)
+		&& (ba.min_corner.y <= bb.max_corner.y && ba.max_corner.y >= bb.min_corner.y)
+		&& (ba.min_corner.z <= bb.max_corner.z && ba.max_corner.z >= bb.min_corner.z);
 
 	if (ba.max_corner.x < bb.min_corner.x || bb.max_corner.x < ba.min_corner.x)
 		return false;

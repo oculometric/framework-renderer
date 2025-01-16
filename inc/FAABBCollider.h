@@ -11,7 +11,7 @@ private:
 public:
 	using FCollider::FCollider;
 
-	inline bool checkCollision(FCollider* other) override { other->checkCollisionBox(this); }
+	inline bool checkCollision(FCollider* other) override { return other->checkCollisionBox(this); }
 	bool checkCollisionSphere(FSphereCollider* other) override;
 	bool checkCollisionBox(FAABBCollider* other) override;
 

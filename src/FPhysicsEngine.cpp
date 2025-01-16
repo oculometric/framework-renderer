@@ -2,6 +2,7 @@
 
 #include "FDebug.h"
 #include "FPhysicsComponent.h"
+#include "FDebug.h"
 
 #include <thread>
 
@@ -32,18 +33,29 @@ void FPhysicsEngine::physicsTick(float delta_time)
 	if (!application->scene)
 		return;
 
+	vector<FPhysicsComponent*> comps;
 	for (FObject* obj : application->scene->all_objects)
 	{
 		FPhysicsComponent* comp = obj->getComponent<FPhysicsComponent>();
-		if (!comp) continue;
-
-		if (comp->isCollideable())
-		{
-			// TODO: actually test collisions
-		}
-
-		comp->tick(delta_time);
+		if (comp) comps.push_back(comp);
 	}
+
+	for (int i = 0; i < comps.size() - 1; i++)
+	{
+		if (!comps[i]->isCollideable()) continue;
+
+		for (int j = i + 1; j < comps.size(); j++)
+		{
+			if (!comps[j]->isCollideable()) continue;
+
+			FDebug::console("testing collision between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
+			if (comps[i]->getCollider()->checkCollision(comps[j]->getCollider()))
+				FDebug::dialog("collision detected!");
+		}
+	}
+
+	for (FPhysicsComponent* comp : comps)
+		comp->tick(delta_time);
 }
 
 void FPhysicsEngine::physicsMain()

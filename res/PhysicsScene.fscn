@@ -23,6 +23,11 @@
         {
           "class": "mesh",
           "data": "res/cube.obj"
+        },
+        {
+          "class": "physics",
+          "mass": 1,
+          "gravity": 0
         }
       ]
     },
@@ -63,6 +68,11 @@
         {
           "class": "mesh",
           "data": "res/plane.obj"
+        },
+        {
+          "class": "physics",
+          "mass": 100,
+          "gravity": 0
         }
       ]
     },

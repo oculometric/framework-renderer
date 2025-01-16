@@ -3,6 +3,7 @@
 #include "FComponent.h"
 #include "FVector.h"
 #include "FApplication.h"
+#include "FCollider.h"
 
 class FPhysicsEngine;
 
@@ -40,6 +41,9 @@ public:
 	inline void addForce(FVector f) { accumulated_forces = accumulated_forces + f; }
 
 	inline virtual bool isCollideable() { return false; }
+
+	inline virtual FCollider* getCollider() { return nullptr; }
+	inline virtual void setCollider(FCollider* col) { }
 
 	virtual void tick(float delta);
 };
