@@ -26,8 +26,6 @@ private:
 
 	HWND window_handle;			// handle for the main game window
 
-	HWND info_window_handle;	// handle for the stats window
-
 	// used to keep track of the frame delta-time
 	std::chrono::steady_clock::time_point time_keeper;
 	float total_time = 0.0f;
@@ -63,10 +61,7 @@ public:
 	inline FGraphicsEngine* getEngine() { return engine; }
 	inline FPhysicsEngine* getPhysics() { return physics_engine; }
 	inline bool isFocused() { return GetFocus() == window_handle; }
-	inline void clearFocus() { SetFocus(info_window_handle); }
-
-	// set the text content of the stats window
-	void updateStats(std::wstring str);
+	inline void clearFocus() { SetFocus(nullptr); }
 
 	// update and draw methods which will be passed on to the graphics engine and the scene
 	void update();

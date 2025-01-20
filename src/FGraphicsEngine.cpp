@@ -915,24 +915,10 @@ void FGraphicsEngine::draw()
     float frame_delta = ((chrono::duration<float>)(now - last)).count();
     last = now;
 
-    wstring str = format(L" Framework Stats\n"
-        L"\n"
-        L" frame time:          {:4f}ms\n"
-        L" framerate:           {:4f}fps\n"
-        L" sub-timings:\n"
-        L"     clear:           {:4f}ms\n"
-        L"     shadows:         {:4f}ms\n"
-        L"     uniforms:        {:4f}ms\n"
-        L"     batching:        {:4f}ms\n"
-        L"     objects:         {:4f}ms\n"
-        L"     postprocessing:  {:4f}ms\n"
-        L"     gizmos:          {:4f}ms\n"
-        L" objects in scene:    {}\n"
-        L"     meshes drawn:    {}\n"
-        L"     triangles drawn: {}\n"
-        L"     lights:          {}\n"
-        L" camera forward:\n    {:4f}\n    {:4f}\n    {:4f}", frame_delta, 1.0f / frame_delta, time_clear, time_shadows, time_uniforms, time_batching, time_objects, time_postprocess, time_gizmos, objects, meshes, tris, lights, forward.x, forward.y, forward.z);
-    application->updateStats(str);
+    FDebug::get()->setFrameTime(frame_delta);
+    FDebug::get()->setTimings(time_clear, time_shadows, time_uniforms, time_batching, time_objects, time_postprocess, time_gizmos);
+    FDebug::get()->setCounts(objects, meshes, tris, lights);
+    FDebug::get()->setCameraForward(forward.x, forward.y, forward.z);
 
     // present backbuffer to screen
     swap_chain->Present(0, enable_vsync ? 0 : DXGI_PRESENT_ALLOW_TEARING);

@@ -40,6 +40,8 @@ void PhysicsScene::start()
 
 void PhysicsScene::update(float delta_time)
 {
+	if (!FApplication::get()->isFocused()) return;
+
 	XMFLOAT4X4 camera_transform = active_camera->getOwner()->transform.getTransform();
 	XMFLOAT4 camera_motion = XMFLOAT4
 	(

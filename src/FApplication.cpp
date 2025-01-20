@@ -97,9 +97,6 @@ HRESULT FApplication::createWindowHandle(HINSTANCE hInstance, int nCmdShow)
     window_x = rc.left;
     window_y = rc.top;
 
-    const wchar_t* info_window_name = L"Framework Info";
-    info_window_handle = CreateWindow(L"STATIC", info_window_name, WS_VISIBLE | WS_OVERLAPPED | SS_LEFT | WS_POPUP, rc.right + 200, rc.top + 200, 300, 400, window_handle, nullptr, hInstance, nullptr);
-
     return S_OK;
 }
 
@@ -164,11 +161,6 @@ void FApplication::updateWindowSize()
     window_y = r.top;
 }
 
-void FApplication::updateStats(wstring str)
-{
-    SetWindowText(info_window_handle, str.c_str());
-}
-
 void FApplication::update()
 {
     chrono::steady_clock::time_point now = chrono::high_resolution_clock::now();
@@ -187,6 +179,8 @@ void FApplication::update()
 
     if (scene)
         scene->update(delta_time);
+
+    FDebug::update();
 }
 
 void FApplication::draw()

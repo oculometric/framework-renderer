@@ -40,6 +40,10 @@ void FPhysicsEngine::physicsTick(float delta_time)
 		if (comp) comps.push_back(comp);
 	}
 
+	FDebug::get()->setComponentCount(comps.size());
+
+	if (comps.size() == 0) return;
+
 	for (int i = 0; i < comps.size() - 1; i++)
 	{
 		if (!comps[i]->isCollideable()) continue;
@@ -49,7 +53,7 @@ void FPhysicsEngine::physicsTick(float delta_time)
 			if (!comps[j]->isCollideable()) continue;
 
 			if (comps[i]->getCollider()->checkCollision(comps[j]->getCollider()))
-				FDebug::dialog("collision detected between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
+				FDebug::console("collision detected between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
 		}
 	}
 
@@ -65,7 +69,7 @@ void FPhysicsEngine::physicsMain()
 		waitForNextFrame(1.0f / 60.0f);
 		float dt = getDeltaTime();
 		physicsTick(dt);
-		FDebug::console("physics tick took " + to_string(getDeltaTime()) + "\n");
+		FDebug::get()->setTickTime(getDeltaTime());
 		resetTimer();
 	}
 }
