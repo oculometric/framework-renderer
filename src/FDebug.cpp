@@ -19,7 +19,7 @@ FDebug* FDebug::get()
 
 void FDebug::console(string s)
 {
-	cout << s;
+	//cout << s;
 	OutputDebugStringA(s.c_str());
 }
 
