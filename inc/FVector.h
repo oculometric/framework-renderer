@@ -66,6 +66,6 @@ inline FVector rotate(const FVector& v, const FVector& o, const FVector& a, floa
 inline std::string str(const FVector& v)
 {
 	std::stringstream stream;
-	stream << std::fixed << std::setprecision(5) << "( " << v.x << ", " << v.y << ", " << v.z << " )";
+	stream << std::fixed << std::setprecision(3) << "( " << v.x << ", " << v.y << ", " << v.z << " )";
 	return stream.str();
 }

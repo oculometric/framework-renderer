@@ -54,7 +54,7 @@ private:
 public:
 	using FComponent::FComponent;
 
-	inline FComponentType getType() { return FComponentType::MESH; }
+	inline FComponentType getType() const override { return FComponentType::MESH; }
 
 	// custom OBJ loading function
 	static FMesh* loadMesh(std::string path);

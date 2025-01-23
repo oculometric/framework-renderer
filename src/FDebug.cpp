@@ -124,6 +124,8 @@ FDebug::FDebug(HWND window_handle)
 		}
 	);
 
+	extra_info = new ListView({}, 0, 0);
+
 	HorizontalBox* hb = new HorizontalBox
 	({
 		new SizeLimiter
@@ -131,9 +133,10 @@ FDebug::FDebug(HWND window_handle)
 			new VerticalBox
 			({ 
 				new BorderedBox(render_stats_box, "render stats"),
-				new BorderedBox(physics_stats_box, "physics stats")
+				new BorderedBox(physics_stats_box, "physics stats"),
+				extra_info
 			})
-			, Coordinate{ 28, -1 }
+			, Coordinate{ 32, -1 }
 		),
 		new BorderedBox(log_text_area, "console")
 	});
@@ -149,6 +152,7 @@ FDebug::FDebug(HWND window_handle)
 	page->setRoot(vb);
 
 	page->focusable_component_sequence.push_back(log_text_area);
+	page->focusable_component_sequence.push_back(extra_info);
 	page->focusable_component_sequence.push_back(quit_button);
 }
 

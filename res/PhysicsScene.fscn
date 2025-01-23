@@ -62,7 +62,22 @@
         {
           "class": "physics",
           "mass": 5,
-          "gravity": 1
+          "gravity": 0
+        }
+      ]
+    },
+    {
+      "name": "sphere_2",
+      "position": [ -6, 8, 2 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/sphere.obj"
+        },
+        {
+          "class": "physics",
+          "mass": 5,
+          "gravity": 0
         }
       ]
     },

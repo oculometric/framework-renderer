@@ -38,6 +38,8 @@ private:
 	stui::Label* tick_time_label = nullptr;
 	stui::Label* components_count_label = nullptr;
 
+	stui::ListView* extra_info = nullptr;
+
 	stui::Spinner* spinner = nullptr;
 	stui::Button* quit_button = nullptr;
 
@@ -72,6 +74,8 @@ public:
 
 	inline void setTickTime(float f) { tick_time_label->text = format("{:4f}ms", f); }
 	inline void setComponentCount(int comps) { components_count_label->text = format("{}", comps); }
+
+	inline void setExtraInfo(std::vector<std::string> info) { extra_info->elements = info; }
 
 	static void update();
 	static void console(std::string s);		// prints a string to both stdout and the visual studio immediate window

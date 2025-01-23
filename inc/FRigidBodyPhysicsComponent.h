@@ -11,8 +11,8 @@ private:
 public:
 	using FPhysicsComponent::FPhysicsComponent;
 
-	inline FCollider* getCollider() override{ return collider; }
+	inline FCollider* getCollider() const override { return collider; }
 	inline void setCollider(FCollider* col) override { collider = col; }
 
-	inline bool isCollideable() override { return collider != nullptr; }
+	inline bool isCollideable() const override { return collider != nullptr; }
 };

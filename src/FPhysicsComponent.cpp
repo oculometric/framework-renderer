@@ -27,7 +27,7 @@ void FPhysicsComponent::tick(float delta)
     getOwner()->transform.translate(translation);
 }
 
-FVector FPhysicsComponent::computeDragForce()
+FVector FPhysicsComponent::computeDragForce() const
 {
     float s = 0.5f * AIR_DENSITY * drag_coefficient; // TODO: multiplied by cross sectional area
     FVector v = getVelocity();
@@ -37,7 +37,7 @@ FVector FPhysicsComponent::computeDragForce()
     return f_d;
 }
 
-FVector FPhysicsComponent::computeFrictionForce()
+FVector FPhysicsComponent::computeFrictionForce() const
 {
     return FVector(0,0,0);
 

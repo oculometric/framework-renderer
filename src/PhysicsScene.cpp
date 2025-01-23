@@ -34,6 +34,12 @@ void PhysicsScene::start()
 	coll_s->setRadius(1.0f);
 	comp_s->setCollider(coll_s);
 
+	FObject* sphere_2 = findObjectWithName("sphere_2");
+	FRigidBodyPhysicsComponent* comp_s2 = sphere_2->getComponent<FRigidBodyPhysicsComponent>();
+	FSphereCollider* coll_s2 = new FSphereCollider(comp_s2);
+	coll_s2->setRadius(1.0f);
+	comp_s2->setCollider(coll_s2);
+
 	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 	owner->getEngine()->draw_gizmos = true;
 }
@@ -73,7 +79,9 @@ void PhysicsScene::update(float delta_time)
 
 	selectUnderMouse();
 
-	if (!active_object) return;
+	if (!active_object) { FDebug::get()->setExtraInfo({}); return; }
+
+	vector<string> info = { active_object->name, str(active_object->transform.getPosition()) };
 
 	XMFLOAT3 object_force = XMFLOAT3
 	(
@@ -84,6 +92,9 @@ void PhysicsScene::update(float delta_time)
 	FPhysicsComponent* comp = active_object->getComponent<FPhysicsComponent>();
 	if (comp)
 	{
-		comp->addForce(object_force);
+		info.push_back(comp->obeys_gravity ? "grav on" : "grav off");
+		info.push_back(str(comp->getVelocity()));
+		comp->addForce(object_force * comp->getMass() * 5.0f);
 	}
+	FDebug::get()->setExtraInfo(info);
 }

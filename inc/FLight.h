@@ -45,7 +45,7 @@ public:
 public:
 	using FComponent::FComponent;
 
-	inline FComponentType getType() { return FComponentType::LIGHT; }
+	inline FComponentType getType() const override { return FComponentType::LIGHT; }
 	
 	void convertToData(FLightData* data);	// constructs a light data configuration from the light object
 	XMFLOAT4X4 getProjectionMatrix();		// returns the projection matrix for the light, treating it as a camera

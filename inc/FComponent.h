@@ -22,7 +22,7 @@ public:
 	FComponent() = delete;
 	FComponent(FObject* _owner) : owner(_owner) { }
 
-	virtual inline FComponentType getType() { return FComponentType::BLANK; }
+	virtual inline FComponentType getType() const { return FComponentType::BLANK; }
 	FObject* getOwner() { return owner; }
 
 protected:
@@ -44,7 +44,7 @@ public:
 public:
 	using FComponent::FComponent;
 
-	inline FComponentType getType() { return FComponentType::CAMERA; }
+	inline FComponentType getType() const override { return FComponentType::CAMERA; }
 
 	void updateProjectionMatrix();
 	inline XMFLOAT4X4 getProjectionMatrix() const { return projection_matrix; }
