@@ -43,6 +43,8 @@ inline float magnitude(const FVector& a) { return sqrt(magnitude_squared(a)); }
 
 inline FVector normalise(const FVector& a) { return a / magnitude(a); }
 
+inline FVector abs(const FVector& a) { return FVector(abs(a.x), abs(a.y), abs(a.z)); }
+
 inline float angle_between(const FVector& a, const FVector& b) { return acos((a ^ b) / (magnitude(a) * magnitude(b))); }
 
 // reflects vector a in the plane defined by the normal vector b (assumes that b is normalised)

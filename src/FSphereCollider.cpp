@@ -48,13 +48,7 @@ bool FSphereCollider::checkCollisionBox(FAABBCollider* other)
 
 	FVector so = oa + center;
 
-	FVector closest_point = so;
-	if (closest_point.x > bb.max_corner.x) closest_point.x = bb.max_corner.x;
-	else if (closest_point.x < bb.min_corner.x) closest_point.x = bb.min_corner.x;
-	if (closest_point.y > bb.max_corner.y) closest_point.y = bb.max_corner.y;
-	else if (closest_point.y < bb.min_corner.y) closest_point.y = bb.min_corner.y;
-	if (closest_point.z > bb.max_corner.z) closest_point.z = bb.max_corner.z;
-	else if (closest_point.z < bb.min_corner.z) closest_point.z = bb.min_corner.z;
+	FVector closest_point = closestPointOnBox(bb, so);
 
 	float distance_squared = magnitude_squared(closest_point - so);
 
