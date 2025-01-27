@@ -22,6 +22,11 @@ void PhysicsScene::start()
 	coll_a->setBounds(FBoundingBox(FVector(0, 0, 0), FVector(1, 1, 1)));
 	comp_a->setCollider(coll_a);
 
+	FRigidBodyPhysicsComponent* comp_b = cube_b->getComponent<FRigidBodyPhysicsComponent>();
+	FAABBCollider* coll_b = new FAABBCollider(comp_b);
+	coll_b->setBounds(FBoundingBox(FVector(0, 0, 0), FVector(1, 1, 1)));
+	comp_b->setCollider(coll_b);
+
 	FObject* plane = findObjectWithName("plane");
 	FRigidBodyPhysicsComponent* comp_p = plane->getComponent<FRigidBodyPhysicsComponent>();
 	FAABBCollider* coll_p = new FAABBCollider(comp_p);

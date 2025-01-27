@@ -24,7 +24,7 @@ bool FSphereCollider::checkCollisionSphere(FSphereCollider* other)
 				getOwner()->getOwner()->transform.translate(reposition_vector * other->getOwner()->getMass() / total_mass);
 				other->getOwner()->getOwner()->transform.translate(reposition_vector * -getOwner()->getMass() / total_mass);
 			}
-			float vj = -(1.0f + e) * (collision_normal ^ relative_velocity); // TODO: interpenetration
+			float vj = -(1.0f + e) * (collision_normal ^ relative_velocity);
 			float j = vj / ((1.0f / getOwner()->getMass()) + (1.0f / other->getOwner()->getMass()));
 			FVector ja = collision_normal * j / getOwner()->getMass();
 			FVector jb = collision_normal * -j / other->getOwner()->getMass();
@@ -58,5 +58,30 @@ bool FSphereCollider::checkCollisionBox(FAABBCollider* other)
 
 	float distance_squared = magnitude_squared(closest_point - so);
 
-	return distance_squared < radius * radius;
+	if (distance_squared <= radius * radius)
+	{
+		FVector collision_normal = normalise(so - closest_point);
+		FVector relative_velocity = getOwner()->getVelocity() - other->getOwner()->getVelocity();
+		if ((collision_normal ^ relative_velocity) < 0.0f)
+		{
+			float e = other->getOwner()->restitution; if (getOwner()->restitution > e) e = getOwner()->restitution;
+			float penetration_depth = sqrt(distance_squared) - radius;
+			if (penetration_depth < 0.0f)
+			{
+				FVector reposition_vector = collision_normal * penetration_depth;
+				float total_mass = getOwner()->getMass() + other->getOwner()->getMass();
+				getOwner()->getOwner()->transform.translate(reposition_vector * other->getOwner()->getMass() / total_mass);
+				other->getOwner()->getOwner()->transform.translate(reposition_vector * -getOwner()->getMass() / total_mass);
+			}
+			float vj = -(1.0f + e) * (collision_normal ^ relative_velocity);
+			float j = vj / ((1.0f / getOwner()->getMass()) + (1.0f / other->getOwner()->getMass()));
+			FVector ja = collision_normal * j / getOwner()->getMass();
+			FVector jb = collision_normal * -j / other->getOwner()->getMass();
+			getOwner()->applyImpulse(ja);
+			other->getOwner()->applyImpulse(jb);
+		}
+		return true;
+	}
+
+	return false;
 }
