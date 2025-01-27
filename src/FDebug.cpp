@@ -20,6 +20,16 @@ void quit_callback()
 	PostThreadMessage(GetCurrentThreadId(), WM_QUIT, 0, 0);
 }
 
+void show_help_callback()
+{
+	static_debug_ref->showHelp(true);
+}
+
+void hide_help_callback()
+{
+	static_debug_ref->showHelp(false);
+}
+
 FDebug::FDebug(HWND window_handle)
 {
 	window = window_handle;
@@ -146,7 +156,8 @@ FDebug::FDebug(HWND window_handle)
 	VerticalBox* vb = new VerticalBox
 	({
 		new HorizontalBox({ new Label("FRAMEWORK STATS", -1), spinner, quit_button }),
-		hb
+		hb,
+		new Label("PRESS H FOR HELP", 0)
 	});
 
 	page->setRoot(vb);
@@ -155,7 +166,33 @@ FDebug::FDebug(HWND window_handle)
 	page->focusable_component_sequence.push_back(extra_info);
 	page->focusable_component_sequence.push_back(quit_button);
 
-	// TODO: add help page with key bind info
+	page->shortcuts.push_back(Input::Shortcut{ Input::Key{ 'h', Input::ControlKeys::NONE }, show_help_callback });
+
+	help_page = new Page();
+
+	TextArea* help_box = new TextArea(R"(keybinds (only work on the engine window, not this debug window):\n
+- WASD: move around
+- EQ: move up/down
+- JL: apply force on X axis
+- IK: apply force on Y axis
+- UO: apply force on Z axis
+- B: reset velocity
+- N: toggle gravity
+- M: toggle kinematic
+
+use left click to select objects)", 0);
+
+	help_page->setRoot(new VerticalBox
+	({
+		new BorderedBox(help_box, "help"),
+		new Label("PRESS H FOR MAIN VIEW", 0)
+	}));
+
+	help_page->focusable_component_sequence.push_back(help_box);
+
+	help_page->shortcuts.push_back(Input::Shortcut{ Input::Key{ 'h', Input::ControlKeys::NONE }, hide_help_callback });
+
+	active_page = page;
 }
 
 void FDebug::set(FDebug* debug)
@@ -171,8 +208,8 @@ FDebug* FDebug::get()
 void FDebug::update()
 {
 	get()->spinner->state++;
-	get()->page->checkInput();
-	get()->page->render();
+	get()->active_page->checkInput();
+	get()->active_page->render();
 }
 
 void FDebug::console(string s)

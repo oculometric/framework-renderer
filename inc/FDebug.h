@@ -15,6 +15,8 @@ class FDebug
 private:
 	HWND window;
 
+	stui::Page* active_page = nullptr;
+
 	stui::Page* page = nullptr;
 	stui::TextArea* log_text_area = nullptr;
 
@@ -42,6 +44,8 @@ private:
 
 	stui::Spinner* spinner = nullptr;
 	stui::Button* quit_button = nullptr;
+
+	stui::Page* help_page = nullptr;
 
 	FDebug(HWND window_handle);
 	static void set(FDebug* debug);			// assigns an instance pointer to the static reference in the source file
@@ -76,6 +80,8 @@ public:
 	inline void setComponentCount(int comps) { components_count_label->text = format("{}", comps); }
 
 	inline void setExtraInfo(std::vector<std::string> info) { extra_info->elements = info; }
+
+	inline void showHelp(bool visible) { active_page = visible ? help_page : page; }
 	
 	static void update();
 	static void console(std::string s);		// prints a string to both stdout and the visual studio immediate window
