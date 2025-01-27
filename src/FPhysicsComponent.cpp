@@ -39,12 +39,21 @@ FVector FPhysicsComponent::computeDragForce() const
 
 FVector FPhysicsComponent::computeFrictionForce() const
 {
-    return FVector(0,0,0);
+    FVector total_vec = FVector(0, 0, 0);
+    return total_vec;
 
-    FVector coll_n; // TODO: find collision normal
-    float f_mag = (coll_n ^ getVelocity()) * friction_coefficient;
-    FVector f_n = normalise(getVelocity() - (coll_n * (coll_n ^ getVelocity())));
-    FVector f = f_n * -f_mag;
+    // TODO: fix this (something fucked up)
 
-    return f;
+    for (const auto& coll : collision_data)
+    {
+        FVector coll_n = coll.second;
+        float f_mag = (coll_n ^ getVelocity()) * friction_coefficient;
+        FVector f_v = getVelocity() - (coll_n * (coll_n ^ getVelocity()));
+        if (magnitude_squared(f_v) < 0.001f) continue;
+        FVector f_n = normalise(f_n);
+        FVector f = f_n * -f_mag;
+        total_vec = total_vec + f;
+    }
+
+    return total_vec;
 }

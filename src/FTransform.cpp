@@ -1,6 +1,7 @@
 #include "FTransform.h"
 
 #include "FObject.h"
+#include "FDebug.h"
 
 void FTransform::setLocalEuler(FVector e)
 {

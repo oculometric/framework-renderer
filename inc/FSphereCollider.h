@@ -12,9 +12,9 @@ private:
 public:
 	using FCollider::FCollider;
 
-	inline bool checkCollision(FCollider* other) override { return other->checkCollisionSphere(this); }
-	bool checkCollisionSphere(FSphereCollider* other) override;
-	bool checkCollisionBox(FAABBCollider* other) override;
+	inline int checkCollision(FCollider* other) override { return other->checkCollisionSphere(this); }
+	int checkCollisionSphere(FSphereCollider* other) override;
+	int checkCollisionBox(FAABBCollider* other) override;
 
 	float getRadius() { return radius; }
 	void setRadius(float r) { radius = r; }

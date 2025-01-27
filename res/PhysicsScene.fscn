@@ -15,7 +15,8 @@
           "velocity": [ 0, 0, 4 ],
           "collider": "aabb",
           "origin": [ 0, 0, 0 ],
-          "extent": [ 1, 1, 1 ]
+          "extent": [ 1, 1, 1 ],
+          "gravity": 1
         }
       ]
     },
@@ -86,6 +87,25 @@
           "class": "physics",
           "mass": 5,
           "gravity": 0,
+          "kinematic": 1,
+          "collider": "sphere",
+          "radius": 1
+        }
+      ]
+    },
+    {
+      "name": "sphere_3",
+      "position": [ -6, 8, 5 ],
+      "components": [
+        {
+          "class": "mesh",
+          "data": "res/sphere.obj"
+        },
+        {
+          "class": "physics",
+          "mass": 1,
+          "gravity": 1,
+          "kinematic": 0,
           "collider": "sphere",
           "radius": 1
         }

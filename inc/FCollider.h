@@ -13,7 +13,7 @@ public:
 
 	FPhysicsComponent* getOwner() { return owner; }
 
-	virtual bool checkCollision(FCollider* other) = 0;
-	virtual bool checkCollisionSphere(FSphereCollider* other) = 0;
-	virtual bool checkCollisionBox(FAABBCollider* other) = 0;
+	virtual int checkCollision(FCollider* other) = 0;
+	virtual int checkCollisionSphere(FSphereCollider* other) = 0;
+	virtual int checkCollisionBox(FAABBCollider* other) = 0;
 };

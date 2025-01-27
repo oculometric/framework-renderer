@@ -24,6 +24,8 @@ inline FVector operator-(const FVector& a, const FVector& b) { return FVector(a.
 inline FVector operator*(const FVector& a, const FVector& b) { return FVector(a.x * b.x, a.y * b.y, a.z * b.z); }
 inline FVector operator/(const FVector& a, const FVector& b) { return FVector(a.x / b.x, a.y / b.y, a.z / b.z); }
 
+inline FVector operator-(const FVector& a) { return FVector(-a.x, -a.y, -a.z); }
+
 // bulk operations
 
 inline FVector operator+(const FVector& a, float f) { return FVector(a.x + f, a.y + f, a.z + f); }

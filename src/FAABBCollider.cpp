@@ -6,12 +6,12 @@
 
 inline float sign(float f) { return f > 0.0f ? 1.0f : (f < 0.0f ? -1.0f : 0.0f); }
 
-bool FAABBCollider::checkCollisionSphere(FSphereCollider* other)
+int FAABBCollider::checkCollisionSphere(FSphereCollider* other)
 {
 	return other->checkCollisionBox(this);
 }
 
-bool FAABBCollider::checkCollisionBox(FAABBCollider* other)
+int FAABBCollider::checkCollisionBox(FAABBCollider* other)
 {
 	FVector oa = getOwner()->getOwner()->transform.getPosition();
 	FVector ob = other->getOwner()->getOwner()->transform.getPosition();
@@ -49,26 +49,33 @@ bool FAABBCollider::checkCollisionBox(FAABBCollider* other)
 			collision_normal = FVector(0, 0, sign(center_diff.z));
 
 		FVector relative_velocity = getOwner()->getVelocity() - other->getOwner()->getVelocity();
-		if ((collision_normal ^ relative_velocity) < 0.0f)
+			
+		float e = other->getOwner()->restitution; if (getOwner()->restitution > e) e = getOwner()->restitution;
+		float penetration_depth = -(penetration ^ collision_normal);
+		float m_inv_sum = ((1.0f * getOwner()->getInvMass()) + (1.0f * other->getOwner()->getInvMass()));
+
+		if (penetration_depth < 0.0f)
 		{
-			float e = other->getOwner()->restitution; if (getOwner()->restitution > e) e = getOwner()->restitution;
-			float penetration_depth = -(penetration ^ collision_normal);
-			float m_inv_sum = ((1.0f * getOwner()->getInvMass()) + (1.0f * other->getOwner()->getInvMass()));
-			if (penetration_depth < 0.0f)
-			{
-				FVector reposition_vector = (collision_normal * penetration_depth) / m_inv_sum;
-				getOwner()->getOwner()->transform.translate(reposition_vector * getOwner()->getInvMass());
-				other->getOwner()->getOwner()->transform.translate(reposition_vector * -other->getOwner()->getInvMass());
-			}
-			float vj = -(1.0f + e) * (collision_normal ^ relative_velocity);
-			float j = vj / m_inv_sum;
-			FVector ja = collision_normal * j * getOwner()->getInvMass();
-			FVector jb = collision_normal * -j * other->getOwner()->getInvMass();
-			getOwner()->applyImpulse(ja);
-			other->getOwner()->applyImpulse(jb);
+			FVector reposition_vector = (collision_normal * -penetration_depth) / m_inv_sum;
+			getOwner()->getOwner()->transform.translate(reposition_vector * getOwner()->getInvMass());
+			other->getOwner()->getOwner()->transform.translate(reposition_vector * -other->getOwner()->getInvMass());
 		}
-		return true;
+
+		float vj = -(1.0f + e) * (collision_normal ^ relative_velocity);
+		float j = vj / m_inv_sum;
+		FVector ja = collision_normal * j * getOwner()->getInvMass();
+		FVector jb = collision_normal * -j * other->getOwner()->getInvMass();
+		getOwner()->applyImpulse(ja);
+		other->getOwner()->applyImpulse(jb);
+
+		bool began = getOwner()->beginColliding(other->getOwner(), collision_normal);
+		other->getOwner()->beginColliding(getOwner(), -collision_normal);
+
+		return began ? 1 : 0;
 	}
 
-	return false;
+	bool ended = getOwner()->endColliding(other->getOwner());
+	other->getOwner()->endColliding(getOwner());
+
+	return ended ? -1 : 0;
 }

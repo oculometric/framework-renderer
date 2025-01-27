@@ -52,8 +52,9 @@ void FPhysicsEngine::physicsTick(float delta_time)
 		{
 			if (!comps[j]->isCollideable()) continue;
 
-			if (comps[i]->getCollider()->checkCollision(comps[j]->getCollider()))
-				FDebug::console("collision detected between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
+			int status = comps[i]->getCollider()->checkCollision(comps[j]->getCollider());
+			if (status != 0)
+				FDebug::console("collision " + string((status == 1) ? "started" : "ended") + " between: " + comps[i]->getOwner()->name + " and " + comps[j]->getOwner()->name + "\n");
 		}
 	}
 

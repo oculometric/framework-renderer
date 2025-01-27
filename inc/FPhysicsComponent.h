@@ -4,6 +4,7 @@
 #include "FVector.h"
 #include "FApplication.h"
 #include "FCollider.h"
+#include "map"
 
 class FPhysicsEngine;
 
@@ -13,6 +14,8 @@ private:
 	FVector accumulated_forces;
 	FVector velocity;
 	float mass = 1.0f;
+
+	std::map<FPhysicsComponent*, FVector> collision_data;
 
 private:
 	inline FVector getAndClearAccumulator() { FVector copy = accumulated_forces; accumulated_forces = FVector(0, 0, 0); return copy; }
@@ -48,6 +51,9 @@ public:
 
 	inline virtual FCollider* getCollider() const { return nullptr; }
 	inline virtual void setCollider(FCollider* col) { }
+
+	inline virtual bool beginColliding(FPhysicsComponent* other, FVector normal) { if (collision_data.contains(other)) return false; else collision_data.emplace(other, normal); return true; }
+	inline virtual bool endColliding(FPhysicsComponent* other) { if (collision_data.contains(other)) { collision_data.erase(other); return true; } return false; }
 
 	virtual void tick(float delta);
 };
