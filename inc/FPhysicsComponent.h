@@ -22,6 +22,7 @@ private:
 
 public:
 	bool obeys_gravity = true;
+	bool kinematic = false;
 	float drag_coefficient = 0.05f;
 	float friction_coefficient = 0.3f;
 	float restitution = 0.8f;
@@ -37,6 +38,7 @@ public:
 	inline void setVelocity(FVector v) { velocity = v; }
 
 	inline float getMass() const { return mass; }
+	inline float getInvMass() const { return kinematic ? 0.0f : (1.0f / mass); }
 	inline void setMass(float m) { mass = m; }
 
 	inline void addForce(FVector f) { accumulated_forces = accumulated_forces + f; }

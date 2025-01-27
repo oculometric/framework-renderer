@@ -10,6 +10,8 @@
 #include "FScene.h"
 #include "FResourceManager.h"
 #include "FDebug.h"
+#include "FSphereCollider.h"
+#include "FAABBCollider.h"
 
 using namespace std;
 
@@ -110,6 +112,28 @@ bool deserialiseComponent(const FJsonElement& a, FComponent*& other, FObject* ob
 		if (obj->has("mass", JFLOAT)) other_physics->setMass((*obj)["mass"].f_val);
 		if (obj->has("velocity", JARRAY)) { FVector v; (*obj)["velocity"] >> v; other_physics->setVelocity(v); }
 		if (obj->has("gravity", JFLOAT)) { other_physics->obeys_gravity = (*obj)["gravity"].f_val > 0.0f; }
+		if (obj->has("kinematic", JFLOAT)) { other_physics->kinematic = (*obj)["kinematic"].f_val > 0.0f; }
+		if (obj->has("collider", JSTRING))
+		{
+			string collider_type = (*obj)["collider"].s_val;
+			if (collider_type == "sphere")
+			{
+				FSphereCollider* coll = new FSphereCollider(other_physics);
+				other_physics->setCollider(coll);
+				if (obj->has("radius", JFLOAT)) coll->setRadius((*obj)["radius"].f_val);
+				if (obj->has("center", JARRAY)) { FVector tmp; (*obj)["center"].a_val >> tmp; coll->setCenter(tmp); }
+			}
+			else if (collider_type == "aabb")
+			{
+				FAABBCollider* coll = new FAABBCollider(other_physics);
+				other_physics->setCollider(coll);
+				FVector origin = FVector(0, 0, 0);
+				FVector extent = FVector(1, 1, 1);
+				if (obj->has("origin", JARRAY)) (*obj)["origin"].a_val >> origin;
+				if (obj->has("extent", JARRAY)) (*obj)["extent"].a_val >> extent;
+				coll->setBounds(FBoundingBox(origin, extent));
+			}
+		}
 	}
 	else
 		return false;

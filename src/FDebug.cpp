@@ -154,6 +154,8 @@ FDebug::FDebug(HWND window_handle)
 	page->focusable_component_sequence.push_back(log_text_area);
 	page->focusable_component_sequence.push_back(extra_info);
 	page->focusable_component_sequence.push_back(quit_button);
+
+	// TODO: add help page with key bind info
 }
 
 void FDebug::set(FDebug* debug)

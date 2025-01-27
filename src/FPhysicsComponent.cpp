@@ -17,7 +17,7 @@ void FPhysicsComponent::tick(float delta)
     addForce(computeFrictionForce());
 
     FVector total_force = getAndClearAccumulator();
-    FVector acceleration = total_force / getMass();
+    FVector acceleration = kinematic ? FVector(0, 0, 0) : total_force / getMass();
 
     setVelocity(getVelocity() + (acceleration * delta));
 

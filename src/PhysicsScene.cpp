@@ -17,34 +17,6 @@ void PhysicsScene::start()
 	cube_a = findObjectWithName("cube_1");
 	cube_b = findObjectWithName("cube_2");
 
-	FRigidBodyPhysicsComponent* comp_a = cube_a->getComponent<FRigidBodyPhysicsComponent>();
-	FAABBCollider* coll_a = new FAABBCollider(comp_a);
-	coll_a->setBounds(FBoundingBox(FVector(0, 0, 0), FVector(1, 1, 1)));
-	comp_a->setCollider(coll_a);
-
-	FRigidBodyPhysicsComponent* comp_b = cube_b->getComponent<FRigidBodyPhysicsComponent>();
-	FAABBCollider* coll_b = new FAABBCollider(comp_b);
-	coll_b->setBounds(FBoundingBox(FVector(0, 0, 0), FVector(1, 1, 1)));
-	comp_b->setCollider(coll_b);
-
-	FObject* plane = findObjectWithName("plane");
-	FRigidBodyPhysicsComponent* comp_p = plane->getComponent<FRigidBodyPhysicsComponent>();
-	FAABBCollider* coll_p = new FAABBCollider(comp_p);
-	coll_p->setBounds(FBoundingBox(FVector(0, 0, -0.5), FVector(12, 12, 1)));
-	comp_p->setCollider(coll_p);
-
-	FObject* sphere = findObjectWithName("sphere");
-	FRigidBodyPhysicsComponent* comp_s = sphere->getComponent<FRigidBodyPhysicsComponent>();
-	FSphereCollider* coll_s = new FSphereCollider(comp_s);
-	coll_s->setRadius(1.0f);
-	comp_s->setCollider(coll_s);
-
-	FObject* sphere_2 = findObjectWithName("sphere_2");
-	FRigidBodyPhysicsComponent* comp_s2 = sphere_2->getComponent<FRigidBodyPhysicsComponent>();
-	FSphereCollider* coll_s2 = new FSphereCollider(comp_s2);
-	coll_s2->setRadius(1.0f);
-	comp_s2->setCollider(coll_s2);
-
 	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 	owner->getEngine()->draw_gizmos = true;
 }
@@ -97,9 +69,20 @@ void PhysicsScene::update(float delta_time)
 	FPhysicsComponent* comp = active_object->getComponent<FPhysicsComponent>();
 	if (comp)
 	{
-		info.push_back(comp->obeys_gravity ? "grav on" : "grav off");
+		info.push_back(string(comp->obeys_gravity ? "grav on" : "grav off") + " | " + string(comp->kinematic ? "kinematic" : "dynamic"));
 		info.push_back(str(comp->getVelocity()));
-		comp->addForce(object_force * comp->getMass() * 5.0f);
+		info.push_back(format("{:2f}", comp->getMass()));
+
+		if (GetAsyncKeyState('N') & 0x0001)
+			comp->obeys_gravity = !comp->obeys_gravity;
+
+		if (GetAsyncKeyState('M') & 0x0001)
+			comp->kinematic = !comp->kinematic;
+
+		if (GetAsyncKeyState('B') & 0x0001)
+			comp->setVelocity(FVector(0,0,0));
+
+		comp->addForce(object_force * comp->getMass() * speed * 2.0f);
 	}
 	FDebug::get()->setExtraInfo(info);
 }
