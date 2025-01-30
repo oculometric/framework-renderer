@@ -39,7 +39,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return -1;
 	}
 
-	application.scene = newSceneWithName("SurrealDemoScene", &application);
+	application.scene = newSceneWithName("PhysicsScene", &application);
 	application.scene->start();
 
 	// Main message loop
