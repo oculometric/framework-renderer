@@ -3,6 +3,24 @@
 #include "FObject.h"
 #include "FDebug.h"
 
+FVector FTransform::getEuler() const
+{
+	FQuaternion quat = getQuaternion();
+	return makeEulerAnglesFromQ(quat);
+}
+
+void FTransform::setEuler(FVector e)
+{
+	FQuaternion quat = makeQFromEulerAngles(e.x, e.y, e.z);
+	setQuaternion(quat);
+}
+
+FVector FTransform::getLocalEuler() const
+{
+	FQuaternion quat = getLocalQuaternion();
+	return makeEulerAnglesFromQ(quat);
+}
+
 void FTransform::setLocalEuler(FVector e)
 {
 	XMStoreFloat4x4(&local_to_parent,
@@ -44,6 +62,14 @@ void FTransform::rotate(FVector axis, float angle, FVector about)
 	updateParamsFromLocal();
 }
 
+void FTransform::rotate(FQuaternion quat)
+{
+	FQuaternion q = rotateQuat(local_quaternion, quat);
+
+	updateLocalFromParams();
+	updateWorldFromLocal();
+}
+
 void FTransform::scale(FVector s, FVector about)
 {
 	XMMATRIX translation = XMMatrixTranslationFromVector(XMLoadFloat3(&about));
@@ -57,7 +83,7 @@ void FTransform::scale(FVector s, FVector about)
 void FTransform::reset()
 {
 	local_position = FVector(0,0,0);
-	local_quaternion = XMFLOAT4(0,0,1,0);
+	local_quaternion = FQuaternion();
 	local_scale = FVector(1,1,1);
 
 	updateLocalFromParams();
@@ -96,10 +122,12 @@ void FTransform::updateLocalFromWorld()
 
 void FTransform::updateLocalFromParams()
 {
+	XMFLOAT4 quat = local_quaternion.getDirectXRep();
+
 	XMStoreFloat4x4(&local_to_parent,
 		XMMatrixIdentity()
 		* XMMatrixScalingFromVector(XMLoadFloat3(&local_scale))
-		* XMMatrixRotationQuaternion(XMLoadFloat4(&local_quaternion))
+		* XMMatrixRotationQuaternion(XMLoadFloat4(&quat))
 		* XMMatrixTranslationFromVector(XMLoadFloat3(&local_position)));
 }
 
@@ -108,10 +136,15 @@ void FTransform::updateParamsFromLocal()
 	XMVECTOR s; XMVECTOR q; XMVECTOR p;
 	XMMatrixDecompose(&s, &q, &p, XMLoadFloat4x4(&local_to_parent));
 	XMStoreFloat3(&local_position, p);
+	XMFLOAT4 quat = XMFLOAT4(0,0,0,1);
 	if (XMVector3Length(q).m128_f32[0] < 0.0001f)
-		local_quaternion = XMFLOAT4(0,0,1,0);
+		local_quaternion = FQuaternion();
 	else
-		XMStoreFloat4(&local_quaternion, q);
+		XMStoreFloat4(&quat, q);
+	local_quaternion.i.x = quat.x;
+	local_quaternion.i.y = quat.y;
+	local_quaternion.i.z = quat.z;
+	local_quaternion.r = quat.w;
 	XMStoreFloat3(&local_scale, s);
 }
 
@@ -196,27 +229,28 @@ void FTransform::setPosition(FVector p)
 	updateParamsFromLocal();
 }
 
-XMFLOAT4 FTransform::getQuaternion() const
+FQuaternion FTransform::getQuaternion() const
 {
 	XMVECTOR s; XMVECTOR q; XMVECTOR p;
 	XMMatrixDecompose(&s, &q, &p, XMLoadFloat4x4(&local_to_world));
 	XMFLOAT4 quat;
 	if (XMVector3Length(q).m128_f32[0] < 0.0001f)
-		quat = XMFLOAT4(0, 0, -1, 0);
+		return FQuaternion();
 	else
 		XMStoreFloat4(&quat, q);
-	return quat;
+	return FQuaternion(quat.w, quat.x, quat.y, quat.z);
 }
 
-void FTransform::setQuaternion(XMFLOAT4 q)
+void FTransform::setQuaternion(FQuaternion q)
 {
 	FVector p = getPosition();
 	FVector s = getScale();
+	XMFLOAT4 quat = q.getDirectXRep();
 
 	XMStoreFloat4x4(&local_to_world,
 		XMMatrixIdentity()
 		* XMMatrixScalingFromVector(XMLoadFloat3(&s))
-		* XMMatrixRotationQuaternion(XMLoadFloat4(&q))
+		* XMMatrixRotationQuaternion(XMLoadFloat4(&quat))
 		* XMMatrixTranslationFromVector(XMLoadFloat3(&p)));
 
 	updateLocalFromWorld();

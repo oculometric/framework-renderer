@@ -36,6 +36,7 @@
     <ClInclude Include="inc\FParticlePhysicsComponent.h" />
     <ClInclude Include="inc\FPhysicsComponent.h" />
     <ClInclude Include="inc\FPhysicsEngine.h" />
+    <ClInclude Include="inc\FQuaternion.h" />
     <ClInclude Include="inc\FResourceManager.h" />
     <ClInclude Include="inc\FRigidBodyPhysicsComponent.h" />
     <ClInclude Include="inc\FScene.h" />

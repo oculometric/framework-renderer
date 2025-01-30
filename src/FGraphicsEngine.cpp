@@ -629,78 +629,78 @@ bool FGraphicsEngine::frustrumCull(XMFLOAT4X4 projection, XMFLOAT4X4 view_inv, F
 {
     return true; // FIXME: for some reason this still doesnt work, so i'm disabling frustrum culling for now
 
-    // minimum and maximum corner points
-    XMFLOAT3 mi = bounds.min_corner;
-    XMFLOAT3 ma = bounds.max_corner;
-    // generate a list of all 8 corner points
-    XMFLOAT4 nnn = XMFLOAT4(mi.x, mi.y, mi.z, 1);
-    XMFLOAT4 ppp = XMFLOAT4(ma.x, ma.y, ma.z, 1);
-    vector<XMFLOAT4> corners =
-    {
-        nnn,
-        XMFLOAT4(ppp.x, nnn.y, nnn.z, 1),
-        XMFLOAT4(nnn.x, ppp.y, nnn.z, 1),
-        XMFLOAT4(ppp.x, ppp.y, nnn.z, 1),
-        XMFLOAT4(nnn.x, nnn.y, ppp.z, 1),
-        XMFLOAT4(ppp.x, nnn.y, ppp.z, 1),
-        XMFLOAT4(nnn.x, ppp.y, ppp.z, 1),
-        ppp
-    };
+    //// minimum and maximum corner points
+    //XMFLOAT3 mi = bounds.min_corner;
+    //XMFLOAT3 ma = bounds.max_corner;
+    //// generate a list of all 8 corner points
+    //XMFLOAT4 nnn = XMFLOAT4(mi.x, mi.y, mi.z, 1);
+    //XMFLOAT4 ppp = XMFLOAT4(ma.x, ma.y, ma.z, 1);
+    //vector<XMFLOAT4> corners =
+    //{
+    //    nnn,
+    //    XMFLOAT4(ppp.x, nnn.y, nnn.z, 1),
+    //    XMFLOAT4(nnn.x, ppp.y, nnn.z, 1),
+    //    XMFLOAT4(ppp.x, ppp.y, nnn.z, 1),
+    //    XMFLOAT4(nnn.x, nnn.y, ppp.z, 1),
+    //    XMFLOAT4(ppp.x, nnn.y, ppp.z, 1),
+    //    XMFLOAT4(nnn.x, ppp.y, ppp.z, 1),
+    //    ppp
+    //};
 
-    // transform the bounding box into projection space (i.e. it is now a frustrum, and the view frustrum is now a box)
-    XMMATRIX world_to_proj = XMMatrixIdentity() * XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_inv)) * XMLoadFloat4x4(&projection);
-    int i = 0;
-    for (XMFLOAT4 v : corners)
-    {
-        XMFLOAT4 ps; XMStoreFloat4(&ps, XMVector4Transform(XMLoadFloat4(&v), world_to_proj));
-        ps = XMFLOAT4(ps.x / ps.w, ps.y / ps.w, ps.z / ps.w, 1);
+    //// transform the bounding box into projection space (i.e. it is now a frustrum, and the view frustrum is now a box)
+    //XMMATRIX world_to_proj = XMMatrixIdentity() * XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_inv)) * XMLoadFloat4x4(&projection);
+    //int i = 0;
+    //for (XMFLOAT4 v : corners)
+    //{
+    //    XMFLOAT4 ps; XMStoreFloat4(&ps, XMVector4Transform(XMLoadFloat4(&v), world_to_proj));
+    //    ps = XMFLOAT4(ps.x / ps.w, ps.y / ps.w, ps.z / ps.w, 1);
 
-        // if the corner is inside the bounds of the view cube, we need to draw the shape
-        if (ps.x <= 1 && ps.x >= -1
-         && ps.y <= 1 && ps.y >= -1
-         && ps.z <= 1 && ps.z >= -1)
-            return true;
+    //    // if the corner is inside the bounds of the view cube, we need to draw the shape
+    //    if (ps.x <= 1 && ps.x >= -1
+    //     && ps.y <= 1 && ps.y >= -1
+    //     && ps.z <= 1 && ps.z >= -1)
+    //        return true;
 
-        corners[i] = ps;
-        i++;
-    }
+    //    corners[i] = ps;
+    //    i++;
+    //}
 
-    // test transformed vertex edges against the view cube
-    FBoundingBox view_box = { };
-    view_box.max_corner = XMFLOAT3(1, 1, 1);
-    view_box.min_corner = XMFLOAT3(-1, -1, 0);
-    
-    XMFLOAT4 ray_origins[4] = { corners[0], corners[1], corners[2], corners[3] };
-    XMFLOAT4 ray_ends[4] = { corners[7], corners[6], corners[5], corners[4] };
+    //// test transformed vertex edges against the view cube
+    //FBoundingBox view_box = { };
+    //view_box.max_corner = XMFLOAT3(1, 1, 1);
+    //view_box.min_corner = XMFLOAT3(-1, -1, 0);
+    //
+    //XMFLOAT4 ray_origins[4] = { corners[0], corners[1], corners[2], corners[3] };
+    //XMFLOAT4 ray_ends[4] = { corners[7], corners[6], corners[5], corners[4] };
 
-    for (int j = 0; j < 4; j++)
-    {
-        float tmin; float tmax;
-        XMFLOAT3 ray_origin = XMFLOAT3(ray_origins[j].x, ray_origins[j].y, ray_origins[j].z);
-        XMFLOAT3 ray_direction = XMFLOAT3(ray_ends[j].x - ray_origin.x, ray_ends[j].y - ray_origin.y, ray_ends[j].z - ray_origin.z);
-        if (FMeshComponent::intersectBoundingBox(view_box, ray_origin, ray_origin, tmin, tmax))
-            return true;
-    }
+    //for (int j = 0; j < 4; j++)
+    //{
+    //    float tmin; float tmax;
+    //    XMFLOAT3 ray_origin = XMFLOAT3(ray_origins[j].x, ray_origins[j].y, ray_origins[j].z);
+    //    XMFLOAT3 ray_direction = XMFLOAT3(ray_ends[j].x - ray_origin.x, ray_ends[j].y - ray_origin.y, ray_ends[j].z - ray_origin.z);
+    //    if (FMeshComponent::intersectBoundingBox(view_box, ray_origin, ray_origin, tmin, tmax))
+    //        return true;
+    //}
 
-    // check if the view box is inside the object, by treating each of the edges of the view as a ray and testing them against the bounding box
-    XMFLOAT4 ps_origins[4] = { XMFLOAT4(-1, -1, 0, 1), XMFLOAT4(1, -1, 0, 1), XMFLOAT4(-1, 1, 0, 1), XMFLOAT4(1, 1, 0, 1) };
-    XMFLOAT4 ps_direction = XMFLOAT4(0, 0, 1, 0);
+    //// check if the view box is inside the object, by treating each of the edges of the view as a ray and testing them against the bounding box
+    //XMFLOAT4 ps_origins[4] = { XMFLOAT4(-1, -1, 0, 1), XMFLOAT4(1, -1, 0, 1), XMFLOAT4(-1, 1, 0, 1), XMFLOAT4(1, 1, 0, 1) };
+    //XMFLOAT4 ps_direction = XMFLOAT4(0, 0, 1, 0);
 
-    XMMATRIX proj_to_world = XMMatrixInverse(nullptr, world_to_proj);
-    for (int j = 0; j < 4; j++)
-    {
-        XMVECTOR ws_originv = XMVector4Transform(XMLoadFloat4(&(ps_origins[j])), proj_to_world);
-        XMFLOAT3 ws_origin; XMStoreFloat3(&ws_origin, ws_originv);
+    //XMMATRIX proj_to_world = XMMatrixInverse(nullptr, world_to_proj);
+    //for (int j = 0; j < 4; j++)
+    //{
+    //    XMVECTOR ws_originv = XMVector4Transform(XMLoadFloat4(&(ps_origins[j])), proj_to_world);
+    //    XMFLOAT3 ws_origin; XMStoreFloat3(&ws_origin, ws_originv);
 
-        XMVECTOR ws_directionv = XMVector4Transform(XMLoadFloat4(&ps_direction) + XMLoadFloat4(&(ps_origins[j])), proj_to_world) - ws_originv;
-        XMFLOAT3 ws_direction; XMStoreFloat3(&ws_direction, ws_directionv);
+    //    XMVECTOR ws_directionv = XMVector4Transform(XMLoadFloat4(&ps_direction) + XMLoadFloat4(&(ps_origins[j])), proj_to_world) - ws_originv;
+    //    XMFLOAT3 ws_direction; XMStoreFloat3(&ws_direction, ws_directionv);
 
-        float tmin; float tmax;
-        if (FMeshComponent::intersectBoundingBox(bounds, ws_origin, ws_direction, tmin, tmax))
-            return true;
-    }
+    //    float tmin; float tmax;
+    //    if (FMeshComponent::intersectBoundingBox(bounds, ws_origin, ws_direction, tmin, tmax))
+    //        return true;
+    //}
 
-    return false;
+    //return false;
 }
 
 void FGraphicsEngine::sortForBatching(vector<FMeshComponent*>& objects)

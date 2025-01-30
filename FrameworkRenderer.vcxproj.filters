@@ -141,6 +141,9 @@
     <ClInclude Include="inc\FRigidBodyPhysicsComponent.h">
       <Filter>Headers\Components</Filter>
     </ClInclude>
+    <ClInclude Include="inc\FQuaternion.h">
+      <Filter>Headers\World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">

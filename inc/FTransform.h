@@ -4,6 +4,7 @@
 #include <DirectXMath.h>
 
 #include "FVector.h"
+#include "FQuaternion.h"
 
 using namespace DirectX;
 
@@ -16,8 +17,8 @@ private:
 	XMFLOAT4X4 local_to_parent;			// matrix which transforms vectors from model space to parent model space
 	XMFLOAT4X4 local_to_world;			// matrix which transforms vectors from model space to world space
 
-	FVector local_position;			// local position within parent space
-	XMFLOAT4 local_quaternion;			// local rotation within parent space
+	FVector local_position;				// local position within parent space
+	FQuaternion local_quaternion;		// local rotation within parent space
 	FVector local_scale;				// local scale    within parent space
 
 	FTransform* parent = nullptr;
@@ -32,7 +33,7 @@ private:
 	void propagate();					// update child transforms
 	
 public:
-	inline FTransform(FVector position, XMFLOAT4 quaternion = XMFLOAT4(0, 0, 1, 0), FVector scale = FVector(1, 1, 1))
+	inline FTransform(FVector position, FQuaternion quaternion = FQuaternion(), FVector scale = FVector(1, 1, 1))
 		: local_position(position), local_quaternion(quaternion), local_scale(scale)
 		{ updateLocalFromParams(); updateWorldFromLocal(); }
 
@@ -41,7 +42,7 @@ public:
 		{ setLocalEuler(eulers); }
 
 	inline FTransform() 
-		: local_position(FVector(0, 0, 0)), local_quaternion(XMFLOAT4(0, 0, 1, 0)), local_scale(FVector(1, 1, 1))
+		: local_position(FVector(0, 0, 0)), local_quaternion(FQuaternion()), local_scale(FVector(1, 1, 1))
 		{ local_to_world = local_to_parent = XMFLOAT4X4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
 
 	FTransform(FTransform& other);
@@ -58,10 +59,10 @@ public:
 	inline FVector getLocalPosition() const { return local_position; }
 	inline void setLocalPosition(FVector p) { local_position = p; updateLocalFromParams(); updateWorldFromLocal(); }
 
-	XMFLOAT4 getQuaternion() const;
-	void setQuaternion(XMFLOAT4 q);
-	inline XMFLOAT4 getLocalQuaternion() const { return local_quaternion; }
-	inline void setLocalQuaternion(XMFLOAT4 q) { local_quaternion = q; updateLocalFromParams(); updateWorldFromLocal(); }
+	FQuaternion getQuaternion() const;
+	void setQuaternion(FQuaternion q);
+	inline FQuaternion getLocalQuaternion() const { return local_quaternion; }
+	inline void setLocalQuaternion(FQuaternion q) { local_quaternion = q; updateLocalFromParams(); updateWorldFromLocal(); }
 
 	FVector getEuler() const;
 	void setEuler(FVector e);
@@ -74,6 +75,7 @@ public:
 
 	void translate(FVector v);
 	void rotate(FVector axis, float angle, FVector about);
+	void rotate(FQuaternion quat);
 	void scale(FVector s, FVector about);
 	void faceForward(FVector forward, FVector up);
 	void lookAt(FVector target, FVector eye, FVector up);
