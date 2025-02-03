@@ -144,6 +144,9 @@
     <ClInclude Include="inc\FQuaternion.h">
       <Filter>Headers\World</Filter>
     </ClInclude>
+    <ClInclude Include="inc\FConstrainedParticleSystemComponent.h">
+      <Filter>Headers\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\monitor_n.dds">

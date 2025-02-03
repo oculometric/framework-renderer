@@ -25,6 +25,7 @@
     <ClInclude Include="inc\FBoundingBox.h" />
     <ClInclude Include="inc\FCollider.h" />
     <ClInclude Include="inc\FComponent.h" />
+    <ClInclude Include="inc\FConstrainedParticleSystemComponent.h" />
     <ClInclude Include="inc\FDebug.h" />
     <ClInclude Include="inc\FDeserialiser.h" />
     <ClInclude Include="inc\FGraphicsEngine.h" />
