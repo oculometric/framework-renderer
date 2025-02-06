@@ -27,7 +27,7 @@ public:
 	bool obeys_gravity = true;
 	bool kinematic = false;
 	float drag_coefficient = 0.05f;
-	float friction_coefficient = 0.3f;
+	float friction_coefficient = 0.4f;
 	float restitution = 0.8f;
 
 public:

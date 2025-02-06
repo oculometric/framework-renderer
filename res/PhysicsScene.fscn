@@ -104,7 +104,7 @@
         {
           "class": "physics",
           "mass": 1,
-          "gravity": 1,
+          "gravity": 0,
           "kinematic": 0,
           "collider": "sphere",
           "radius": 1

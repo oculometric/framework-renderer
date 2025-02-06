@@ -1,6 +1,7 @@
 #include "FPhysicsComponent.h"
 
 #include "FPhysicsEngine.h"
+#include "FDebug.h"
 
 #define AIR_DENSITY 1.29f
 #define LAMINAR_THRESHOLD 1.0f
@@ -40,19 +41,17 @@ FVector FPhysicsComponent::computeDragForce() const
 FVector FPhysicsComponent::computeFrictionForce() const
 {
     FVector total_vec = FVector(0, 0, 0);
-    return total_vec;
-
-    // TODO: fix this (something fucked up)
+    if (collision_data.empty()) return total_vec;
 
     for (const auto& coll : collision_data)
     {
         FVector coll_n = coll.second;
-        float f_mag = (coll_n ^ getVelocity()) * friction_coefficient;
-        FVector f_v = getVelocity() - (coll_n * (coll_n ^ getVelocity()));
-        if (magnitude_squared(f_v) < 0.001f) continue;
-        FVector f_n = normalise(f_n);
-        FVector f = f_n * -f_mag;
-        total_vec = total_vec + f;
+        FVector normal_reaction_force = coll_n * -(coll_n ^ accumulated_forces);
+        float friction_magnitude = magnitude(normal_reaction_force) * friction_coefficient;
+        FVector friction_direction = normalise(-getVelocity());
+        if (magnitude(getVelocity()) - (friction_magnitude * getInvMass()) < 0)
+            friction_magnitude = magnitude(getVelocity());
+        total_vec = total_vec + (friction_direction * friction_magnitude);
     }
 
     return total_vec;

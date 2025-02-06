@@ -23,7 +23,7 @@ public:
 	FComponent(FObject* _owner) : owner(_owner) { }
 
 	virtual inline FComponentType getType() const { return FComponentType::BLANK; }
-	FObject* getOwner() { return owner; }
+	FObject* getOwner() const { return owner; }
 
 protected:
 	FObject* owner = nullptr;
