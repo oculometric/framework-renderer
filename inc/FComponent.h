@@ -12,7 +12,8 @@ enum FComponentType
 	CAMERA,
 	MESH,
 	LIGHT,
-	PHYSICS
+	PHYSICS,
+	CONSTRAINED
 };
 
 class FComponent

@@ -2,6 +2,7 @@
 
 #include "FDebug.h"
 #include "FPhysicsComponent.h"
+#include "FConstrainedParticleSystemComponent.h"
 #include "FDebug.h"
 
 #include <thread>
@@ -37,6 +38,7 @@ void FPhysicsEngine::physicsTick(float delta_time)
 	for (FObject* obj : application->scene->all_objects)
 	{
 		FPhysicsComponent* comp = obj->getComponent<FPhysicsComponent>();
+		if (!comp) comp = obj->getComponent<FConstrainedParticleSystemComponent>();
 		if (comp) comps.push_back(comp);
 	}
 

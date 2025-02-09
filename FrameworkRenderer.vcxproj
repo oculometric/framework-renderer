@@ -141,6 +141,7 @@
     <ClCompile Include="src\FAABBCollider.cpp" />
     <ClCompile Include="src\FApplication.cpp" />
     <ClCompile Include="src\FCamera.cpp" />
+    <ClCompile Include="src\FConstrainedParticleSystemComponent.cpp" />
     <ClCompile Include="src\FDebug.cpp" />
     <ClCompile Include="src\FDeserialiser.cpp" />
     <ClCompile Include="src\FGraphicsEngine.cpp" />

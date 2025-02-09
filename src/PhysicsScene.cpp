@@ -7,6 +7,7 @@
 #include "FGraphicsEngine.h"
 #include "FPhysicsComponent.h"
 #include "FRigidBodyPhysicsComponent.h"
+#include "FConstrainedParticleSystemComponent.h"
 #include "FAABBCollider.h"
 #include "FSphereCollider.h"
 
@@ -16,6 +17,21 @@ void PhysicsScene::start()
 {
 	cube_a = findObjectWithName("cube_1");
 	cube_b = findObjectWithName("cube_2");
+
+	FObject* obj = new FObject();
+	auto comp = new FConstrainedParticleSystemComponent(obj);
+	obj->addComponent(comp);
+	comp->modulus = 160.0f;
+	comp->vertex_mass = 2.0f;
+	comp->addVertex(FVector{ 0, 5, 3 }, true);
+	comp->addVertex(FVector{ 1, 5, 2 }, false);
+	comp->addVertex(FVector{ 3, 5, 2 }, false);
+	comp->addVertex(FVector{ 1, 5, 3 }, true);
+	comp->addEdge(0, 1, 1.0f);
+	comp->addEdge(1, 2, 1.0f);
+	comp->addEdge(2, 3, 0.3f);
+
+	addObject(obj, nullptr);
 
 	owner->getEngine()->output_mode = FGraphicsEngine::FOutputMode::SHARPENED;
 	owner->getEngine()->draw_gizmos = true;

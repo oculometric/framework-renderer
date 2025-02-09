@@ -10,6 +10,7 @@
 #include "FJsonParser.h"
 #include "FDebug.h"
 #include "Gizmo.h"
+#include "FConstrainedParticleSystemComponent.h"
 
 using namespace std;
 
@@ -1155,6 +1156,23 @@ void FGraphicsEngine::drawGizmos()
         getContext()->Unmap(common_buffer, 0);
 
         getContext()->DrawIndexed(static_cast<UINT>(gizmo_inds.size()), 0, 0);
+
+        FConstrainedParticleSystemComponent* cps = object->getComponent<FConstrainedParticleSystemComponent>();
+        if (cps != nullptr)
+        {
+            vector<FVector> vertices = cps->getVertices();
+            for (FVector v : vertices)
+            {
+                XMMATRIX m = XMMatrixTranslationFromVector(XMLoadFloat3(&v));
+                common_buffer_data->world_matrix = XMMatrixTranspose(m);
+
+                getContext()->Map(common_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &common_buffer_resource);
+                memcpy(common_buffer_resource.pData, (uint8_t*)common_buffer_data, sizeof(FCommonConstantData));
+                getContext()->Unmap(common_buffer, 0);
+
+                getContext()->DrawIndexed(static_cast<UINT>(gizmo_inds.size()), 0, 0);
+            }
+        }
     }
 
     if (getScene()->active_object == nullptr) return;
