@@ -1141,12 +1141,13 @@ void FGraphicsEngine::drawGizmos()
     // draw a set of axes at each object origin
     UINT stride = { sizeof(FVertex) };
     UINT offset = 0;
-    getContext()->IASetVertexBuffers(0, 1, &gizmo_vertex_buffer, &stride, &offset);
-    getContext()->IASetIndexBuffer(gizmo_index_buffer, DXGI_FORMAT_R16_UINT, 0);
 
     for (FObject* object : getScene()->all_objects)
     {
         if (object == getScene()->active_camera->getOwner()) continue;
+
+        getContext()->IASetVertexBuffers(0, 1, &gizmo_vertex_buffer, &stride, &offset);
+        getContext()->IASetIndexBuffer(gizmo_index_buffer, DXGI_FORMAT_R16_UINT, 0);
         XMFLOAT4X4 object_matrix = object->transform.getTransform();
         common_buffer_data->world_matrix = XMMatrixTranspose(XMLoadFloat4x4(&object_matrix));
 
@@ -1161,16 +1162,18 @@ void FGraphicsEngine::drawGizmos()
         if (cps != nullptr)
         {
             vector<FVector> vertices = cps->getVertices();
+            getContext()->IASetVertexBuffers(0, 1, &box_vertex_buffer, &stride, &offset);
+            getContext()->IASetIndexBuffer(box_index_buffer, DXGI_FORMAT_R16_UINT, 0);
             for (FVector v : vertices)
             {
-                XMMATRIX m = XMMatrixTranslationFromVector(XMLoadFloat3(&v));
+                XMMATRIX m = XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixTranslationFromVector(XMLoadFloat3(&v));
                 common_buffer_data->world_matrix = XMMatrixTranspose(m);
 
                 getContext()->Map(common_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &common_buffer_resource);
                 memcpy(common_buffer_resource.pData, (uint8_t*)common_buffer_data, sizeof(FCommonConstantData));
                 getContext()->Unmap(common_buffer, 0);
 
-                getContext()->DrawIndexed(static_cast<UINT>(gizmo_inds.size()), 0, 0);
+                getContext()->DrawIndexed(static_cast<UINT>(box_inds.size()), 0, 0);
             }
         }
     }

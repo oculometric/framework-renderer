@@ -372,5 +372,8 @@
     <ClCompile Include="src\FAABBCollider.cpp">
       <Filter>Source\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="src\FConstrainedParticleSystemComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

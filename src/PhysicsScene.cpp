@@ -21,15 +21,15 @@ void PhysicsScene::start()
 	FObject* obj = new FObject();
 	auto comp = new FConstrainedParticleSystemComponent(obj);
 	obj->addComponent(comp);
-	comp->modulus = 160.0f;
-	comp->vertex_mass = 2.0f;
-	comp->addVertex(FVector{ 0, 5, 3 }, true);
-	comp->addVertex(FVector{ 1, 5, 2 }, false);
-	comp->addVertex(FVector{ 3, 5, 2 }, false);
-	comp->addVertex(FVector{ 1, 5, 3 }, true);
-	comp->addEdge(0, 1, 1.0f);
-	comp->addEdge(1, 2, 1.0f);
-	comp->addEdge(2, 3, 0.3f);
+	comp->modulus = 320.0f;
+	comp->vertex_mass = 0.2f;
+	comp->damping = 0.12f;
+	comp->limit = 1.2f;
+	comp->addVertex(FVector{ 0, 4, 3 }, true);
+	comp->addVertex(FVector{ 1, 4, 2.5 }, false);
+	comp->addVertex(FVector{ 1.5, 4, 4 }, false);
+	comp->addEdge(0, 1, 1.5f);
+	comp->addEdge(1, 2, 1.5f);
 
 	addObject(obj, nullptr);
 

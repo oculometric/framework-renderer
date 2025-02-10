@@ -21,12 +21,27 @@ void FConstrainedParticleSystemComponent::tick(float delta)
 
 		FVector a_to_b = vertices[vert_b] - vertices[vert_a];
 		FVector relative_velocity = velocities[vert_b] - velocities[vert_a];
-		FVector force = (normalise(a_to_b) * (-modulus * (magnitude(a_to_b) - target_lengths[i / 2]))) - (relative_velocity * damping);
-		float factor = 2.0f;
-		if (fixed[vert_a] || fixed[vert_b])
-			factor = 1.0f;
-		force_accumulators[vert_a] = force_accumulators[vert_a] + (force / -factor);
-		force_accumulators[vert_b] = force_accumulators[vert_b] + (force / factor);
+		float force_magnitude = -modulus * (magnitude(a_to_b) - target_lengths[i / 2]);
+		FVector force = (normalise(a_to_b) * force_magnitude) - (relative_velocity * damping);
+		
+		float length_after_force = magnitude(a_to_b) + ((force_magnitude / vertex_mass) * delta * delta);
+
+		if (length_after_force > target_lengths[i / 2] * limit)
+		{
+			float limited_length = target_lengths[i / 2] * limit;
+			float recomputed_force = ((limited_length - magnitude(a_to_b)) / (delta * delta / vertex_mass));
+			force = (normalise(a_to_b) * recomputed_force) - (relative_velocity * damping);
+		}
+		else if (length_after_force < target_lengths[i / 2] / limit)
+		{
+			float limited_length = target_lengths[i / 2] / limit;
+			float recomputed_force = ((limited_length - magnitude(a_to_b)) / (delta * delta / vertex_mass));
+			force = (normalise(a_to_b) * recomputed_force) - (relative_velocity * damping);
+		}
+
+		FVector per_vert_force = force / ((fixed[vert_a] || fixed[vert_b]) ? 1.0f : 2.0f);
+		force_accumulators[vert_a] = force_accumulators[vert_a] - per_vert_force;
+		force_accumulators[vert_b] = force_accumulators[vert_b] + per_vert_force;
 	}
 
 	for (size_t i = 0; i < num_vertices; i++)

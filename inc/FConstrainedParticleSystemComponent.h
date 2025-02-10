@@ -10,6 +10,7 @@ public:
 	float vertex_mass = 0.1f;
 	float modulus = 0.8f;
 	float damping = 0.2f;
+	float limit = 1.2f;
 
 private:
 	std::vector<FVector> vertices;
