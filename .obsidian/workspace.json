@@ -11,10 +11,28 @@
             "id": "95eabee7d286038e",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Reflective Report Physics.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Reflective Report Physics"
+            }
+          },
+          {
+            "id": "c2f88f0eaaa79963",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Reflective Report Graphics.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Reflective Report Graphics"
             }
           }
         ]
@@ -159,8 +177,11 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "7c48f28f669d9c89",
+  "active": "95eabee7d286038e",
   "lastOpenFiles": [
+    "Reflective Report Graphics.md",
+    "Reflective Report Physics.md",
+    "UML_new.png",
     "new_uml.gaphor",
     "Reflective Report.synctex(busy)",
     "UML_b.png",
@@ -177,7 +198,6 @@
     "res/Clouds.hlsl",
     "ascii_postprocess.png",
     "ambient_occlusion.png",
-    "x64/Debug/Framewor.a85993e6.tlog/unsuccessfulbuild",
     "UML.png",
     "README.md",
     "Reflective Report.md"

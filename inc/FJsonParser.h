@@ -94,13 +94,8 @@ public:
 };
 
 class FScene;
-struct FObjectPreload;
-struct FMaterialPreload;
 
 // these operators are are used to translate a JSON element into various data types
-bool operator>>(const FJsonElement& a, FScene& other);
-bool operator>>(const FJsonElement& a, FObjectPreload& other);
-bool operator>>(const FJsonElement& a, FMaterialPreload& other);
 bool operator>>(const FJsonElement& a, XMFLOAT3& other);
 bool operator>>(const FJsonElement& a, XMFLOAT4& other);
 bool operator>>(const FJsonElement& a, XMINT3& other);
