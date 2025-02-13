@@ -98,7 +98,7 @@ void PhysicsScene::update(float delta_time)
 		if (GetAsyncKeyState('B') & 0x0001)
 			comp->setVelocity(FVector(0,0,0));
 
-		comp->addForce(object_force * comp->getMass() * speed * 2.0f);
+		comp->applyImpulse(object_force * speed * 0.75f);
 	}
 	FDebug::get()->setExtraInfo(info);
 }
